@@ -11,7 +11,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        applicationId "io.jhavatar.template.kotlin"
+        applicationId "io.chthonic." + projProps.getProperty("appName")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode = projProps.getProperty("versionCode")
@@ -36,7 +36,6 @@ android {
     }
     productFlavors {
         dev {
-            minSdkVersion 21
             applicationIdSuffix = ".dev"
             resValue "string", "app_name", (projProps.getProperty("appName") + "_dev")
             resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_dev_leaks")
@@ -95,12 +94,15 @@ dependencies {
     }
 
     // json
-    implementation 'com.squareup.moshi:moshi:1.4.0'
+    implementation 'com.squareup.moshi:moshi:1.5.0'
+    implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
 
     // rest
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
     // redux
     implementation 'com.yheriatovych:reductor:0.14.0'
