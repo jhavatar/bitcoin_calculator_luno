@@ -1,0 +1,141 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+//apply plugin: 'io.fabric'
+
+Properties projProps = new Properties()
+projProps.load(project.rootProject.file('project.properties').newDataInputStream())
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "io.jhavatar.template.kotlin"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode = projProps.getProperty("versionCode")
+        versionName = projProps.getProperty("versionName")
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "default"
+    }
+    buildTypes {
+        debug {
+            if (projProps.getProperty("debugAnalytics") as Integer != 1) {
+                ext.enableCrashlytics = false // true is not a valid value
+            }
+            buildConfigField "boolean", "ANALYTICS_ENABLED", ((projProps.getProperty("debugAnalytics") as Integer == 1) ? "true" : "false")
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "ANALYTICS_ENABLED", "true"
+        }
+    }
+    productFlavors {
+        dev {
+            minSdkVersion 21
+            applicationIdSuffix = ".dev"
+            resValue "string", "app_name", (projProps.getProperty("appName") + "_dev")
+            resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_dev_leaks")
+        }
+        beta {
+            applicationIdSuffix = ".beta"
+            resValue "string", "app_name", (projProps.getProperty("appName") + "_beta")
+            resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_beta_leaks")
+        }
+        prod {
+            resValue "string", "app_name", projProps.getProperty("appName")
+            resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_leaks")
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+//    maven { url 'https://maven.fabric.io/public' }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    // support
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:percent:${rootProject.ext.supportLibVersion}"
+    betaApi "com.android.support:multidex:1.0.2"
+    prodApi "com.android.support:multidex:1.0.2"
+
+    // kotlin
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    // dependency injection
+    implementation 'com.github.salomonbrys.kodein:kodein:4.1.0'
+
+    // rxjava2
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.0.0'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:2.0.0'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-design-kotlin:2.0.0'
+
+    // persistence
+    implementation ("io.chthonic.stash:stash:0.8.1") {
+        exclude group: 'org.jetbrains'
+    }
+    implementation ("io.chthonic.stash:serializer-moshi:0.8.1") {
+        exclude group: 'org.jetbrains'
+    }
+
+    // json
+    implementation 'com.squareup.moshi:moshi:1.4.0'
+
+    // rest
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+
+    // redux
+    implementation 'com.yheriatovych:reductor:0.14.0'
+    implementation 'com.yheriatovych:reductor-rxjava:0.14.0'
+    kapt 'com.yheriatovych:reductor-processor:0.14.0'
+
+    // mvp
+    implementation ('io.chthonic.mythos:mythos:0.9.3') {
+        exclude group: 'org.jetbrains'
+    }
+
+    // view
+    implementation 'com.wang.avi:library:2.1.3'
+
+    // form validate
+    implementation 'com.github.deadpixelsociety:passport:1.0.1'
+
+    // analytics
+//    implementation('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+//        transitive = true;
+//    }
+
+    // dev utils
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    debugImplementation 'com.facebook.stetho:stetho:1.5.0'
+    debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    implementation 'com.github.ajalt:timberkt:1.3.0'
+
+    // testing
+    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+}
+
+
+// ADD THIS AT THE BOTTOM
+//apply plugin: 'com.google.gms.google-services'
