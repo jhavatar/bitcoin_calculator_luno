@@ -8,7 +8,7 @@ import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 import io.chthonic.price_converter.business.service.DroidPermissionsService
-import io.chthonic.price_converter.business.service.LunoService
+import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.business.service.StateService
 import io.chthonic.price_converter.business.service.TodoListService
 import io.chthonic.price_converter.utils.DebugUtils
@@ -37,7 +37,7 @@ class App : BaseApp() {
             bind<Resources>() with instance(applicationContext.resources)
 //            bind<RestClient>() with singleton{ RestClient() }
             bind<StateService>() with singleton{StateService()}
-            bind<LunoService>() with singleton{ LunoService(instance()) }
+            bind<ExchangeService>() with singleton{ ExchangeService(instance()) }
             bind<DroidPermissionsService>() with singleton{DroidPermissionsService(instance())}
             bind<TodoListService>() with singleton{TodoListService(instance(), instance())}
             bind<Stash>() with singleton {

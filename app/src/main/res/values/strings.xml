@@ -6,4 +6,12 @@
 
     <string name="barcode_permission_message">App needs camera permission for barcode scanning.</string>
     <string name="location_permission_message">App needs location permission for navigation.</string>
+
+
+    <string name="zar_display_name">"South African Rand"</string>
+    <string name="myr_display_name">"Malaysian Ringgit"</string>
+    <string name="idr_display_name">"Indonesian Rupiah"</string>
+    <string name="ngn_display_name">"Nigerian Naira"</string>
+
+    <string name="placeholder"> - </string>
 </resources>

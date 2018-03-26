@@ -5,7 +5,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
 import io.chthonic.price_converter.App
-import io.chthonic.price_converter.business.service.LunoService
+import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.business.service.TodoListService
 import io.chthonic.price_converter.data.model.Ticker
 import io.chthonic.price_converter.data.model.TodoItem
@@ -20,7 +20,7 @@ import timber.log.Timber
 class TodoPresenter(kodein: Kodein = App.kodein) : io.chthonic.price_converter.ui.presenter.BasePresenter<TodoVu>() {
 
     val todoService: TodoListService by App.kodein.lazy.instance<TodoListService>()
-    val lunoService: LunoService by App.kodein.lazy.instance<LunoService>()
+    val exchangeService: ExchangeService by App.kodein.lazy.instance<ExchangeService>()
 
     override fun onLink(vu: TodoVu, inState: Bundle?, args: Bundle) {
         super.onLink(vu, inState, args)
@@ -62,8 +62,8 @@ class TodoPresenter(kodein: Kodein = App.kodein) : io.chthonic.price_converter.u
         }))
 
 
-        Timber.d("lunoService = $lunoService")
-        rxSubs.add(lunoService.fetchTickerLot()
+        Timber.d("exchangeService = $exchangeService")
+        rxSubs.add(exchangeService.fetchTickerLot()
                 .observeOn(Schedulers.computation())
                 .subscribeOn(Schedulers.computation())
                 .subscribe({ tickers: List<Ticker> ->
