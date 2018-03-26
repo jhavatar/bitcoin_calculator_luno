@@ -33,7 +33,7 @@ class ExchangeService(private val stateService: StateService) {
 
     fun fetchTickerLot(): Single<List<Ticker>> {
         return lunoApi.getTickers().map {
-            stateService.dispatch(exchangeActions.updateTickers(it.tickers))
+            stateService.dispatch(exchangeActions.updateTickers(it))
             it.tickers
         }
     }

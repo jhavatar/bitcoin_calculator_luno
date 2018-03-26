@@ -8,5 +8,5 @@ import com.yheriatovych.reductor.annotations.CombinedState
 @CombinedState
 interface AppState {
     val todoList: List<TodoItem>
-    val tickers: List<Ticker>
+    val exchangeState: ExchangeState
 }

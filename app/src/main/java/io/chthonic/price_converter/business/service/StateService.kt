@@ -16,7 +16,7 @@ class StateService {
     private val stateClient: StateClient<AppState> by lazy {
         val appStateReducer: AppStateReducer = AppStateReducer.builder()
                 .getTodoListReducer(TodoListReducer.create())
-                .getTickersReducer(ExchangeReducer.create())
+                .getExchangeStateReducer(ExchangeReducer.create())
                 .build()
         StateClient<AppState>(appStateReducer)
     }
