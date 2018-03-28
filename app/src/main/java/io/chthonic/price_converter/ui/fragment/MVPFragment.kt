@@ -50,9 +50,11 @@ abstract class MVPFragment<P, V> : BaseFragment() where P : Presenter<V>, V : Vu
     override fun onActivityCreated (savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        loaderManager.initLoader(mvpDispatcher.uid,
-                null,
-                mvpDispatcher.presenterCache as LoaderManager.LoaderCallbacks<P>)
+        if (mvpDispatcher.presenterCache is LoaderManager.LoaderCallbacks<*>) {
+            loaderManager.initLoader(mvpDispatcher.uid,
+                    null,
+                    mvpDispatcher.presenterCache as LoaderManager.LoaderCallbacks<P>)
+        }
     }
 
     override fun onResume() {
