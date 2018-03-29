@@ -3,6 +3,7 @@ package io.chthonic.price_converter.business.service
 import com.yheriatovych.reductor.Actions
 import io.chthonic.stash.Stash
 import io.chthonic.price_converter.business.actions.TodoListActions
+import io.chthonic.price_converter.business.observer.AppStateChangePublisher
 import io.chthonic.price_converter.data.model.AppState
 import io.chthonic.price_converter.data.model.TodoItem
 import io.chthonic.price_converter.utils.TodoUtils
@@ -18,7 +19,7 @@ class TodoListService(val stateService: StateService, private val stash: Stash) 
     }
 
 
-    private val todoChangePublisher = object: StateService.AppStateChangePublisher<List<TodoItem>>() {
+    private val todoChangePublisher = object: AppStateChangePublisher<List<TodoItem>>() {
         override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
             return hasObservers()
                     && ((oldState == null) || (oldState.todoList != state.todoList))

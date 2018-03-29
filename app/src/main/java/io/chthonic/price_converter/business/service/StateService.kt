@@ -1,5 +1,7 @@
 package io.chthonic.price_converter.business.service
 
+import io.chthonic.price_converter.business.observer.AppStateChangePublisher
+import io.chthonic.price_converter.business.observer.AppStateChangeSubject
 import io.chthonic.price_converter.business.reducer.ExchangeReducer
 import io.chthonic.price_converter.business.reducer.TodoListReducer
 import io.chthonic.price_converter.data.client.StateClient
@@ -11,7 +13,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by jhavatar on 3/1/17.
  */
-class StateService {
+class StateService: AppStateChangeSubject {
 
     private val stateClient: StateClient<AppState> by lazy {
         val appStateReducer: AppStateReducer = AppStateReducer.builder()
@@ -26,7 +28,7 @@ class StateService {
             return stateClient.state
         }
 
-    fun addPublisher(publisher: AppStateChangePublisher<*>) {
+    override fun addPublisher(publisher: AppStateChangePublisher<*>) {
         stateClient.addPublisher(publisher)
     }
 
@@ -44,27 +46,6 @@ class StateService {
 
     fun dispatch(action: Any) {
         stateClient.dispatch(action)
-    }
-
-    abstract class AppStateChangePublisher<I> : StateClient.StateChangePublisher<AppState> {
-        protected val publisher: PublishSubject<I> by lazy {
-            PublishSubject.create<I>()
-        }
-
-        val observable: Observable<I>
-            get() {
-                return publisher.hide()
-            }
-
-        fun hasObservers(): Boolean {
-            return publisher.hasObservers()
-        }
-
-        abstract fun getPublishInfo(state: AppState): I
-
-        override fun publish(state: AppState) {
-            publisher.onNext(getPublishInfo(state))
-        }
     }
 
 

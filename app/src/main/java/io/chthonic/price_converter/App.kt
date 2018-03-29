@@ -3,10 +3,8 @@ package io.chthonic.price_converter
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
+import com.github.salomonbrys.kodein.*
+import io.chthonic.price_converter.business.observer.ExchangeObservers
 import io.chthonic.price_converter.business.service.DroidPermissionsService
 import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.business.service.StateService
@@ -37,7 +35,8 @@ class App : BaseApp() {
             bind<Resources>() with instance(applicationContext.resources)
 //            bind<RestClient>() with singleton{ RestClient() }
             bind<StateService>() with singleton{StateService()}
-            bind<ExchangeService>() with singleton{ ExchangeService(instance()) }
+            bind<ExchangeObservers>() with provider { ExchangeObservers() }
+            bind<ExchangeService>() with singleton{ ExchangeService(instance(), instance()) }
             bind<DroidPermissionsService>() with singleton{DroidPermissionsService(instance())}
             bind<TodoListService>() with singleton{TodoListService(instance(), instance())}
             bind<Stash>() with singleton {
