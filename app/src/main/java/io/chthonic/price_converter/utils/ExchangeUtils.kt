@@ -4,7 +4,9 @@ import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.CalculatorState
 import io.chthonic.price_converter.data.model.ExchangeState
 import io.chthonic.price_converter.data.model.Ticker
+import timber.log.Timber
 import java.math.BigDecimal
+import java.math.MathContext
 import java.text.DecimalFormat
 
 /**
@@ -59,7 +61,8 @@ object ExchangeUtils {
     }
 
     fun convertToBitcoin(fiatPrice: BigDecimal, ticker: Ticker): BigDecimal {
-        return fiatPrice.multiply(ticker.ask.toBigDecimal())
+        Timber.d("convertToBitcoin: fiatPrice = $fiatPrice, ticker = $ticker")
+        return fiatPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL64)
     }
 
     fun getBitcoinPrice(calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {

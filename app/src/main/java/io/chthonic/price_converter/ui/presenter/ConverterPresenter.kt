@@ -13,6 +13,7 @@ import io.chthonic.price_converter.data.model.Ticker
 import io.chthonic.price_converter.data.model.TickerViewModel
 import io.chthonic.price_converter.ui.vu.ConverterVu
 import io.chthonic.price_converter.utils.ExchangeUtils
+import io.chthonic.price_converter.utils.UiUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -125,7 +126,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                 calculatorState.convertToFiat,
                 if (ticker != null)  {
                     TickerViewModel(ticker.pair, ExchangeUtils.getFiatCurrencyForTicker(ticker)?.code!!,
-                            ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeService.state).toString(),
+                            UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeService.state)),
                             "R")
                 } else {
                     null
@@ -139,7 +140,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                 .map {
                     TickerViewModel(it.pair,
                             ExchangeUtils.getFiatCurrencyForTicker(it)?.code!!,
-                            ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers).toString(),
+                            UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers)),
                             "R")
                 }
         Timber.d("updateTickers: tickerList = $tickerList")

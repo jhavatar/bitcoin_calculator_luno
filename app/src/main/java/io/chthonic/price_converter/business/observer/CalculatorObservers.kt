@@ -50,7 +50,7 @@ class CalculatorObservers: AppStateChangeObservers() {
 
             override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
                 Timber.d("calculationChangePublisher: oldState = ${oldState?.calculatorState}, newState = ${state.calculatorState}")
-                return hasObservers() && (oldState != null) && (oldState?.calculatorState != state.calculatorState)
+                return hasObservers() && (oldState?.calculatorState != state.calculatorState)
             }
         }
     }

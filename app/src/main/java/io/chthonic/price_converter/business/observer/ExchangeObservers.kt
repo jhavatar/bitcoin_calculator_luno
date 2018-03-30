@@ -3,6 +3,7 @@ package io.chthonic.price_converter.business.observer
 import io.chthonic.price_converter.data.model.AppState
 import io.chthonic.price_converter.data.model.Ticker
 import io.reactivex.Observable
+import timber.log.Timber
 
 /**
  * Created by jhavatar on 3/29/2018.
@@ -16,7 +17,8 @@ class ExchangeObservers: AppStateChangeObservers() {
             }
 
             override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
-                return hasObservers() && (oldState != null) && (oldState?.exchangeState?.tickers != state.exchangeState.tickers)
+                Timber.d("tickersChangePublisher: oldState = ${oldState?.exchangeState}, newState = ${state.exchangeState}")
+                return hasObservers() && (oldState?.exchangeState?.tickers != state.exchangeState.tickers)
             }
         }
     }
