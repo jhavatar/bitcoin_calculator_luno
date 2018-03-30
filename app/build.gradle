@@ -28,9 +28,9 @@ android {
     }
     buildTypes {
         debug {
-            if (projProps.getProperty("debugAnalytics") as Integer != 1) {
-                ext.enableCrashlytics = false // true is not a valid value
-            }
+//            if (projProps.getProperty("debugAnalytics") as Integer != 1) {
+//                ext.enableCrashlytics = false // true is not a valid value
+//            }
             buildConfigField "boolean", "ANALYTICS_ENABLED", ((projProps.getProperty("debugAnalytics") as Integer == 1) ? "true" : "false")
         }
         release {
@@ -85,12 +85,13 @@ dependencies {
     implementation 'com.github.salomonbrys.kodein:kodein:4.1.0'
 
     // rxjava2
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
-    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.0.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:2.0.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding-design-kotlin:2.0.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
+    implementation "com.github.akarnokd:rxjava2-extensions:0.18.9"
+    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
+//    implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:2.1.1'
+//    implementation 'com.jakewharton.rxbinding2:rxbinding-design-kotlin:2.1.1'
 
-    // persistence
+    // persistencesucce
     implementation ("io.chthonic.stash:stash:0.8.1") {
         exclude group: 'org.jetbrains'
     }

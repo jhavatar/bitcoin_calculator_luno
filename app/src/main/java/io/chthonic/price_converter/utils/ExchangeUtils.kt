@@ -1,6 +1,8 @@
 package io.chthonic.price_converter.utils
 
 import io.chthonic.price_converter.R
+import io.chthonic.price_converter.data.model.CalculatorState
+import io.chthonic.price_converter.data.model.ExchangeState
 import io.chthonic.price_converter.data.model.Ticker
 import java.math.BigDecimal
 import java.text.DecimalFormat
@@ -48,12 +50,63 @@ object ExchangeUtils {
         }
     }
 
-
-    fun convertToFiat(amount: BigDecimal, ticker: Ticker): BigDecimal {
-        return amount.multiply(ticker.bid.toBigDecimal())
+    fun getTicker(calculatorState: CalculatorState, exchangeState: ExchangeState): Ticker? {
+        return exchangeState.tickers.get(calculatorState.targetTicker)
     }
 
-    fun convertToBitcoin(amount: BigDecimal, ticker: Ticker): BigDecimal {
-        return amount.multiply(ticker.ask.toBigDecimal())
+    fun convertToFiat(bitcoinPrice: BigDecimal, ticker: Ticker): BigDecimal {
+        return bitcoinPrice.multiply(ticker.bid.toBigDecimal())
     }
+
+    fun convertToBitcoin(fiatPrice: BigDecimal, ticker: Ticker): BigDecimal {
+        return fiatPrice.multiply(ticker.ask.toBigDecimal())
+    }
+
+    fun getBitcoinPrice(calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
+        return if (calculatorState.convertToFiat) {
+            calculatorState.source
+
+        } else {
+            val ticker = getTicker(calculatorState, exchangeState)
+            if (ticker != null) {
+                convertToBitcoin(calculatorState.source, ticker)
+
+            } else {
+                null
+            }
+        }
+    }
+
+    fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, tickers: Map<String, Ticker>): BigDecimal? {
+        return getFiatPrice(ticker, calculatorState, ExchangeState(tickers))
+    }
+
+    fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
+        return if (calculatorState.convertToFiat) {
+            convertToFiat(calculatorState.source, ticker)
+
+        } else if (calculatorState.targetTicker == ticker.pair) {
+            val bitcoinPrice = convertToBitcoin(calculatorState.source, ticker)
+            calculatorState.source
+
+        } else if (calculatorState.targetTicker != null) {
+            val bitcoinPrice = if (calculatorState.targetTicker == ticker.pair) {
+                convertToBitcoin(calculatorState.source, ticker)
+
+            } else {
+                getBitcoinPrice(calculatorState, exchangeState)
+            }
+
+            if (bitcoinPrice != null) {
+                convertToFiat(bitcoinPrice, ticker)
+
+            } else {
+                null
+            }
+
+        } else {
+            null
+        }
+    }
+
 }

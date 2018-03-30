@@ -2,13 +2,12 @@ package io.chthonic.price_converter.business.service
 
 import io.chthonic.price_converter.business.observer.AppStateChangePublisher
 import io.chthonic.price_converter.business.observer.AppStateChangeSubject
+import io.chthonic.price_converter.business.reducer.CalculatorReducer
 import io.chthonic.price_converter.business.reducer.ExchangeReducer
 import io.chthonic.price_converter.business.reducer.TodoListReducer
 import io.chthonic.price_converter.data.client.StateClient
 import io.chthonic.price_converter.data.model.AppState
 import io.chthonic.price_converter.data.model.AppStateReducer
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by jhavatar on 3/1/17.
@@ -19,6 +18,7 @@ class StateService: AppStateChangeSubject {
         val appStateReducer: AppStateReducer = AppStateReducer.builder()
                 .getTodoListReducer(TodoListReducer.create())
                 .getExchangeStateReducer(ExchangeReducer.create())
+                .getCalculatorStateReducer(CalculatorReducer.create())
                 .build()
         StateClient<AppState>(appStateReducer)
     }

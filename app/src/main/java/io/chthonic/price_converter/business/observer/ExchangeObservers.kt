@@ -9,13 +9,15 @@ import io.reactivex.Observable
  */
 class ExchangeObservers: AppStateChangeObservers() {
 
-    private val tickersChangePublisher =  object:AppStateChangePublisher<Map<String, Ticker>>() {
-        override fun getPublishInfo(state: AppState): Map<String, Ticker> {
-            return state.exchangeState.tickers
-        }
+    private val tickersChangePublisher: AppStateChangePublisher<Map<String, Ticker>> by lazy {
+        object : AppStateChangePublisher<Map<String, Ticker>>() {
+            override fun getPublishInfo(state: AppState): Map<String, Ticker> {
+                return state.exchangeState.tickers
+            }
 
-        override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
-            return hasObservers() && (oldState?.exchangeState?.tickers != state.exchangeState.tickers)
+            override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
+                return hasObservers() && (oldState != null) && (oldState?.exchangeState?.tickers != state.exchangeState.tickers)
+            }
         }
     }
 

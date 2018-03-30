@@ -4,11 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import com.github.salomonbrys.kodein.*
+import io.chthonic.price_converter.business.observer.CalculatorObservers
 import io.chthonic.price_converter.business.observer.ExchangeObservers
-import io.chthonic.price_converter.business.service.DroidPermissionsService
-import io.chthonic.price_converter.business.service.ExchangeService
-import io.chthonic.price_converter.business.service.StateService
-import io.chthonic.price_converter.business.service.TodoListService
+import io.chthonic.price_converter.business.service.*
 import io.chthonic.price_converter.utils.DebugUtils
 import io.chthonic.stash.Stash
 import io.chthonic.stash.cache.LruStorageCache
@@ -36,7 +34,9 @@ class App : BaseApp() {
 //            bind<RestClient>() with singleton{ RestClient() }
             bind<StateService>() with singleton{StateService()}
             bind<ExchangeObservers>() with provider { ExchangeObservers() }
+            bind<CalculatorObservers>() with provider { CalculatorObservers() }
             bind<ExchangeService>() with singleton{ ExchangeService(instance(), instance()) }
+            bind<CalculatorService>() with singleton{ CalculatorService(instance(), instance()) }
             bind<DroidPermissionsService>() with singleton{DroidPermissionsService(instance())}
             bind<TodoListService>() with singleton{TodoListService(instance(), instance())}
             bind<Stash>() with singleton {

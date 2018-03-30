@@ -2,13 +2,15 @@ package io.chthonic.price_converter.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.jakewharton.rxbinding2.view.RxView
 import io.chthonic.price_converter.data.model.TickerViewModel
 import io.chthonic.price_converter.ui.viewholder.TickerHolder
+import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by jhavatar on 3/28/2018.
  */
-class TickerListAdapter: RecyclerView.Adapter<TickerHolder>() {
+class TickerListAdapter(private val tickerSelectPublisher: PublishSubject<String>) : RecyclerView.Adapter<TickerHolder>() {
 
     var _items: List<TickerViewModel> = emptyList()
     var items: List<TickerViewModel>
@@ -26,6 +28,12 @@ class TickerListAdapter: RecyclerView.Adapter<TickerHolder>() {
     }
 
     override fun onBindViewHolder(holder: TickerHolder, position: Int) {
-        holder.update(items[position])
+        val item = items[position]
+        holder.update(item)
+        RxView.clicks(holder.itemView)
+                .map {
+                    item.id
+                }
+                .subscribe(tickerSelectPublisher)
     }
 }
