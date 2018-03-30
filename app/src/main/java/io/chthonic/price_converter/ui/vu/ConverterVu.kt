@@ -5,6 +5,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.Toolbar
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
@@ -20,8 +22,11 @@ import io.chthonic.price_converter.utils.UiUtils
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.internal.operators.flowable.FlowablePublish
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.vu_converter.view.*
+import timber.log.Timber
+import java.math.BigDecimal
 
 /**
  * Created by jhavatar on 3/28/2018.
@@ -41,35 +46,129 @@ class ConverterVu(inflater: LayoutInflater,
         get() = tickerSelectPublisher.hide()
 
     //    private val bitcoinInputValve: PublishProcessor<Boolean> = PublishProcessor.create()
-    private var pauseBitcoinInputObservable: Boolean = false
-    val bitcoinInputObserver: Flowable<String> by lazy {
-        RxTextView.textChanges(bitcoinInput)
-                .skipInitialValue() // ignore initial value sent without change
+//    private var pauseBitcoinInputObservable: Boolean = false
+//    val bitcoinInputObserver: Flowable<String> by lazy {
+//        RxTextView.textChanges(bitcoinInput)
+//                .skipInitialValue() // ignore initial value sent without change
+//                .toFlowable(BackpressureStrategy.LATEST)
+////                .compose(FlowableTransformers.valve(bitcoinInputValve, true))
+//                .filter{
+//                    !it.isNullOrEmpty() && !pauseBitcoinInputObservable
+//                }
+//                .map{
+//                    it.toString()
+//                }
+//    }
+
+    private val bitcoinInputPublisher: PublishSubject<String> by lazy {
+        PublishSubject.create<String>()
+    }
+    val bitcoinInputObserver: Flowable<String>
+        get() = bitcoinInputPublisher
+                .hide()
                 .toFlowable(BackpressureStrategy.LATEST)
-//                .compose(FlowableTransformers.valve(bitcoinInputValve, true))
-                .filter{
-                    !it.isNullOrEmpty() && !pauseBitcoinInputObservable
+
+    private val bitcoinInputWatcher by lazy {
+        object : TextWatcher {
+            var prevString = ""
+            var delAction = false
+            var caretPos = 0
+
+            override fun afterTextChanged(s: Editable?) {
+                bitcoinInput.removeTextChangedListener(this)
+
+                val sRaw = s.toString().replace(" ", "")
+                bitcoinInputPublisher.onNext(sRaw)
+
+                val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw))
+                bitcoinInput.setText(sFormatted)
+
+//                Timber.d("bitcoinInputWatcher: selection start = ${bitcoinInput.selectionStart}, end = ${bitcoinInput.selectionEnd}, formatLength = ${sFormatted.length}")
+                Timber.d("bitcoinInputWatcher: delAction = $delAction, caretPos = $caretPos")
+                if (delAction) {
+                    bitcoinInput.setSelection(Math.max(Math.min(sFormatted.length, caretPos - 1), 0))
+
+                } else {
+                    bitcoinInput.setSelection(Math.min(sFormatted.length, caretPos + 1))
                 }
-                .map{
-                    it.toString()
-                }
+                prevString = sFormatted
+
+                bitcoinInput.addTextChangedListener(this)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                caretPos = bitcoinInput.selectionStart
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                delAction = s?.length ?: 0 < prevString.length
+            }
+        }
     }
 
 
-    //    private val fiatInputValve: PublishProcessor<Boolean> = PublishProcessor.create()
-    private var pauseFiatInputObservable: Boolean = false
-    val fiatInputObserver: Flowable<String> by lazy {
-        RxTextView.textChanges(fiatInput)
-                .skipInitialValue() // ignore initial value sent without change
-                .toFlowable(BackpressureStrategy.LATEST)
-//                .compose(FlowableTransformers.valve(fiatInputValve, true))
-                .filter{
-                    !it.isNullOrEmpty() && !pauseFiatInputObservable
-                }
-                .map{
-                    it.toString()
-                }
+
+    private val fiatInputPublisher: PublishSubject<String> by lazy {
+        PublishSubject.create<String>()
     }
+    val fiatInputObserver: Flowable<String>
+        get() = fiatInputPublisher
+                .hide()
+                .toFlowable(BackpressureStrategy.LATEST)
+
+    private val fiatInputWatcher by lazy {
+        object:TextWatcher {
+            var prevString = ""
+            var delAction = false
+            var caretPos = 0
+
+            override fun afterTextChanged(s: Editable?) {
+                fiatInput.removeTextChangedListener(this)
+
+                val sRaw = s.toString().replace(" ", "")
+                fiatInputPublisher.onNext(sRaw)
+
+                val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw))
+                fiatInput.setText(sFormatted)
+
+//                Timber.d("fiatInputWatcher: selection start = ${fiatInput.selectionStart}, end = ${fiatInput.selectionEnd}, formatLength = ${sFormatted.length}")
+                Timber.d("fiatInputWatcher: delAction = $delAction, caretPos = $caretPos")
+                if (delAction) {
+                    fiatInput.setSelection(Math.max(Math.min(sFormatted.length, caretPos - 1), 0))
+
+                } else {
+                    fiatInput.setSelection(Math.min(sFormatted.length, caretPos + 1))
+                }
+                prevString = sFormatted
+
+                fiatInput.addTextChangedListener(this)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                caretPos = fiatInput.selectionStart
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                delAction = s?.length ?: 0 < prevString.length
+            }
+        }
+    }
+
+
+//    //    private val fiatInputValve: PublishProcessor<Boolean> = PublishProcessor.create()
+//    private var pauseFiatInputObservable: Boolean = true
+//    val fiatInputObserver: Flowable<String> by lazy {
+//        RxTextView.textChanges(fiatInput)
+//                .skipInitialValue() // ignore initial value sent without change
+//                .toFlowable(BackpressureStrategy.LATEST)
+////                .compose(FlowableTransformers.valve(fiatInputValve, true))
+//                .filter{
+//                    !it.isNullOrEmpty() && !pauseFiatInputObservable
+//                }
+//                .map{
+//                    it.toString()
+//                }
+//    }
 
     //    private val convertToFiatValve: PublishProcessor<Boolean> = PublishProcessor.create()
     private var pauseConvertToFiatObservable: Boolean = false
@@ -122,6 +221,47 @@ class ConverterVu(inflater: LayoutInflater,
         tickerAdapter = TickerListAdapter(tickerSelectPublisher)
         listView.adapter = tickerAdapter
         listView.layoutManager = LinearLayoutManager(activity)
+
+        bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+//        bitcoinInput.addTextChangedListener(object:TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                bitcoinInput.removeTextChangedListener(this)
+//
+//                val sRaw = s.toString().replace(" ", "")
+//                bitcoinInputPublisher.onNext(sRaw)
+//
+//                bitcoinInput.setText(UiUtils.formatCurrency(BigDecimal(sRaw)))
+//
+//                bitcoinInput.addTextChangedListener(this)
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            }
+//        })
+
+
+        fiatInput.addTextChangedListener(fiatInputWatcher)
+//        fiatInput.addTextChangedListener(object:TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                fiatInput.removeTextChangedListener(this)
+//
+//                val sRaw = s.toString().replace(" ", "")
+//                fiatInputPublisher.onNext(sRaw)
+//
+//                fiatInput.setText(UiUtils.formatCurrency(BigDecimal(sRaw)))
+//
+//                fiatInput.addTextChangedListener(this)
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            }
+//        })
     }
 
 
@@ -136,18 +276,22 @@ class ConverterVu(inflater: LayoutInflater,
         }
 
         if (initPhase || calc.convertToFiat) {
-            pauseFiatInputObservable = true
+//            pauseFiatInputObservable = true
 //            fiatInputValve.onNext(false)
+            fiatInput.removeTextChangedListener(fiatInputWatcher)
             fiatInput.setText(calc.ticker?.price ?: UiUtils.placeHolderString)
+            fiatInput.addTextChangedListener(fiatInputWatcher)
 //            fiatInputValve.onNext(true)
-            pauseFiatInputObservable = false
+//            pauseFiatInputObservable = true
         }
 
         if (initPhase || !calc.convertToFiat) {
 //            bitcoinInputValve.onNext(false)
-            pauseBitcoinInputObservable = true
+//            pauseBitcoinInputObservable = true
+            bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
             bitcoinInput.setText(calc.bitcoinPrice)
-            pauseBitcoinInputObservable = false
+            bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+//            pauseBitcoinInputObservable = false
 //            bitcoinInputValve.onNext(true)
         }
 
