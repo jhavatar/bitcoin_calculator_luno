@@ -1,6 +1,7 @@
 package io.chthonic.price_converter.ui.vu
 
 import android.app.Activity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SwitchCompat
@@ -221,6 +222,8 @@ class ConverterVu(inflater: LayoutInflater,
 
     override fun onCreate() {
         super.onCreate()
+
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         tickerAdapter = TickerListAdapter(tickerSelectPublisher)
         listView.adapter = tickerAdapter

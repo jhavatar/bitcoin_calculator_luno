@@ -27,7 +27,10 @@
         android:id="@+id/content_layout"
         android:background="@color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +39,9 @@
             android:weightSum="1.0"
             android:gravity="center"
             android:layout_alignParentTop="true"
-            android:id="@+id/input_container">
+            android:id="@+id/input_container"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin">
 
             <LinearLayout
                 android:layout_width="0dp"
