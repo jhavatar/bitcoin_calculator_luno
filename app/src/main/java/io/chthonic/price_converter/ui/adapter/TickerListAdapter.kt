@@ -32,7 +32,7 @@ class TickerListAdapter(private val tickerSelectPublisher: PublishSubject<String
         holder.update(item)
         RxView.clicks(holder.itemView)
                 .map {
-                    item.id
+                    item.code
                 }
                 .subscribe(tickerSelectPublisher)
     }

@@ -77,9 +77,9 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     fun subscribeVuListeners() {
         rxSubs.add(vu!!.tickerSelectObservable
                 .observeOn(Schedulers.computation())
-                .subscribe({ tickerId: String ->
-                    Timber.d("tickerSelectObservable success: $tickerId")
-                    calculatorService.setTargetTicker(tickerId)
+                .subscribe({ tickerCode: String ->
+                    Timber.d("tickerSelectObservable success: $tickerCode")
+                    calculatorService.setTargetTicker(tickerCode)
 
                 }, {t: Throwable ->
                     Timber.e(t, "tickerSelectObservable failed")
@@ -122,10 +122,10 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     fun updateCalculation(calculatorState: CalculatorState, initPhase: Boolean = false) {
         val ticker = ExchangeUtils.getTicker(calculatorState, exchangeService.state)
 
-        vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state)),
+        vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state), isCrypto = true),
                 calculatorState.convertToFiat,
                 if (ticker != null)  {
-                    TickerViewModel(ticker.pair, ExchangeUtils.getFiatCurrencyForTicker(ticker)?.code!!,
+                    TickerViewModel(ticker.code, ticker.code,
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeService.state)),
                             "R")
                 } else {
@@ -138,8 +138,8 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
         val tickerList = tickers.values
                 .filter{ ExchangeUtils.isSupportedFiatCurrency(it) }
                 .map {
-                    TickerViewModel(it.pair,
-                            ExchangeUtils.getFiatCurrencyForTicker(it)?.code!!,
+                    TickerViewModel(it.code,
+                            it.code,
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers)),
                             "R")
                 }

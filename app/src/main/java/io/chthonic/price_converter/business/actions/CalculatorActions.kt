@@ -17,7 +17,7 @@ interface CalculatorActions {
     }
 
     @ActionCreator.Action(SET_TARGET_TICKER)
-    fun setTargetTicker(tickerId: String): Action
+    fun setTargetTicker(tickerCode: String): Action
 
     @ActionCreator.Action(SWITCH_CONVERT_DIRECTION)
     fun switchConvertDirection(convertToFiat: Boolean): Action

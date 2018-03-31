@@ -31,6 +31,6 @@ abstract class ExchangeReducer : Reducer<ExchangeState> {
             from = ExchangeActions::class)
     fun updateTickers(state: ExchangeState, tickerLot: TickerLot): ExchangeState  {
         Timber.d("updateTickers $tickerLot")
-        return state.copy(tickers = tickerLot.tickers.associateBy ( {it.pair}, {it} ))
+        return state.copy(tickers = tickerLot.tickers.associateBy ( {it.code}, {it} ))
     }
 }

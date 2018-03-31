@@ -23,8 +23,8 @@ class CalculatorService(private val stateService: StateService, val observers: C
         observers.registerPublishers(stateService)
     }
 
-    fun setTargetTicker(tickerId: String) {
-        stateService.dispatch(calculatorActions.setTargetTicker(tickerId))
+    fun setTargetTicker(tickerCode: String) {
+        stateService.dispatch(calculatorActions.setTargetTicker(tickerCode))
     }
 
     fun switchConvertDirection(convertToFiat: Boolean) {

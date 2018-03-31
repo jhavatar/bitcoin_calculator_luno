@@ -27,9 +27,9 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
     @AutoReducer.Action(
             value = CalculatorActions.SET_TARGET_TICKER,
             from = CalculatorActions::class)
-    fun setTargetTicker(state: CalculatorState, tickerId: String): CalculatorState  {
-        Timber.d("setTargetTicker $tickerId")
-        return state.copy(targetTicker = tickerId)
+    fun setTargetTicker(state: CalculatorState, tickerCode: String): CalculatorState  {
+        Timber.d("setTargetTicker $tickerCode")
+        return state.copy(targetTicker = tickerCode)
     }
 
     @AutoReducer.Action(

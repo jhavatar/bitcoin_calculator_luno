@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import com.jakewharton.rxbinding2.widget.RxCompoundButton
-import com.jakewharton.rxbinding2.widget.RxTextView
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.CalculationViewModel
@@ -22,7 +21,6 @@ import io.chthonic.price_converter.utils.UiUtils
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.internal.operators.flowable.FlowablePublish
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.vu_converter.view.*
 import timber.log.Timber
@@ -75,12 +73,14 @@ class ConverterVu(inflater: LayoutInflater,
             var caretPos = 0
 
             override fun afterTextChanged(s: Editable?) {
+                if (s.toString() == UiUtils.PLACE_HOLDER_STRING) {
+                    return
+                }
+
                 bitcoinInput.removeTextChangedListener(this)
 
-                val sRaw = s.toString().replace(" ", "")
-                bitcoinInputPublisher.onNext(sRaw)
-
-                val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw))
+                val sRaw = s.toString().replace(UiUtils.currencyFormatReplaceRegex, "")
+                val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw), isCrypto = true)
                 bitcoinInput.setText(sFormatted)
 
 //                Timber.d("bitcoinInputWatcher: selection start = ${bitcoinInput.selectionStart}, end = ${bitcoinInput.selectionEnd}, formatLength = ${sFormatted.length}")
@@ -94,6 +94,7 @@ class ConverterVu(inflater: LayoutInflater,
                 prevString = sFormatted
 
                 bitcoinInput.addTextChangedListener(this)
+                bitcoinInputPublisher.onNext(sRaw)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -123,11 +124,13 @@ class ConverterVu(inflater: LayoutInflater,
             var caretPos = 0
 
             override fun afterTextChanged(s: Editable?) {
+                if (s.toString() == UiUtils.PLACE_HOLDER_STRING) {
+                    return
+                }
+
                 fiatInput.removeTextChangedListener(this)
 
-                val sRaw = s.toString().replace(" ", "")
-                fiatInputPublisher.onNext(sRaw)
-
+                val sRaw = s.toString().replace(UiUtils.currencyFormatReplaceRegex, "")
                 val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw))
                 fiatInput.setText(sFormatted)
 
@@ -142,6 +145,7 @@ class ConverterVu(inflater: LayoutInflater,
                 prevString = sFormatted
 
                 fiatInput.addTextChangedListener(this)
+                fiatInputPublisher.onNext(sRaw)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -279,7 +283,7 @@ class ConverterVu(inflater: LayoutInflater,
 //            pauseFiatInputObservable = true
 //            fiatInputValve.onNext(false)
             fiatInput.removeTextChangedListener(fiatInputWatcher)
-            fiatInput.setText(calc.ticker?.price ?: UiUtils.placeHolderString)
+            fiatInput.setText(calc.ticker?.price ?: UiUtils.PLACE_HOLDER_STRING)
             fiatInput.addTextChangedListener(fiatInputWatcher)
 //            fiatInputValve.onNext(true)
 //            pauseFiatInputObservable = true
@@ -295,7 +299,7 @@ class ConverterVu(inflater: LayoutInflater,
 //            bitcoinInputValve.onNext(true)
         }
 
-        val nuFiatName = calc.ticker?.name ?: UiUtils.placeHolderString
+        val nuFiatName = calc.ticker?.name ?: UiUtils.PLACE_HOLDER_STRING
         if (fiatName.text != nuFiatName) {
             fiatName.text = nuFiatName
         }
