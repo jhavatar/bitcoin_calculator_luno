@@ -1,9 +1,6 @@
 package io.chthonic.price_converter.utils
 
-import io.chthonic.price_converter.data.model.CalculatorState
-import io.chthonic.price_converter.data.model.ExchangeState
-import io.chthonic.price_converter.data.model.FiatCurrency
-import io.chthonic.price_converter.data.model.Ticker
+import io.chthonic.price_converter.data.model.*
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.MathContext
@@ -14,10 +11,7 @@ import java.math.MathContext
 object ExchangeUtils {
 
     private val codeToFiatCurrencyMap: Map<String, FiatCurrency> by lazy {
-        mapOf<String, FiatCurrency>(Pair(FiatCurrency.Zar.code, FiatCurrency.Zar),
-                Pair(FiatCurrency.Myr.code, FiatCurrency.Myr),
-                Pair(FiatCurrency.Idr.code, FiatCurrency.Idr),
-                Pair(FiatCurrency.Ngn.code, FiatCurrency.Ngn))
+        FiatCurrency.values.associateBy( {it.code}, {it} )
     }
 
     fun getFiatCurrencyForTicker(ticker: Ticker): FiatCurrency? {

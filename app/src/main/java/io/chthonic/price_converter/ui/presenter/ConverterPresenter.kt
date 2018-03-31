@@ -7,10 +7,7 @@ import com.github.salomonbrys.kodein.lazy
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.business.service.CalculatorService
 import io.chthonic.price_converter.business.service.ExchangeService
-import io.chthonic.price_converter.data.model.CalculationViewModel
-import io.chthonic.price_converter.data.model.CalculatorState
-import io.chthonic.price_converter.data.model.Ticker
-import io.chthonic.price_converter.data.model.TickerViewModel
+import io.chthonic.price_converter.data.model.*
 import io.chthonic.price_converter.ui.vu.ConverterVu
 import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
@@ -122,12 +119,13 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     fun updateCalculation(calculatorState: CalculatorState, initPhase: Boolean = false) {
         val ticker = ExchangeUtils.getTicker(calculatorState, exchangeService.state)
 
-        vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state), isCrypto = true),
+        vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state),
+                isCrypto = true),
                 calculatorState.convertToFiat,
                 if (ticker != null)  {
                     TickerViewModel(ticker.code, ticker.code,
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeService.state)),
-                            "R")
+                            ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "")
                 } else {
                     null
                 }), initPhase)
@@ -141,7 +139,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                     TickerViewModel(it.code,
                             it.code,
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers)),
-                            "R")
+                            ExchangeUtils.getFiatCurrencyForTicker(it)?.sign ?: "")
                 }
         Timber.d("updateTickers: tickerList = $tickerList")
         vu?.updateTickers(tickerList)

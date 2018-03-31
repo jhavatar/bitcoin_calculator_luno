@@ -1,6 +1,8 @@
 package io.chthonic.price_converter.ui.viewholder
 
+import android.os.Build
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +22,13 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
     fun update(ticker: TickerViewModel) {
         itemView.ticker_name.text = ticker.name
-        itemView.ticker_price.text = ticker.price
+
+        val price = "<b>${ticker.sign}</b> ${ticker.price}"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            itemView.ticker_price.text = Html.fromHtml(price,  Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            itemView.ticker_price.text = Html.fromHtml(price)
+        }
     }
 
 }

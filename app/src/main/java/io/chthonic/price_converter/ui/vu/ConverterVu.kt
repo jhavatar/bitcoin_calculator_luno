@@ -227,76 +227,28 @@ class ConverterVu(inflater: LayoutInflater,
         listView.layoutManager = LinearLayoutManager(activity)
 
         bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
-//        bitcoinInput.addTextChangedListener(object:TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                bitcoinInput.removeTextChangedListener(this)
-//
-//                val sRaw = s.toString().replace(" ", "")
-//                bitcoinInputPublisher.onNext(sRaw)
-//
-//                bitcoinInput.setText(UiUtils.formatCurrency(BigDecimal(sRaw)))
-//
-//                bitcoinInput.addTextChangedListener(this)
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            }
-//        })
-
-
         fiatInput.addTextChangedListener(fiatInputWatcher)
-//        fiatInput.addTextChangedListener(object:TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                fiatInput.removeTextChangedListener(this)
-//
-//                val sRaw = s.toString().replace(" ", "")
-//                fiatInputPublisher.onNext(sRaw)
-//
-//                fiatInput.setText(UiUtils.formatCurrency(BigDecimal(sRaw)))
-//
-//                fiatInput.addTextChangedListener(this)
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            }
-//        })
     }
 
 
     fun updateCalculation(calc: CalculationViewModel, initPhase: Boolean = false) {
         val convertFromFiat = !calc.convertToFiat
         if (conversionSwitch.isChecked != convertFromFiat) {
-//            convertToFiatValve.onNext(false)
             pauseConvertToFiatObservable = true
             conversionSwitch.isChecked = convertFromFiat
-//            convertToFiatValve.onNext(true)
             pauseConvertToFiatObservable = false
         }
 
         if (initPhase || calc.convertToFiat) {
-//            pauseFiatInputObservable = true
-//            fiatInputValve.onNext(false)
             fiatInput.removeTextChangedListener(fiatInputWatcher)
             fiatInput.setText(calc.ticker?.price ?: UiUtils.PLACE_HOLDER_STRING)
             fiatInput.addTextChangedListener(fiatInputWatcher)
-//            fiatInputValve.onNext(true)
-//            pauseFiatInputObservable = true
         }
 
         if (initPhase || !calc.convertToFiat) {
-//            bitcoinInputValve.onNext(false)
-//            pauseBitcoinInputObservable = true
             bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
             bitcoinInput.setText(calc.bitcoinPrice)
             bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
-//            pauseBitcoinInputObservable = false
-//            bitcoinInputValve.onNext(true)
         }
 
         val nuFiatName = calc.ticker?.name ?: UiUtils.PLACE_HOLDER_STRING
