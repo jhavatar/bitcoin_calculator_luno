@@ -122,7 +122,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     fun updateCalculation(calculatorState: CalculatorState, initPhase: Boolean = false) {
         val ticker = ExchangeUtils.getTicker(calculatorState, exchangeService.state)
 
-        vu?.updateCalculation(CalculationViewModel(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state).toString(),
+        vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state)),
                 calculatorState.convertToFiat,
                 if (ticker != null)  {
                     TickerViewModel(ticker.pair, ExchangeUtils.getFiatCurrencyForTicker(ticker)?.code!!,
