@@ -66,16 +66,17 @@
                             android:src="@drawable/ic_xbt"
                             android:scaleType="centerCrop"
                             android:layout_gravity="center"
+                            android:alpha="0.8"
                             />
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="XBT"
                             android:gravity="center"
                             android:layout_gravity="center"
-                            android:paddingStart="@dimen/activity_horizontal_margin"
-                            android:paddingEnd="@dimen/activity_horizontal_margin"/>
+                            android:background="@drawable/bg_activated_rounded_transparent_selector"
+                            android:padding="4dp"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -102,18 +103,19 @@
                             tools:src="@drawable/ic_zar"
                             android:scaleType="centerCrop"
                             android:layout_gravity="center"
+                            android:alpha="0.8"
                             />
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=""
                             tools:text="ZAR"
                             android:gravity="center"
                             android:layout_gravity="center"
                             android:id="@+id/label_fiat"
-                            android:paddingStart="@dimen/activity_horizontal_margin"
-                            android:paddingEnd="@dimen/activity_horizontal_margin"/>
+                            android:background="@drawable/bg_activated_rounded_transparent_selector"
+                            android:padding="4dp"/>
 
                         <View
                             android:layout_width="match_parent"
