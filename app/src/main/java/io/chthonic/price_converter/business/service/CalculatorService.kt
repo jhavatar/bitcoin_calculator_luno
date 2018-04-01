@@ -41,8 +41,4 @@ class CalculatorService(private val stateService: StateService, val observers: C
 
         stateService.dispatch(calculatorActions.switchConvertDirectionAndUpdateSource(convertToFiat, sourceDecimal))
     }
-
-//    fun updateSource(source: String) {
-//        stateService.dispatch(calculatorActions.updateSource(source.toBigDecimal()))
-//    }
 }

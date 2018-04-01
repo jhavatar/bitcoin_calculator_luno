@@ -36,9 +36,11 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
         subscribeServiceListeners()
         subscribeVuListeners()
         Timber.d("listeners subscribe completed")
+
+        fetchLatestTickers()
     }
 
-    fun subscribeServiceListeners() {
+    private fun subscribeServiceListeners() {
         rxSubs.add(exchangeService.observers.tickersChangeObserver
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({it: Map<String, Ticker> ->
@@ -47,22 +49,6 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
 
                 }, {it: Throwable ->
                     Timber.e(it, "tickersChangeObserver fail")
-                }))
-
-        if (exchangeService.state.tickers.isEmpty()) {
-            vu?.showLoading()
-        }
-        rxSubs.add(exchangeService.fetchTickerLot()
-//                .toCompletable()
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({it: List<Ticker> ->
-                    Timber.d("fetchTickerLot success = $it")
-                    vu?.hideLoading()
-
-                }, {it: Throwable ->
-                    Timber.e(it, "fetchTickerLot fail")
-                    vu?.hideLoading()
                 }))
 
         rxSubs.add(calculatorService.observers.calculationChangeChangeObserver
@@ -78,7 +64,8 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                 }))
     }
 
-    fun subscribeVuListeners() {
+
+    private fun subscribeVuListeners() {
         rxSubs.add(vu!!.tickerSelectObservable
                 .observeOn(Schedulers.computation())
                 .subscribe({ tickerCode: String ->
@@ -112,8 +99,28 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                 }))
     }
 
+    fun fetchLatestTickers(forceDisplayLoading: Boolean = false) {
+        Timber.d("fetchLatestTickers: forceDisplayLoading = $forceDisplayLoading")
+        if (forceDisplayLoading || exchangeService.state.tickers.isEmpty()) {
+            vu?.showLoading()
+        }
 
-    fun updateCalculation(calculatorState: CalculatorState, initPhase: Boolean = false) {
+        rxSubs.add(exchangeService.fetchTickerLot()
+//                .toCompletable()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({it: List<Ticker> ->
+                    Timber.d("fetchTickerLot success = $it")
+                    vu?.hideLoading()
+
+                }, {it: Throwable ->
+                    Timber.e(it, "fetchTickerLot fail")
+                    vu?.hideLoading()
+                }))
+    }
+
+
+    private fun updateCalculation(calculatorState: CalculatorState, initPhase: Boolean = false) {
         val ticker = ExchangeUtils.getTicker(calculatorState, exchangeService.state)
 
         vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state),
@@ -129,11 +136,13 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                 }), initPhase)
     }
 
-    fun updateTickers(tickers: Map<String, Ticker>) {
+
+    private fun updateTickers(tickers: Map<String, Ticker>) {
         Timber.d("updateTickers: tickers = $tickers")
         val targetTicker = ExchangeUtils.getTicker(calculatorService.state, tickers)
         val tickerList = tickers.values
                 .filter{ ExchangeUtils.isSupportedFiatCurrency(it) }
+                .sortedBy { it.code }
                 .map {
                     TickerViewModel(it.code,
                             it.code,
