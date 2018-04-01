@@ -56,7 +56,7 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:id="@+id/layout_bitcoin_info"
-                        android:background="@color/primaryDarkColor"
+                        android:background="@drawable/bg_activated_selector"
                         >
 
                         <ImageView
@@ -84,20 +84,13 @@
 
                     </FrameLayout>
 
-                    <android.support.v7.widget.SwitchCompat
-                        android:layout_width="0dp"
-                        android:layout_weight="0.0"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:id="@+id/switch_convert_from_fiat"/>
-
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="0.5"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:id="@+id/layout_fiat_info"
-                        android:background="@color/primaryColor"
+                        android:background="@drawable/bg_activated_selector"
                         >
 
                         <ImageView
@@ -124,7 +117,8 @@
                             android:layout_height="match_parent"
                             android:background="?android:attr/selectableItemBackground"
                             android:id="@+id/clicker_fiat_info"
-                            android:clickable="true"/>
+                            android:clickable="true"
+                            />
 
                     </FrameLayout>
                 </LinearLayout>
@@ -150,7 +144,6 @@
                     android:weightSum="1.0"
                     android:orientation="horizontal"
                     >
-                    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
 
 
                     <FrameLayout
@@ -162,7 +155,7 @@
                         android:paddingEnd="@dimen/content_padding"
                         android:paddingTop="@dimen/content_padding"
                         android:paddingBottom="@dimen/content_padding"
-                        android:background="@color/primaryDarkColor90"
+                        android:background="@drawable/bg_activated_transparent_selector"
                         android:id="@+id/layout_bitcoin_input"
                         >
 
@@ -185,7 +178,7 @@
                         android:paddingBottom="@dimen/content_padding"
                         android:paddingEnd="@dimen/activity_horizontal_margin"
                         android:id="@+id/layout_fiat_input"
-                        android:background="@color/primaryColor90"
+                        android:background="@drawable/bg_activated_transparent_selector"
                         >
 
                         <EditText

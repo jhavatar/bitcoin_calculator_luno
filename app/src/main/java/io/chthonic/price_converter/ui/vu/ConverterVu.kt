@@ -14,7 +14,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxCompoundButton
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.CalculationViewModel
@@ -190,19 +189,6 @@ class ConverterVu(inflater: LayoutInflater,
                 .filter {
                     !pauseConvertToFiatObservable
                 }
-//    val convertToFiatObserver: Flowable<Boolean> by lazy {
-//        RxCompoundButton.checkedChanges(conversionSwitch)
-//                .skipInitialValue()
-//                .toFlowable(BackpressureStrategy.LATEST)
-////                .compose(FlowableTransformers.valve(convertToFiatValve, true))
-//                .filter {
-//                    !pauseConvertToFiatObservable
-//                }
-//                .map{
-//                    !it
-//                }
-//
-//    }
 
     val toolbar: Toolbar by lazy {
         rootView.toolbar
@@ -228,8 +214,6 @@ class ConverterVu(inflater: LayoutInflater,
         rootView.image_fiat
     }
 
-    private val conversionSwitch: SwitchCompat
-        get() = rootView.switch_convert_from_fiat
 
     private lateinit var tickerAdapter: TickerListAdapter
 
@@ -265,15 +249,43 @@ class ConverterVu(inflater: LayoutInflater,
     }
 
 
-    fun updateCalculation(calc: CalculationViewModel, initPhase: Boolean = false) {
-        val convertFromFiat = !calc.convertToFiat
-        if (conversionSwitch.isChecked != convertFromFiat) {
-            pauseConvertToFiatObservable = true
-            conversionSwitch.isChecked = convertFromFiat
-            pauseConvertToFiatObservable = false
+    private fun updateActivated(convertToFiat: Boolean) {
+        if (rootView.layout_bitcoin_info.isActivated != convertToFiat) {
+            rootView.layout_bitcoin_info.isActivated = convertToFiat
         }
+        if (rootView.layout_fiat_info.isActivated != !convertToFiat) {
+            rootView.layout_fiat_info.isActivated = !convertToFiat
+        }
+        if (rootView.layout_bitcoin_input.isActivated != convertToFiat) {
+            rootView.layout_bitcoin_input.isActivated = convertToFiat
+        }
+        if (rootView.layout_fiat_input.isActivated != !convertToFiat) {
+            rootView.layout_fiat_input.isActivated = !convertToFiat
+        }
+        if (rootView.input_btx.isFocused != convertToFiat) {
+            rootView.input_btx.requestFocus()
+        }
+        if (rootView.input_fiat.isFocused != !convertToFiat) {
+            rootView.input_fiat.requestFocus()
+        }
+    }
 
-        rootView.layout_bitcoin_info
+
+    fun updateCalculation(calc: CalculationViewModel, initPhase: Boolean = false) {
+        updateActivated(calc.convertToFiat)
+
+        if (rootView.layout_bitcoin_info.isActivated != calc.convertToFiat) {
+            rootView.layout_bitcoin_info.isActivated = calc.convertToFiat
+        }
+        if (rootView.layout_fiat_info.isActivated != !calc.convertToFiat) {
+            rootView.layout_fiat_info.isActivated = !calc.convertToFiat
+        }
+        if (rootView.input_btx.isFocused != calc.convertToFiat) {
+            rootView.input_btx.requestFocus()
+        }
+        if (rootView.input_fiat.isFocused != !calc.convertToFiat) {
+            rootView.input_fiat.requestFocus()
+        }
 
         if (initPhase || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
