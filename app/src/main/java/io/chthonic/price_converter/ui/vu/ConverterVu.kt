@@ -270,8 +270,15 @@ class ConverterVu(inflater: LayoutInflater,
 
         if (initPhase || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
-            fiatInput.setText(calc.ticker?.price ?: UiUtils.PLACE_HOLDER_STRING)
-            fiatInput.addTextChangedListener(fiatInputWatcher)
+            val text = calc.ticker?.price ?: UiUtils.PLACE_HOLDER_STRING
+            fiatInput.setText(text)
+            if (text != UiUtils.PLACE_HOLDER_STRING) {
+                fiatInput.addTextChangedListener(fiatInputWatcher)
+                fiatInput.isEnabled = true
+                
+            } else {
+                fiatInput.isEnabled = false
+            }
         }
 
         if (initPhase || !calc.convertToFiat) {
