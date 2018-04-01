@@ -49,15 +49,20 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                     Timber.e(it, "tickersChangeObserver fail")
                 }))
 
+        if (exchangeService.state.tickers.isEmpty()) {
+            vu?.showLoading()
+        }
         rxSubs.add(exchangeService.fetchTickerLot()
 //                .toCompletable()
                 .subscribeOn(Schedulers.computation())
-                .observeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({it: List<Ticker> ->
                     Timber.d("fetchTickerLot success = $it")
+                    vu?.hideLoading()
 
                 }, {it: Throwable ->
                     Timber.e(it, "fetchTickerLot fail")
+                    vu?.hideLoading()
                 }))
 
         rxSubs.add(calculatorService.observers.calculationChangeChangeObserver

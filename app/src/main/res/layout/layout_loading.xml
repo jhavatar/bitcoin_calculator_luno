@@ -10,7 +10,7 @@
         android:layout_height="@dimen/loading_widget_dimen"
         style="@style/AVLoadingIndicatorView"
         app:indicatorColor="@color/primaryColor"
-        app:indicatorName="BallClipRotatePulseIndicator"
+        app:indicatorName="BallPulseIndicator"
         android:layout_gravity="center"
         />
 

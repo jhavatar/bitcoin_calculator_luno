@@ -31,14 +31,16 @@ abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragme
     }
 
     fun showLoading() {
-        try {
-            if (!loadingIndicator.isShowing) {
-                loadingIndicator.showAtLocation(rootView, Gravity.CENTER, 0, 0)
-            }
+        rootView.post({
+            try {
+                if (!loadingIndicator.isShowing) {
+                    loadingIndicator.showAtLocation(rootView, Gravity.CENTER, 0, 0)
+                }
 
-        } catch (t: Throwable) {
-            Timber.w(t, "showLoading failed.")
-        }
+            } catch (t: Throwable) {
+                Timber.w(t, "showLoading failed.")
+            }
+        })
     }
 
     fun hideLoading() {
