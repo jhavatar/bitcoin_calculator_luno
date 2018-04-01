@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding2.widget.RxCompoundButton
 import io.chthonic.mythos.mvp.FragmentWrapper
@@ -211,6 +212,10 @@ class ConverterVu(inflater: LayoutInflater,
         rootView.label_fiat
     }
 
+    private val fiatImage: ImageView by lazy {
+        rootView.image_fiat
+    }
+
     private val conversionSwitch: SwitchCompat
         get() = rootView.switch_convert_from_fiat
 
@@ -257,6 +262,12 @@ class ConverterVu(inflater: LayoutInflater,
         val nuFiatName = calc.ticker?.name ?: UiUtils.PLACE_HOLDER_STRING
         if (fiatName.text != nuFiatName) {
             fiatName.text = nuFiatName
+
+            if (calc.ticker != null) {
+                fiatImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.ticker.code))
+            } else {
+                fiatImage.setImageDrawable(null)
+            }
         }
     }
 

@@ -32,6 +32,7 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             itemView.ticker_price.text = Html.fromHtml(price)
         }
 
+        // note, circleImageView does not work with vectors
         itemView.ticker_image.setImageResource(UiUtils.getFiatImageSmallRes(ticker.code))
     }
 
