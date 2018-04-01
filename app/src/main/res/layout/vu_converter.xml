@@ -89,7 +89,9 @@
                         android:layout_weight="0.5"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:id="@+id/layout_fiat_info">
+                        android:id="@+id/layout_fiat_info"
+                        android:background="@color/primaryColor"
+                        >
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -128,7 +130,6 @@
                 android:contentInsetEnd="0dp"
                 app:contentInsetRight="0dp"
                 app:contentInsetEnd="0dp"
-                android:background="@color/primaryColor"
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -148,7 +149,7 @@
                         android:paddingEnd="@dimen/content_padding"
                         android:paddingTop="@dimen/content_padding"
                         android:paddingBottom="@dimen/content_padding"
-                        android:background="@drawable/selected_bg"
+                        android:background="@color/primaryDarkColor90"
                         android:id="@+id/layout_bitcoin_input"
                         >
 
@@ -171,6 +172,7 @@
                         android:paddingBottom="@dimen/content_padding"
                         android:paddingEnd="@dimen/activity_horizontal_margin"
                         android:id="@+id/layout_fiat_input"
+                        android:background="@color/primaryColor90"
                         >
 
                         <EditText

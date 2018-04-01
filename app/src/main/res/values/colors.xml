@@ -19,5 +19,13 @@
 
     <color name="grey_1">#F5F6F8</color>
 
-    <color name="primaryDarkest">#004d40</color>
+    <color name="primaryDarkestColor">#004d40</color>
+
+    <color name="primaryColor90">#e626a69a</color>
+    <color name="primaryColor75">#bf26a69a</color>
+    <color name="primaryColor50">#7f26a69a</color>
+    <color name="primaryColor25">#4026a69a</color>
+
+    <color name="primaryDarkColor75">#bf00766c</color>
+    <color name="primaryDarkColor90">#e600766c</color>
 </resources>
