@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxCompoundButton
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
@@ -180,19 +181,28 @@ class ConverterVu(inflater: LayoutInflater,
 
     //    private val convertToFiatValve: PublishProcessor<Boolean> = PublishProcessor.create()
     private var pauseConvertToFiatObservable: Boolean = false
-    val convertToFiatObserver: Flowable<Boolean> by lazy {
-        RxCompoundButton.checkedChanges(conversionSwitch)
-                .skipInitialValue()
+    private val convertToFiatPublisher: PublishSubject<Boolean> by lazy {
+        PublishSubject.create<Boolean>()
+    }
+    val convertToFiatObserver: Flowable<Boolean>
+        get() = convertToFiatPublisher.hide()
                 .toFlowable(BackpressureStrategy.LATEST)
-//                .compose(FlowableTransformers.valve(convertToFiatValve, true))
                 .filter {
                     !pauseConvertToFiatObservable
                 }
-                .map{
-                    !it
-                }
-
-    }
+//    val convertToFiatObserver: Flowable<Boolean> by lazy {
+//        RxCompoundButton.checkedChanges(conversionSwitch)
+//                .skipInitialValue()
+//                .toFlowable(BackpressureStrategy.LATEST)
+////                .compose(FlowableTransformers.valve(convertToFiatValve, true))
+//                .filter {
+//                    !pauseConvertToFiatObservable
+//                }
+//                .map{
+//                    !it
+//                }
+//
+//    }
 
     val toolbar: Toolbar by lazy {
         rootView.toolbar
@@ -239,8 +249,19 @@ class ConverterVu(inflater: LayoutInflater,
         bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
         fiatInput.addTextChangedListener(fiatInputWatcher)
 
-        UiUtils.setRipple(rootView.clicker_bitcoin_info)
         bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(CryptoCurrency.Bitcoin.sign, bitcoinInput), null,null, null)
+
+        UiUtils.setRipple(rootView.clicker_bitcoin_info)
+        RxView.clicks(rootView.clicker_bitcoin_info)
+                .map {
+                    true
+                }.subscribe(convertToFiatPublisher)
+
+        UiUtils.setRipple(rootView.clicker_fiat_info)
+        RxView.clicks(rootView.clicker_fiat_info)
+                .map {
+                    false
+                }.subscribe(convertToFiatPublisher)
     }
 
 
@@ -251,6 +272,8 @@ class ConverterVu(inflater: LayoutInflater,
             conversionSwitch.isChecked = convertFromFiat
             pauseConvertToFiatObservable = false
         }
+
+        rootView.layout_bitcoin_info
 
         if (initPhase || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
