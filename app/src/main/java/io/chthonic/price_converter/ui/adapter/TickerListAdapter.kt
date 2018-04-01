@@ -7,6 +7,7 @@ import io.chthonic.price_converter.data.model.TickerViewModel
 import io.chthonic.price_converter.ui.viewholder.TickerHolder
 import io.reactivex.subjects.PublishSubject
 
+
 /**
  * Created by jhavatar on 3/28/2018.
  */

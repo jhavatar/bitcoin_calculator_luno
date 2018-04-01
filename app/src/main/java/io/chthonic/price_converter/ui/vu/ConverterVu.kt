@@ -236,6 +236,8 @@ class ConverterVu(inflater: LayoutInflater,
 
         bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
         fiatInput.addTextChangedListener(fiatInputWatcher)
+
+        UiUtils.setRipple(rootView.clicker_bitcoin_info)
     }
 
 

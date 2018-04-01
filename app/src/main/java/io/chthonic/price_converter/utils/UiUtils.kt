@@ -1,6 +1,7 @@
 package io.chthonic.price_converter.utils
 
 import android.content.res.Resources
+import android.view.View
 import com.github.salomonbrys.kodein.instance
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.R
@@ -99,5 +100,15 @@ object UiUtils {
             FiatCurrency.Ngn.code -> R.drawable.ic_ngn_320px
             else -> throw RuntimeException("code $code should not exist")
         }
+    }
+
+    /**
+     * note, view requires android:background="?android:attr/selectableItemBackground"
+     */
+    fun setRipple(view: View) {
+        val attrs = intArrayOf(R.attr.selectableItemBackground)
+        val typedArray = view.context.obtainStyledAttributes(attrs)
+        val backgroundResource = typedArray.getResourceId(0, 0)
+        view.setBackgroundResource(backgroundResource)
     }
 }

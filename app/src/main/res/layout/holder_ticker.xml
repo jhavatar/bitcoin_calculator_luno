@@ -5,19 +5,36 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/list_item_height">
+    android:minHeight="@dimen/list_item_height"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/ticker_image"
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         app:civ_border_color="@color/primaryDarkColor"
         app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_xbt" />
+        tools:src="@drawable/ic_zar_320px" />
+
+    <ImageView
+        android:id="@+id/ticker_selected"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintLeft_toLeftOf="@id/ticker_image"
+        app:layout_constraintRight_toRightOf="@id/ticker_image"
+        app:layout_constraintBottom_toBottomOf="@id/ticker_image"
+        app:layout_constraintTop_toTopOf="@id/ticker_image"
+        android:src="@drawable/ic_check_black_24dp"
+        android:tint="@color/secondaryColor"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
     <TextView
         android:id="@+id/ticker_name"
@@ -26,7 +43,8 @@
         app:layout_constraintStart_toEndOf="@+id/ticker_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"/>
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        tools:text="ZAR"/>
 
     <TextView
         android:id="@+id/ticker_price"
@@ -38,6 +56,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/ticker_name"
         app:layout_constraintHorizontal_bias="1"
+        tools:text="R100"
         />
 
 </android.support.constraint.ConstraintLayout>

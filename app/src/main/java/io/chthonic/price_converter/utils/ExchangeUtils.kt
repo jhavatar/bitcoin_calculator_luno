@@ -36,7 +36,11 @@ object ExchangeUtils {
 //    }
 
     fun getTicker(calculatorState: CalculatorState, exchangeState: ExchangeState): Ticker? {
-        return exchangeState.tickers.get(calculatorState.targetTicker)
+        return getTicker(calculatorState, exchangeState.tickers)
+    }
+
+    fun getTicker(calculatorState: CalculatorState, tickers: Map<String, Ticker>): Ticker? {
+        return tickers.get(calculatorState.targetTicker)
     }
 
     fun convertToFiat(bitcoinPrice: BigDecimal, ticker: Ticker): BigDecimal {

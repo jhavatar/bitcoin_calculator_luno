@@ -1,5 +1,6 @@
 package io.chthonic.price_converter.ui.viewholder
 
+import android.opengl.Visibility
 import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.text.Html
@@ -22,6 +23,10 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         }
     }
 
+    fun init() {
+        UiUtils.setRipple(itemView)
+    }
+
     fun update(ticker: TickerViewModel) {
         itemView.ticker_name.text = ticker.name
 
@@ -34,6 +39,11 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         // note, circleImageView does not work with vectors
         itemView.ticker_image.setImageResource(UiUtils.getFiatImageSmallRes(ticker.code))
+
+        val selectedVis = if (ticker.selected) View.VISIBLE else View.GONE
+        if (itemView.ticker_selected.visibility != selectedVis) {
+            itemView.ticker_selected.visibility = selectedVis
+        }
     }
 
 }
