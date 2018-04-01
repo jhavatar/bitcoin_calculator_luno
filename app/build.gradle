@@ -74,6 +74,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:percent:${rootProject.ext.supportLibVersion}"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     betaImplementation "com.android.support:multidex:1.0.2"
     prodImplementation "com.android.support:multidex:1.0.2"
 
@@ -122,6 +123,7 @@ dependencies {
 
     // view
     implementation 'com.wang.avi:library:2.1.3'
+    api 'de.hdodenhof:circleimageview:2.2.0'
 
     // form validate
     implementation 'com.github.deadpixelsociety:passport:1.0.1'

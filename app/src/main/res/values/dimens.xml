@@ -21,4 +21,5 @@
     <dimen name="loading_widget_dimen">72dp</dimen>
 
     <dimen name="list_item_height">72dp</dimen>
+    <dimen name="list_image_size">40dp</dimen>
 </resources>

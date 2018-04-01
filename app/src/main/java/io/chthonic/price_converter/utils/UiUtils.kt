@@ -5,6 +5,7 @@ import com.github.salomonbrys.kodein.instance
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.CryptoCurrency
+import io.chthonic.price_converter.data.model.Currency
 import io.chthonic.price_converter.data.model.FiatCurrency
 import timber.log.Timber
 import java.math.BigDecimal
@@ -72,6 +73,31 @@ object UiUtils {
 
         } else {
             fallback
+        }
+    }
+
+    fun getCurrencyVectorRes(currency: Currency): Int {
+        return getCurrencyVectorRes(currency.code)
+    }
+
+    fun getCurrencyVectorRes(code: String): Int {
+        return when (code) {
+            CryptoCurrency.Bitcoin.code -> R.drawable.ic_xbt
+            FiatCurrency.Zar.code -> R.drawable.ic_zar
+            FiatCurrency.Myr.code -> R.drawable.ic_myr
+            FiatCurrency.Idr.code -> R.drawable.ic_idr
+            FiatCurrency.Ngn.code -> R.drawable.ic_ngn
+            else -> throw RuntimeException("code $code should not exist")
+        }
+    }
+
+    fun getFiatImageSmallRes(code: String): Int {
+        return when (code) {
+            FiatCurrency.Zar.code -> R.drawable.ic_zar_320px
+            FiatCurrency.Myr.code -> R.drawable.ic_myr_320px
+            FiatCurrency.Idr.code -> R.drawable.ic_idr_320px
+            FiatCurrency.Ngn.code -> R.drawable.ic_ngn_320px
+            else -> throw RuntimeException("code $code should not exist")
         }
     }
 }

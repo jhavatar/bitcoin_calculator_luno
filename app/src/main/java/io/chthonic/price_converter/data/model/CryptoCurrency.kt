@@ -5,7 +5,7 @@ import timber.log.Timber
 /**
  * Created by jhavatar on 3/31/2018.
  */
-sealed class CryptoCurrency(val code: String, val sign: String) {
+sealed class CryptoCurrency(override val code: String, override val sign: String) : Currency {
     companion object {
         val values: List<CryptoCurrency> by lazy {
 //            Timber.d("CryptoCurrency nested classes = ${CryptoCurrency::class.nestedClasses}")

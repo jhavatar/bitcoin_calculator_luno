@@ -6,7 +6,7 @@ import timber.log.Timber
 /**
  * Created by jhavatar on 3/31/2018.
  */
-sealed class FiatCurrency(val code: String, val sign: String) {
+sealed class FiatCurrency(override val code: String, override val sign: String): Currency {
     companion object {
         val values: List<FiatCurrency> by lazy {
             Timber.d("FiatCurrency nested classes = ${FiatCurrency::class.nestedClasses}")

@@ -6,8 +6,10 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import de.hdodenhof.circleimageview.CircleImageView
 import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.TickerViewModel
+import io.chthonic.price_converter.utils.UiUtils
 import kotlinx.android.synthetic.main.holder_ticker.view.*
 
 /**
@@ -29,6 +31,8 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         } else {
             itemView.ticker_price.text = Html.fromHtml(price)
         }
+
+        itemView.ticker_image.setImageResource(UiUtils.getFiatImageSmallRes(ticker.code))
     }
 
 }
