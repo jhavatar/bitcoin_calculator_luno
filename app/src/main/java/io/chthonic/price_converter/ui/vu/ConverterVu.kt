@@ -9,11 +9,13 @@ import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding2.widget.RxTextView
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.CalculationViewModel
@@ -206,6 +208,14 @@ class ConverterVu(inflater: LayoutInflater,
         rootView.input_fiat
     }
 
+    private val bitcoinInfoLayout: View by lazy {
+        rootView.layout_bitcoin_info
+    }
+
+    private val fiatInfoLayout: View by lazy {
+        rootView.layout_fiat_info
+    }
+
     private val fiatName: TextView by lazy {
         rootView.label_fiat
     }
@@ -246,15 +256,31 @@ class ConverterVu(inflater: LayoutInflater,
                 .map {
                     false
                 }.subscribe(convertToFiatPublisher)
+
+        RxView.focusChanges(bitcoinInput)
+                .skipInitialValue()
+                .filter {
+                    it && !bitcoinInfoLayout.isActivated
+                }.map {
+                    true
+                }.subscribe(convertToFiatPublisher)
+
+        RxView.focusChanges(fiatInput)
+                .skipInitialValue()
+                .filter {
+                    it && !fiatInfoLayout.isActivated
+                }.map {
+                    false
+                }.subscribe(convertToFiatPublisher)
     }
 
 
     private fun updateActivated(convertToFiat: Boolean) {
-        if (rootView.layout_bitcoin_info.isActivated != convertToFiat) {
-            rootView.layout_bitcoin_info.isActivated = convertToFiat
+        if (bitcoinInfoLayout.isActivated != convertToFiat) {
+            bitcoinInfoLayout.isActivated = convertToFiat
         }
-        if (rootView.layout_fiat_info.isActivated != !convertToFiat) {
-            rootView.layout_fiat_info.isActivated = !convertToFiat
+        if (fiatInfoLayout.isActivated != !convertToFiat) {
+            fiatInfoLayout.isActivated = !convertToFiat
         }
         if (rootView.layout_bitcoin_input.isActivated != convertToFiat) {
             rootView.layout_bitcoin_input.isActivated = convertToFiat
@@ -262,11 +288,11 @@ class ConverterVu(inflater: LayoutInflater,
         if (rootView.layout_fiat_input.isActivated != !convertToFiat) {
             rootView.layout_fiat_input.isActivated = !convertToFiat
         }
-        if (rootView.input_btx.isFocused != convertToFiat) {
-            rootView.input_btx.requestFocus()
+        if (bitcoinInput.isFocused != convertToFiat) {
+            bitcoinInput.requestFocus()
         }
-        if (rootView.input_fiat.isFocused != !convertToFiat) {
-            rootView.input_fiat.requestFocus()
+        if (fiatInput.isFocused != !convertToFiat) {
+            fiatInput.requestFocus()
         }
     }
 
