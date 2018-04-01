@@ -92,6 +92,10 @@ object UiUtils {
         }
     }
 
+    fun deFormatCurrency(s: String): String {
+        return s.toString().replace(UiUtils.currencyFormatReplaceRegex, "")
+    }
+
     fun getCurrencyVectorRes(currency: Currency): Int {
         return getCurrencyVectorRes(currency.code)
     }

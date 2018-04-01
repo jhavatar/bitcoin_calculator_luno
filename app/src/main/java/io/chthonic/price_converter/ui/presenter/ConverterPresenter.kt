@@ -7,7 +7,10 @@ import com.github.salomonbrys.kodein.lazy
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.business.service.CalculatorService
 import io.chthonic.price_converter.business.service.ExchangeService
-import io.chthonic.price_converter.data.model.*
+import io.chthonic.price_converter.data.model.CalculationViewModel
+import io.chthonic.price_converter.data.model.CalculatorState
+import io.chthonic.price_converter.data.model.Ticker
+import io.chthonic.price_converter.data.model.TickerViewModel
 import io.chthonic.price_converter.ui.vu.ConverterVu
 import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
@@ -36,7 +39,6 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     }
 
     fun subscribeServiceListeners() {
-
         rxSubs.add(exchangeService.observers.tickersChangeObserver
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({it: Map<String, Ticker> ->
@@ -102,16 +104,6 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                 }, {
 
                     Timber.e(it, "fiatInputObserver failed")
-                }))
-
-        rxSubs.add(vu!!.convertToFiatObserver
-                .observeOn(Schedulers.computation())
-                .subscribe({convertToFiat: Boolean ->
-                    Timber.d("convertToFiatObserver success = $convertToFiat")
-                    calculatorService.switchConvertDirection(convertToFiat)
-
-                }, {
-                    Timber.e(it, "convertToFiatObserver fail")
                 }))
     }
 
