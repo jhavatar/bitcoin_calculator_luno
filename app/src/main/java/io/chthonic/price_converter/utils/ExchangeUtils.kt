@@ -15,7 +15,11 @@ object ExchangeUtils {
     }
 
     fun getFiatCurrencyForTicker(ticker: Ticker): FiatCurrency? {
-        return codeToFiatCurrencyMap[ticker.code]
+        return getFiatCurrencyForTicker(ticker.code)
+    }
+
+    fun getFiatCurrencyForTicker(code: String): FiatCurrency? {
+        return codeToFiatCurrencyMap[code]
     }
 
     fun isSupportedFiatCurrency(ticker: Ticker): Boolean {

@@ -1,7 +1,13 @@
 package io.chthonic.price_converter.utils
 
+import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.Rect
+import android.util.TypedValue
 import android.view.View
+import android.widget.TextView
+import com.amulyakhare.textdrawable.TextDrawable
 import com.github.salomonbrys.kodein.instance
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.R
@@ -15,6 +21,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 
+
 /**
  * Created by jhavatar on 3/30/2018.
  */
@@ -26,6 +33,14 @@ object UiUtils {
 
     const val CRYPTO_DECIMAL_DIGITS = 8
     const val FIAT_DECIMAL_DIGITS = 2
+
+    fun dipToPixels(dip: Int, context: Context): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip.toFloat(), context.resources.displayMetrics).toInt()
+    }
+
+    fun spToPixels(sp: Int, context: Context): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.toFloat(), context.resources.displayMetrics).toInt()
+    }
 
     val currencyFormatReplaceRegex: Regex by lazy {
         val chars: MutableList<String> = mutableListOf<String>(" ", """\$PLACE_HOLDER_STRING""")
@@ -110,5 +125,22 @@ object UiUtils {
         val typedArray = view.context.obtainStyledAttributes(attrs)
         val backgroundResource = typedArray.getResourceId(0, 0)
         view.setBackgroundResource(backgroundResource)
+    }
+
+
+    fun getCompoundDrawableForTextDrawable(text: String, tv: TextView): TextDrawable {
+        val bounds = Rect()
+        val textPaint = tv.getPaint()
+        textPaint.getTextBounds(text, 0, text.length, bounds)
+        val width = bounds.width()
+
+        return TextDrawable.builder()
+                .beginConfig()
+                .textColor(tv.currentTextColor)
+                .fontSize(tv.textSize.toInt()) // size in px
+                .useFont(tv.typeface)
+                .width(width) // size in px
+                .endConfig()
+                .buildRect(text, Color.TRANSPARENT)
     }
 }

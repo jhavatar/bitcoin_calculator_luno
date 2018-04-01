@@ -17,8 +17,10 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
 import io.chthonic.price_converter.data.model.CalculationViewModel
+import io.chthonic.price_converter.data.model.CryptoCurrency
 import io.chthonic.price_converter.data.model.TickerViewModel
 import io.chthonic.price_converter.ui.adapter.TickerListAdapter
+import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -238,6 +240,7 @@ class ConverterVu(inflater: LayoutInflater,
         fiatInput.addTextChangedListener(fiatInputWatcher)
 
         UiUtils.setRipple(rootView.clicker_bitcoin_info)
+        bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(CryptoCurrency.Bitcoin.sign, bitcoinInput), null,null, null)
     }
 
 
@@ -267,8 +270,14 @@ class ConverterVu(inflater: LayoutInflater,
 
             if (calc.ticker != null) {
                 fiatImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.ticker.code))
+                fiatInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        UiUtils.getCompoundDrawableForTextDrawable(
+                                ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)!!.sign, fiatInput),
+                        null,null, null)
+
             } else {
                 fiatImage.setImageDrawable(null)
+                fiatInput.setCompoundDrawablesRelative(null, null, null, null)
             }
         }
     }
