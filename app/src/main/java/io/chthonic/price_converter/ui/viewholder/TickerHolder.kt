@@ -43,6 +43,8 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val selectedVis = if (ticker.selected) View.VISIBLE else View.GONE
         if (itemView.ticker_selected.visibility != selectedVis) {
             itemView.ticker_selected.visibility = selectedVis
+            itemView.ticker_image.borderColor = itemView.resources.getColor(if (ticker.selected) R.color.secondaryColor else R.color.primaryDarkestColor)
+            itemView.ticker_image.borderWidth = if (ticker.selected) UiUtils.dipToPixels(4, itemView.context) else UiUtils.dipToPixels(1, itemView.context)
         }
     }
 

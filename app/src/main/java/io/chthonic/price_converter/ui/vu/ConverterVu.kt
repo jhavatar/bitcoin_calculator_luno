@@ -156,7 +156,7 @@ class ConverterVu(inflater: LayoutInflater,
     }
 
     private val bitcoinInput: EditText by lazy {
-        rootView.input_btx
+        rootView.input_bitcoin
     }
 
     private val fiatInput: EditText by lazy {
@@ -261,8 +261,8 @@ class ConverterVu(inflater: LayoutInflater,
         if (rootView.layout_fiat_info.isActivated != !calc.convertToFiat) {
             rootView.layout_fiat_info.isActivated = !calc.convertToFiat
         }
-        if (rootView.input_btx.isFocused != calc.convertToFiat) {
-            rootView.input_btx.requestFocus()
+        if (rootView.input_bitcoin.isFocused != calc.convertToFiat) {
+            rootView.input_bitcoin.requestFocus()
         }
         if (rootView.input_fiat.isFocused != !calc.convertToFiat) {
             rootView.input_fiat.requestFocus()
@@ -275,7 +275,7 @@ class ConverterVu(inflater: LayoutInflater,
             if (text != UiUtils.PLACE_HOLDER_STRING) {
                 fiatInput.addTextChangedListener(fiatInputWatcher)
                 fiatInput.isEnabled = true
-                
+
             } else {
                 fiatInput.isEnabled = false
             }

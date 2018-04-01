@@ -60,16 +60,18 @@
                         >
 
                         <ImageView
+                            android:id="@+id/image_bitcoin"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_xbt"
                             android:scaleType="centerCrop"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="BTX"
+                            android:text="XBT"
                             android:gravity="center"
                             android:layout_gravity="center"
                             android:paddingStart="@dimen/activity_horizontal_margin"
@@ -99,7 +101,8 @@
                             android:id="@+id/image_fiat"
                             tools:src="@drawable/ic_zar"
                             android:scaleType="centerCrop"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -162,7 +165,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/input_btx"
+                            android:id="@+id/input_bitcoin"
                             android:inputType="numberDecimal"
                             android:gravity="center"
                             />
