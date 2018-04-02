@@ -9,6 +9,8 @@ import io.chthonic.price_converter.App
 import io.chthonic.price_converter.business.service.CalculatorService
 import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.data.model.*
+import io.chthonic.price_converter.ui.model.CalculationViewModel
+import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.ui.vu.ConverterVu
 import io.chthonic.price_converter.utils.CalculatorUtils
 import io.chthonic.price_converter.utils.ExchangeUtils
@@ -134,7 +136,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
         return CalculationViewModel(UiUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState),
                 isCrypto = true),
                 calculatorState.convertToFiat,
-                if (ticker != null)  {
+                if (ticker != null) {
                     TickerViewModel(ticker.code, ticker.code,
                             UiUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",

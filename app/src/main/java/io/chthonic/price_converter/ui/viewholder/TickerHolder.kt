@@ -1,15 +1,13 @@
 package io.chthonic.price_converter.ui.viewholder
 
-import android.opengl.Visibility
 import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import de.hdodenhof.circleimageview.CircleImageView
 import io.chthonic.price_converter.R
-import io.chthonic.price_converter.data.model.TickerViewModel
+import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.utils.UiUtils
 import kotlinx.android.synthetic.main.holder_ticker.view.*
 

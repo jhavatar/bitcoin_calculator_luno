@@ -3,7 +3,7 @@ package io.chthonic.price_converter.ui.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.RxView
-import io.chthonic.price_converter.data.model.TickerViewModel
+import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.ui.viewholder.TickerHolder
 import io.reactivex.subjects.PublishSubject
 

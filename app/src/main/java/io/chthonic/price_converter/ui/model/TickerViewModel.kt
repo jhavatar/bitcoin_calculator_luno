@@ -1,4 +1,4 @@
-package io.chthonic.price_converter.data.model
+package io.chthonic.price_converter.ui.model
 
 /**
  * Created by jhavatar on 3/29/2018.

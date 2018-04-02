@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -17,9 +16,9 @@ import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
-import io.chthonic.price_converter.data.model.CalculationViewModel
+import io.chthonic.price_converter.ui.model.CalculationViewModel
 import io.chthonic.price_converter.data.model.CryptoCurrency
-import io.chthonic.price_converter.data.model.TickerViewModel
+import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.ui.adapter.TickerListAdapter
 import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
