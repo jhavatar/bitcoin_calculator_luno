@@ -205,7 +205,7 @@ class ConverterVu(inflater: LayoutInflater,
         bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
         fiatInput.addTextChangedListener(fiatInputWatcher)
 
-        bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(CryptoCurrency.Bitcoin.sign, bitcoinInput), null,null, null)
+        bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(CryptoCurrency.Bitcoin.sign, bitcoinInput, bitcoinInput.currentTextColor), null,null, null)
 
         UiUtils.setRipple(rootView.clicker_bitcoin_info)
         RxView.clicks(rootView.clicker_bitcoin_info)
@@ -237,43 +237,37 @@ class ConverterVu(inflater: LayoutInflater,
     }
 
 
-    private fun updateActivated(convertToFiat: Boolean) {
-        if (bitcoinInfoLayout.isActivated != convertToFiat) {
-            bitcoinInfoLayout.isActivated = convertToFiat
+    private fun updateActivated(convertToFiat: Boolean): Boolean {
+        val activatedChange = bitcoinInfoLayout.isActivated != convertToFiat
+        if (!activatedChange) {
+            return false
         }
-        if (fiatInfoLayout.isActivated != !convertToFiat) {
-            fiatInfoLayout.isActivated = !convertToFiat
-        }
-        if (rootView.layout_bitcoin_input.isActivated != convertToFiat) {
-            rootView.layout_bitcoin_input.isActivated = convertToFiat
-        }
-        if (rootView.layout_fiat_input.isActivated != !convertToFiat) {
-            rootView.layout_fiat_input.isActivated = !convertToFiat
-        }
-        if (bitcoinInput.isFocused != convertToFiat) {
-            bitcoinInput.requestFocus()
-        }
-        if (fiatInput.isFocused != !convertToFiat) {
-            fiatInput.requestFocus()
-        }
+
+        bitcoinInfoLayout.isActivated = convertToFiat
+        rootView.layout_bitcoin_input.isActivated = convertToFiat
+        fiatInfoLayout.isActivated = !convertToFiat
+        rootView.layout_fiat_input.isActivated = !convertToFiat
+
+        bitcoinInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                UiUtils.getCompoundDrawableForTextDrawable(
+                        CryptoCurrency.Bitcoin.sign,
+                        bitcoinInput,
+                        if (convertToFiat) bitcoinInput.resources.getColor(R.color.secondaryColor) else bitcoinInput.currentTextColor),
+                null,null, null)
+
+        return true
     }
 
 
     fun updateCalculation(calc: CalculationViewModel, initPhase: Boolean = false) {
-        updateActivated(calc.convertToFiat)
+        if (bitcoinInput.isFocused != calc.convertToFiat) {
+            bitcoinInput.requestFocus()
+        }
+        if (fiatInput.isFocused != !calc.convertToFiat) {
+            fiatInput.requestFocus()
+        }
 
-        if (rootView.layout_bitcoin_info.isActivated != calc.convertToFiat) {
-            rootView.layout_bitcoin_info.isActivated = calc.convertToFiat
-        }
-        if (rootView.layout_fiat_info.isActivated != !calc.convertToFiat) {
-            rootView.layout_fiat_info.isActivated = !calc.convertToFiat
-        }
-        if (rootView.input_bitcoin.isFocused != calc.convertToFiat) {
-            rootView.input_bitcoin.requestFocus()
-        }
-        if (rootView.input_fiat.isFocused != !calc.convertToFiat) {
-            rootView.input_fiat.requestFocus()
-        }
+        val convertDirectChanged = updateActivated(calc.convertToFiat)
 
         if (initPhase || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
@@ -295,18 +289,30 @@ class ConverterVu(inflater: LayoutInflater,
         }
 
         val nuFiatName = calc.ticker?.name ?: UiUtils.PLACE_HOLDER_STRING
-        if (fiatName.text != nuFiatName) {
-            fiatName.text = nuFiatName
+        val nameChanged = fiatName.text != nuFiatName
 
+        // update fiat image and label
+        if (nameChanged) {
+            fiatName.text = nuFiatName
             if (calc.ticker != null) {
                 fiatImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.ticker.code))
-                fiatInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        UiUtils.getCompoundDrawableForTextDrawable(
-                                ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)!!.sign, fiatInput),
-                        null,null, null)
 
             } else {
                 fiatImage.setImageDrawable(null)
+            }
+        }
+
+        // update fiat compound image
+        if (nameChanged || convertDirectChanged)  {
+            if (calc.ticker != null) {
+                fiatInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        UiUtils.getCompoundDrawableForTextDrawable(
+                                ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)!!.sign,
+                                fiatInput,
+                                if (!calc.convertToFiat) fiatInput.resources.getColor(R.color.secondaryColor) else fiatInput.currentTextColor),
+                        null, null, null)
+
+            } else {
                 fiatInput.setCompoundDrawablesRelative(null, null, null, null)
             }
         }

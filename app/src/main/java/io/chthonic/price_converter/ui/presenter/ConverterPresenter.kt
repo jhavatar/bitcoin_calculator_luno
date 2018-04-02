@@ -138,7 +138,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",
                             true,
-                            UiUtils.getTimeString(ticker.timestamp))
+                            UiUtils.getDateTimeString(ticker.timestamp))
                 } else {
                     null
                 })
@@ -156,7 +156,7 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers)),
                             ExchangeUtils.getFiatCurrencyForTicker(it)?.sign ?: "",
                             targetTicker?.code == it.code,
-                            UiUtils.getTimeString(it.timestamp))
+                            UiUtils.getDateTimeString(it.timestamp))
                 }
     }
 

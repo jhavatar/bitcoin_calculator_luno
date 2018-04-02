@@ -40,6 +40,10 @@ object UiUtils {
         SimpleDateFormat("HH:mm:ss")
     }
 
+    private val dateFormatter: SimpleDateFormat by lazy {
+        SimpleDateFormat("yyyy-MM-dd")
+    }
+
     fun dipToPixels(dip: Int, context: Context): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip.toFloat(), context.resources.displayMetrics).toInt()
     }
@@ -138,7 +142,7 @@ object UiUtils {
     }
 
 
-    fun getCompoundDrawableForTextDrawable(text: String, tv: TextView): TextDrawable {
+    fun getCompoundDrawableForTextDrawable(text: String, tv: TextView, color: Int): TextDrawable {
         val bounds = Rect()
         val textPaint = tv.getPaint()
         textPaint.getTextBounds(text, 0, text.length, bounds)
@@ -146,7 +150,7 @@ object UiUtils {
 
         return TextDrawable.builder()
                 .beginConfig()
-                .textColor(tv.currentTextColor)
+                .textColor(color)
                 .fontSize(tv.textSize.toInt()) // size in px
                 .useFont(tv.typeface)
                 .width(width) // size in px
@@ -154,7 +158,13 @@ object UiUtils {
                 .buildRect(text, Color.TRANSPARENT)
     }
 
-    fun getTimeString(time: Long): String {
-        return timeFormatter.format(Date(time))
+    fun getDateTimeString(time: Long): String {
+        val date = Date(time)
+        return if (DateUtils.isToday(time)) {
+            timeFormatter.format(date)
+
+        } else {
+            dateFormatter.format(date)
+        }
     }
 }
