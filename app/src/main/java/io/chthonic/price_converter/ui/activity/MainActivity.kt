@@ -1,6 +1,7 @@
 package io.chthonic.price_converter.ui.activity
 
 import android.graphics.PorterDuff
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import io.chthonic.mythos.mvp.MVPDispatcher
@@ -24,6 +25,12 @@ class MainActivity : MVPActivity<MainPresenter, MainVu>() {
         return MVPDispatcher(MVP_UID,
                 PresenterCacheLoaderCallback(this, { MainPresenter() }),
                 ::MainVu)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // remove splash theme
+        this.setTheme(R.style.AppTheme_NoActionBar)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
