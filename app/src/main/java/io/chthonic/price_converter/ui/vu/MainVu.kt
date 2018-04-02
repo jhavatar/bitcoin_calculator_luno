@@ -27,7 +27,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.vu_converter.view.*
+import kotlinx.android.synthetic.main.vu_main.view.*
 import timber.log.Timber
 import java.math.BigDecimal
 
@@ -180,7 +180,7 @@ class MainVu(inflater: LayoutInflater,
     private lateinit var tickerAdapter: TickerListAdapter
 
     override fun getRootViewLayoutId(): Int {
-        return R.layout.vu_converter
+        return R.layout.vu_main
     }
 
     override fun onCreate() {
