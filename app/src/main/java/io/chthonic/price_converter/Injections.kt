@@ -11,7 +11,6 @@ import com.squareup.moshi.Moshi
 import io.chthonic.price_converter.business.observer.CalculatorObservers
 import io.chthonic.price_converter.business.observer.ExchangeObservers
 import io.chthonic.price_converter.business.service.CalculatorService
-import io.chthonic.price_converter.business.service.DroidPermissionsService
 import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.business.service.StateService
 import io.chthonic.price_converter.data.model.CalculatorSerializableState
@@ -30,7 +29,6 @@ fun depInject(app: Application): Kodein {
         bind<CalculatorObservers>() with provider { CalculatorObservers() }
         bind<ExchangeService>() with singleton{ ExchangeService(instance(), instance(), instance(), instance()) }
         bind<CalculatorService>() with singleton{ CalculatorService(instance(), instance(), instance(), instance()) }
-        bind<DroidPermissionsService>() with singleton{ DroidPermissionsService(instance()) }
         bind<Moshi>() with singleton {
             Moshi.Builder()
                     .add(KotlinJsonAdapterFactory())

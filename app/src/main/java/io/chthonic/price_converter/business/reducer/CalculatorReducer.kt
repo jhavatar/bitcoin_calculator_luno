@@ -43,29 +43,6 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
     }
 
     @AutoReducer.Action(
-            value = CalculatorActions.SWITCH_CONVERT_DIRECTION,
-            from = CalculatorActions::class)
-    fun switchConvertDirection(state: CalculatorState, convertToFiat: Boolean): CalculatorState  {
-        Timber.d("switchConvertDirection $convertToFiat")
-
-        return if (convertToFiat || (!convertToFiat && (state.targetTicker != null))) {
-            state.copy(convertToFiat = convertToFiat)
-
-        } else {
-            state
-        }
-    }
-
-
-    @AutoReducer.Action(
-            value = CalculatorActions.UPDATE_SOURCE,
-            from = CalculatorActions::class)
-    fun updateSource(state: CalculatorState, source: BigDecimal): CalculatorState  {
-        Timber.d("updateSource $source")
-        return state.copy(source = source)
-    }
-
-    @AutoReducer.Action(
             value = CalculatorActions.SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE,
             from = CalculatorActions::class)
     fun switchConvertDirectionAndUpdateSource(state: CalculatorState, convertToFiat: Boolean, source: BigDecimal): CalculatorState {
@@ -77,6 +54,7 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
             value = CalculatorActions.CLEAR,
             from = CalculatorActions::class)
     fun clear(state: CalculatorState): CalculatorState {
+        Timber.d("clear")
         return CalculatorState.getFactoryState()
     }
 }

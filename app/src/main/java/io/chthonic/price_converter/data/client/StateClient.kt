@@ -1,12 +1,10 @@
 package io.chthonic.price_converter.data.client
 
-import android.os.Looper
 import com.yheriatovych.reductor.Reducer
 import com.yheriatovych.reductor.Store
 import kotlinx.coroutines.experimental.ThreadPoolDispatcher
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newSingleThreadContext
-import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 

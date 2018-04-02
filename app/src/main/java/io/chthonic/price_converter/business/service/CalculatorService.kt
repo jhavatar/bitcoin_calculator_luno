@@ -46,10 +46,6 @@ class CalculatorService(private val stateService: StateService,
         stateService.dispatch(calculatorActions.setTargetTicker(tickerCode))
     }
 
-    fun switchConvertDirection(convertToFiat: Boolean) {
-        stateService.dispatch(calculatorActions.switchConvertDirection(convertToFiat))
-    }
-
     fun switchConvertDirectionAndUpdateSource(convertToFiat: Boolean, source: String) {
         val sourceDecimal = try {
             source.toBigDecimal()

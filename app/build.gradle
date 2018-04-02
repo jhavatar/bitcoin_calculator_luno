@@ -130,7 +130,3 @@ dependencies {
 //    })
 //    testImplementation "org.robolectric:robolectric:3.8"
 }
-
-
-// ADD THIS AT THE BOTTOM
-//apply plugin: 'com.google.gms.google-services'
