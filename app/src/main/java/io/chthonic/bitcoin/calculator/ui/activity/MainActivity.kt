@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import io.chthonic.mythos.mvp.MVPDispatcher
 import io.chthonic.mythos.mvp.PresenterCacheLoaderCallback
-import io.chthonic.price_converter.R
+import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.ui.presenter.MainPresenter
 import io.chthonic.bitcoin.calculator.ui.vu.MainVu
 import timber.log.Timber

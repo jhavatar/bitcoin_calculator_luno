@@ -1,10 +1,15 @@
 package io.chthonic.bitcoin.calculator.utils
 
+import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
+import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
 import io.chthonic.bitcoin.calculator.data.model.Ticker
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.MathContext
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 
 /**
@@ -12,6 +17,53 @@ import kotlin.test.assertEquals
  */
 //@RunWith(RobolectricTestRunner::class)
 class ExchangeUtilsTest {
+
+    @Test
+    fun testGetFiatCurrencyForTicker() {
+        FiatCurrency.values.forEach { fiat ->
+            assertEquals(ExchangeUtils.getFiatCurrencyForTicker(Ticker(pair = CryptoCurrency.Bitcoin.code + fiat.code,
+                    timestamp = 1,
+                    ask = "",
+                    bid = "",
+                    rolling_24_hour_volume = "",
+                    last_trade = "")), fiat)
+        }
+
+        assertNull(ExchangeUtils.getFiatCurrencyForTicker(Ticker(pair = CryptoCurrency.Bitcoin.code + "foo",
+                timestamp = 1,
+                ask = "",
+                bid = "",
+                rolling_24_hour_volume = "",
+                last_trade = "")))
+    }
+
+
+    @Test
+    fun testIsSupportedFiatCurrency() {
+        FiatCurrency.values.forEach { fiat ->
+            assertTrue(ExchangeUtils.isSupportedFiatCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code + fiat.code,
+                    timestamp = 1,
+                    ask = "",
+                    bid = "",
+                    rolling_24_hour_volume = "",
+                    last_trade = "")))
+        }
+
+        assertFalse(ExchangeUtils.isSupportedFiatCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code,
+                timestamp = 1,
+                ask = "",
+                bid = "",
+                rolling_24_hour_volume = "",
+                last_trade = "")))
+
+        assertFalse(ExchangeUtils.isSupportedFiatCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code + "foo",
+                timestamp = 1,
+                ask = "",
+                bid = "",
+                rolling_24_hour_volume = "",
+                last_trade = "")))
+    }
+
 
     @Test
     fun testConvertToFiat() {

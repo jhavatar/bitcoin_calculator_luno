@@ -7,7 +7,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
-import io.chthonic.price_converter.R
+import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
 

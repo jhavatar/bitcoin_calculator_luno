@@ -1,6 +1,7 @@
 package io.chthonic.bitcoin.calculator.utils
 
 import io.chthonic.bitcoin.calculator.data.model.CalculatorState
+import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.data.model.ExchangeState
 import io.chthonic.bitcoin.calculator.data.model.Ticker
 import org.junit.Assert
@@ -15,12 +16,34 @@ import kotlin.test.assertNull
  */
 class CalculatorUtilsTest {
 
+
+    @Test
+    fun testGetTicker() {
+        val fooTicker = Ticker(10, "11", "12", "", "", CryptoCurrency.Bitcoin.code + "foo")
+        val barTicker = Ticker(14, "15", "16", "", "", CryptoCurrency.Bitcoin.code + "bar")
+        val tickers = mapOf(Pair(fooTicker.code, fooTicker),
+                Pair(barTicker.code, barTicker))
+        val exchangeState = ExchangeState(tickers)
+
+        var calcState = CalculatorState(barTicker.code, true, BigDecimal(100))
+        assertEquals(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState ), barTicker)
+
+        calcState = CalculatorState(fooTicker.code, true, BigDecimal(100))
+        assertEquals(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState), fooTicker)
+
+        calcState = CalculatorState(null, true, BigDecimal(100))
+        assertNull(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState))
+
+        calcState = CalculatorState("unknown", true, BigDecimal(100))
+        assertNull(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState))
+    }
+
     @Test
     fun testGetBitcoinPrice() {
-        val fooTicker = Ticker(10, "11", "12", "", "", "foo")
-        val barTicker = Ticker(14, "15", "16", "", "", "bar")
-        val tickers = mapOf(Pair(fooTicker.pair, fooTicker),
-                Pair(barTicker.pair, barTicker))
+        val fooTicker = Ticker(10, "11", "12", "", "", CryptoCurrency.Bitcoin.code + "foo")
+        val barTicker = Ticker(14, "15", "16", "", "", CryptoCurrency.Bitcoin.code + "bar")
+        val tickers = mapOf(Pair(fooTicker.code, fooTicker),
+                Pair(barTicker.code, barTicker))
         val exchangeState = ExchangeState(tickers)
 
         // no conversion required
@@ -29,12 +52,12 @@ class CalculatorUtilsTest {
         assertEquals(bigDecimalResult, calcState.source)
 
         // convert from fiat foo
-        calcState = CalculatorState(fooTicker.pair, false, BigDecimal(100))
+        calcState = CalculatorState(fooTicker.code, false, BigDecimal(100))
         bigDecimalResult = CalculatorUtils.getBitcoinPrice(calcState, exchangeState)
         assertEquals(bigDecimalResult, calcState.source.divide(fooTicker.ask.toBigDecimal(), MathContext.DECIMAL128))
 
         // convert from fiat bar
-        calcState = CalculatorState(barTicker.pair, false, BigDecimal(100))
+        calcState = CalculatorState(barTicker.code, false, BigDecimal(100))
         bigDecimalResult = CalculatorUtils.getBitcoinPrice(calcState, exchangeState)
         assertEquals(bigDecimalResult, calcState.source.divide(barTicker.ask.toBigDecimal(), MathContext.DECIMAL128))
 
@@ -50,37 +73,37 @@ class CalculatorUtilsTest {
 
     @Test
     fun testGetFiatPrice() {
-        val fooTicker = Ticker(10, "11", "12", "", "", "foo")
-        val barTicker = Ticker(14, "15", "16", "", "", "bar")
+        val fooTicker = Ticker(10, "11", "12", "", "", CryptoCurrency.Bitcoin.code + "foo")
+        val barTicker = Ticker(14, "15", "16", "", "", CryptoCurrency.Bitcoin.code + "bar")
         val source = BigDecimal(100)
         val fooBitcoin =  ExchangeUtils.convertToBitcoin(source, fooTicker)
         val barBitcoin =  ExchangeUtils.convertToBitcoin(source, barTicker)
-        val tickers = mapOf(Pair(fooTicker.pair, fooTicker),
-                Pair(barTicker.pair, barTicker))
+        val tickers = mapOf(Pair(fooTicker.code, fooTicker),
+                Pair(barTicker.code, barTicker))
         val exchangeState = ExchangeState(tickers)
 
         // no conversion required
-        var calcState = CalculatorState(fooTicker.pair, false, source)
+        var calcState = CalculatorState(fooTicker.code, false, source)
         var bigDecimalResult = CalculatorUtils.getFiatPrice(fooTicker, calcState, exchangeState)
         assertEquals(bigDecimalResult, calcState.source)
 
         // convert directly from bitcoin (selected)
-        calcState = CalculatorState(fooTicker.pair, true, source)
+        calcState = CalculatorState(fooTicker.code, true, source)
         bigDecimalResult = CalculatorUtils.getFiatPrice(fooTicker, calcState, exchangeState)
         assertEquals(bigDecimalResult, ExchangeUtils.convertToFiat(calcState.source, fooTicker))
 
         // convert directly from bitcoin (not selected)
-        calcState = CalculatorState(barTicker.pair, true, source)
+        calcState = CalculatorState(barTicker.code, true, source)
         bigDecimalResult = CalculatorUtils.getFiatPrice(fooTicker, calcState, exchangeState)
         assertEquals(bigDecimalResult, ExchangeUtils.convertToFiat(calcState.source, fooTicker))
 
         // convert to bitcoin then to foo fiat
-        calcState = CalculatorState(barTicker.pair, false, source)
+        calcState = CalculatorState(barTicker.code, false, source)
         bigDecimalResult = CalculatorUtils.getFiatPrice(fooTicker, calcState, exchangeState)
         assertEquals(bigDecimalResult, barBitcoin.multiply(fooTicker.bid.toBigDecimal()))
 
         // convert to bitcoin then to bar fiat
-        calcState = CalculatorState(fooTicker.pair, false, source)
+        calcState = CalculatorState(fooTicker.code, false, source)
         bigDecimalResult = CalculatorUtils.getFiatPrice(barTicker, calcState, exchangeState)
         assertEquals(bigDecimalResult, fooBitcoin.multiply(barTicker.bid.toBigDecimal()))
 

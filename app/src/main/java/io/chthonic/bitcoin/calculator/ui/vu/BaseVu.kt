@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.mythos.mvp.Vu
-import io.chthonic.price_converter.R
+import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.ui.activity.BaseActivity
 import timber.log.Timber
 

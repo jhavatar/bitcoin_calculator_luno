@@ -6,7 +6,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.chthonic.price_converter.R
+import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.ui.model.TickerViewModel
 import io.chthonic.bitcoin.calculator.utils.UiUtils
 import kotlinx.android.synthetic.main.holder_ticker.view.*

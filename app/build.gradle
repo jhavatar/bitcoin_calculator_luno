@@ -10,7 +10,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        applicationId "io.chthonic.price_converter"
+        applicationId "io.chthonic.bitcoin.calculator"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode = projProps.getProperty("versionCode")
@@ -132,25 +132,15 @@ dependencies {
     api 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
-    // form validate
-    implementation 'com.github.deadpixelsociety:passport:1.0.1'
-
     // dev utils
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    debugImplementation 'com.facebook.stetho:stetho:1.5.0'
-    debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     implementation 'com.github.ajalt:timberkt:1.3.0'
 
     // testing
     testImplementation 'junit:junit:4.12'
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-
-    //    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-
-    //        exclude group: 'com.android.support', module: 'support-annotations'
-
-    //    })
-
-    //    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation "org.robolectric:robolectric:3.8"
+    androidTestImplementation 'junit:junit:4.12'
 }

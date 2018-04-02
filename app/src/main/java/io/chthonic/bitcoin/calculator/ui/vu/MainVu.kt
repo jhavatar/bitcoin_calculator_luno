@@ -15,7 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
 import io.chthonic.mythos.mvp.FragmentWrapper
-import io.chthonic.price_converter.R
+import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.ui.adapter.TickerListAdapter
 import io.chthonic.bitcoin.calculator.ui.model.CalculationViewModel

@@ -1,7 +1,7 @@
 package io.chthonic.bitcoin.calculator.data.client
 
 import android.content.res.Resources
-import io.chthonic.price_converter.BuildConfig
+import io.chthonic.bitcoin.calculator.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

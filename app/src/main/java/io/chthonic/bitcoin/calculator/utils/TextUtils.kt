@@ -1,11 +1,6 @@
 package io.chthonic.bitcoin.calculator.utils
 
-import android.content.res.Resources
 import android.text.format.DateUtils
-import com.github.salomonbrys.kodein.instance
-import io.chthonic.bitcoin.calculator.App
-import io.chthonic.price_converter.R
-import io.chthonic.bitcoin.calculator.data.model.Currency
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -18,34 +13,20 @@ import java.util.*
  * Created by jhavatar on 4/2/2018.
  */
 object TextUtils {
-
-    val PLACE_HOLDER_STRING: String by lazy {
-        App.kodein.instance<Resources>().getString(R.string.placeholder)
-    }
-
+    const val PLACE_HOLDER_STRING: String = "\u2014"
     const val CRYPTO_DECIMAL_DIGITS = 8
     const val FIAT_DECIMAL_DIGITS = 2
 
-    private val timeFormatter: SimpleDateFormat by lazy {
+    internal val timeFormatter: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm:ss")
     }
 
-    private val dateFormatter: SimpleDateFormat by lazy {
+    internal val dateFormatter: SimpleDateFormat by lazy {
         SimpleDateFormat("yyyy-MM-dd")
     }
 
-    fun getDateTimeString(time: Long): String {
-        val date = Date(time)
-        return if (DateUtils.isToday(time)) {
-            timeFormatter.format(date)
-
-        } else {
-            dateFormatter.format(date)
-        }
-    }
-
-    val currencyFormatReplaceRegex: Regex by lazy {
-        val chars: MutableList<String> = mutableListOf<String>(" ", """\${PLACE_HOLDER_STRING}""")
+    private val currencyFormatReplaceRegex: Regex by lazy {
+        val chars: MutableList<String> = mutableListOf<String>(" ", PLACE_HOLDER_STRING)
 
 //        val cryptoChars: List<String> = CryptoCurrency.values.map{
 //            it.sign.toCharArray().toList()
@@ -65,7 +46,7 @@ object TextUtils {
         """[$s]""".toRegex()
     }
 
-    val fiatCurrencyFormat: DecimalFormat by lazy {
+    private val fiatCurrencyFormat: DecimalFormat by lazy {
         val pattern = "###,##0.00";
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.setDecimalSeparator('.')
@@ -73,7 +54,7 @@ object TextUtils {
         DecimalFormat(pattern, formatSymbols)
     }
 
-    val cryptoCurrencyFormat: DecimalFormat by lazy {
+   private  val cryptoCurrencyFormat: DecimalFormat by lazy {
         val pattern = "###,##0.00${"#".repeat(CRYPTO_DECIMAL_DIGITS - 2)}";
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.setDecimalSeparator('.')
@@ -85,6 +66,7 @@ object TextUtils {
         return if (amount != null) {
             if (isCrypto) {
                 cryptoCurrencyFormat.format(amount.setScale(CRYPTO_DECIMAL_DIGITS, RoundingMode.DOWN))
+
             } else {
                 fiatCurrencyFormat.format(amount.setScale(FIAT_DECIMAL_DIGITS, RoundingMode.DOWN))
             }
@@ -95,10 +77,16 @@ object TextUtils {
     }
 
     fun deFormatCurrency(s: String): String {
-        return s.toString().replace(currencyFormatReplaceRegex, "")
+        return s.replace(currencyFormatReplaceRegex, "")
     }
 
-    fun getCurrencyVectorRes(currency: Currency): Int {
-        return UiUtils.getCurrencyVectorRes(currency.code)
+    fun getDateTimeString(time: Long): String {
+        val date = Date(time)
+        return if (DateUtils.isToday(time)) {
+            timeFormatter.format(date)
+
+        } else {
+            dateFormatter.format(date)
+        }
     }
 }

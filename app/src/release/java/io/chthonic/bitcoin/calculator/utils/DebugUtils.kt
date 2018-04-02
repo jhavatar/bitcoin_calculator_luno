@@ -19,8 +19,4 @@ object DebugUtils {
     fun watchForLeaks(watchedReference: Any) {
         // do nothing
     }
-
-    fun modifyHttpClient(clientBuilder: OkHttpClient.Builder) {
-        // do nothing
-    }
 }
