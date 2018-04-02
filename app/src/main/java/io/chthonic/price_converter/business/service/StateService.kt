@@ -4,7 +4,6 @@ import io.chthonic.price_converter.business.observer.AppStateChangePublisher
 import io.chthonic.price_converter.business.observer.AppStateChangeSubject
 import io.chthonic.price_converter.business.reducer.CalculatorReducer
 import io.chthonic.price_converter.business.reducer.ExchangeReducer
-import io.chthonic.price_converter.business.reducer.TodoListReducer
 import io.chthonic.price_converter.data.client.StateClient
 import io.chthonic.price_converter.data.model.AppState
 import io.chthonic.price_converter.data.model.AppStateReducer
@@ -16,7 +15,6 @@ class StateService: AppStateChangeSubject {
 
     private val stateClient: StateClient<AppState> by lazy {
         val appStateReducer: AppStateReducer = AppStateReducer.builder()
-                .getTodoListReducer(TodoListReducer.create())
                 .getExchangeStateReducer(ExchangeReducer.create())
                 .getCalculatorStateReducer(CalculatorReducer.create())
                 .build()

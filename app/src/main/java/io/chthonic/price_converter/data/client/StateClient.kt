@@ -2,7 +2,9 @@ package io.chthonic.price_converter.data.client
 
 import com.yheriatovych.reductor.Reducer
 import com.yheriatovych.reductor.Store
+import timber.log.Timber
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 /**
@@ -17,11 +19,16 @@ class StateClient<T>(appStateReducer: Reducer<T>) {
     private val _publisherList: MutableList<StateChangePublisher<T>> = Collections.synchronizedList(mutableListOf())
     private val _persistenceList: MutableList<StateChangePersister<T>> = Collections.synchronizedList(mutableListOf())
 
+    private val persistenceExecutor by lazy {
+        Executors.newSingleThreadExecutor()
+    }
+
     val state: T
         get() = store.state
 
 
     init {
+
         store.subscribe { state: T ->
             val lastState: T? = _lastState
             val publisherList: List<StateChangePublisher<T>> = synchronized(_publisherList) {
@@ -33,7 +40,11 @@ class StateClient<T>(appStateReducer: Reducer<T>) {
 
             persistencerList.forEach { pers: StateChangePersister<T> ->
                 if (pers.shouldPersist(state, lastState)) {
-                    pers.persist(state)
+                    Timber.d("shouldPersist $state for $pers")
+                    persistenceExecutor.run {
+                        Timber.d("do persist of $state")
+                        pers.persist(state)
+                    }
                 }
 
             }

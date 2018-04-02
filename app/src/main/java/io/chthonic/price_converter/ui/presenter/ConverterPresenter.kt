@@ -10,6 +10,7 @@ import io.chthonic.price_converter.business.service.CalculatorService
 import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.data.model.*
 import io.chthonic.price_converter.ui.vu.ConverterVu
+import io.chthonic.price_converter.utils.CalculatorUtils
 import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -129,13 +130,13 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
 
     private fun genCalculationViewModel(calculatorState: CalculatorState, exchangeState: ExchangeState = exchangeService.state): CalculationViewModel {
         Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
-        val ticker = ExchangeUtils.getTicker(calculatorState, exchangeState)
-        return CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeState),
+        val ticker = CalculatorUtils.getTicker(calculatorState, exchangeState)
+        return CalculationViewModel(UiUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState),
                 isCrypto = true),
                 calculatorState.convertToFiat,
                 if (ticker != null)  {
                     TickerViewModel(ticker.code, ticker.code,
-                            UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
+                            UiUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",
                             true,
                             UiUtils.getDateTimeString(ticker.timestamp))
@@ -146,14 +147,14 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
 
     private fun genTickerViewModels(tickers: Map<String, Ticker>, calcState: CalculatorState = calculatorService.state): List<TickerViewModel> {
         Timber.d("genTickerViewModels: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, tickers = $tickers")
-        val targetTicker = ExchangeUtils.getTicker(calcState, tickers)
+        val targetTicker = CalculatorUtils.getTicker(calcState, tickers)
         return tickers.values
                 .filter{ ExchangeUtils.isSupportedFiatCurrency(it) }
                 .sortedBy { it.code }
                 .map {
                     TickerViewModel(it.code,
                             it.code,
-                            UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers)),
+                            UiUtils.formatCurrency(CalculatorUtils.getFiatPrice(it, calculatorService.state, tickers)),
                             ExchangeUtils.getFiatCurrencyForTicker(it)?.sign ?: "",
                             targetTicker?.code == it.code,
                             UiUtils.getDateTimeString(it.timestamp))

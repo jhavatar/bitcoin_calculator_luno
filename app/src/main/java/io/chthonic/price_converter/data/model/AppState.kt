@@ -7,7 +7,6 @@ import com.yheriatovych.reductor.annotations.CombinedState
  */
 @CombinedState
 interface AppState {
-    val todoList: List<TodoItem>
     val exchangeState: ExchangeState
     val calculatorState: CalculatorState
 }

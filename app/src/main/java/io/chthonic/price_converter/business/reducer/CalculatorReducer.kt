@@ -1,9 +1,16 @@
 package io.chthonic.price_converter.business.reducer
 
+import android.content.SharedPreferences
+import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.lazy
+import com.squareup.moshi.JsonAdapter
 import com.yheriatovych.reductor.Reducer
 import com.yheriatovych.reductor.annotations.AutoReducer
+import io.chthonic.price_converter.App
 import io.chthonic.price_converter.business.actions.CalculatorActions
+import io.chthonic.price_converter.data.model.CalculatorSerializableState
 import io.chthonic.price_converter.data.model.CalculatorState
+import io.chthonic.price_converter.utils.CalculatorUtils
 import timber.log.Timber
 import java.math.BigDecimal
 
@@ -19,9 +26,12 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
         }
     }
 
+    val prefs: SharedPreferences by App.kodein.lazy.instance<SharedPreferences>()
+    val serializer: JsonAdapter<CalculatorSerializableState> by App.kodein.lazy.instance<JsonAdapter<CalculatorSerializableState>>()
+
     @AutoReducer.InitialState
     internal fun initialState(): CalculatorState {
-        return CalculatorState(null, true, BigDecimal(0))
+        return CalculatorUtils.getPersistedCalculatorState(prefs, serializer, CalculatorState(null, true, BigDecimal(0)))
     }
 
     @AutoReducer.Action(
