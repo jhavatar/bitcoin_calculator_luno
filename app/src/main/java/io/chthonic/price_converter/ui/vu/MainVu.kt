@@ -33,10 +33,10 @@ import java.math.BigDecimal
 /**
  * Created by jhavatar on 3/28/2018.
  */
-class ConverterVu(inflater: LayoutInflater,
-                  activity: Activity,
-                  fragmentWrapper: FragmentWrapper? = null,
-                  parentView: ViewGroup? = null) : BaseVu(inflater,
+class MainVu(inflater: LayoutInflater,
+             activity: Activity,
+             fragmentWrapper: FragmentWrapper? = null,
+             parentView: ViewGroup? = null) : BaseVu(inflater,
         activity = activity,
         fragmentWrapper = fragmentWrapper,
         parentView = parentView) {

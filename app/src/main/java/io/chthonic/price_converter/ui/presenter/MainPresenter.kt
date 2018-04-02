@@ -11,7 +11,7 @@ import io.chthonic.price_converter.business.service.ExchangeService
 import io.chthonic.price_converter.data.model.*
 import io.chthonic.price_converter.ui.model.CalculationViewModel
 import io.chthonic.price_converter.ui.model.TickerViewModel
-import io.chthonic.price_converter.ui.vu.ConverterVu
+import io.chthonic.price_converter.ui.vu.MainVu
 import io.chthonic.price_converter.utils.CalculatorUtils
 import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
@@ -22,12 +22,12 @@ import timber.log.Timber
 /**
  * Created by jhavatar on 3/28/2018.
  */
-class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter<ConverterVu>() {
+class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<MainVu>() {
 
     private val exchangeService: ExchangeService by kodein.lazy.instance<ExchangeService>()
     private val calculatorService: CalculatorService by kodein.lazy.instance<CalculatorService>()
 
-    override fun onLink(vu: ConverterVu, inState: Bundle?, args: Bundle) {
+    override fun onLink(vu: MainVu, inState: Bundle?, args: Bundle) {
         super.onLink(vu, inState, args)
 
         vu.updateCalculation(genCalculationViewModel(calculatorService.state), true)

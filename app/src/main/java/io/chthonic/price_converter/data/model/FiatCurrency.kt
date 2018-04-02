@@ -1,15 +1,11 @@
 package io.chthonic.price_converter.data.model
 
-import io.chthonic.price_converter.R
-import timber.log.Timber
-
 /**
  * Created by jhavatar on 3/31/2018.
  */
 sealed class FiatCurrency(override val code: String, override val sign: String): Currency {
     companion object {
         val values: List<FiatCurrency> by lazy {
-            Timber.d("FiatCurrency nested classes = ${FiatCurrency::class.nestedClasses}")
             FiatCurrency::class.nestedClasses.filter { it.objectInstance is FiatCurrency }.map { it.objectInstance as FiatCurrency }
         }
     }

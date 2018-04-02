@@ -6,12 +6,12 @@ import android.view.MenuItem
 import io.chthonic.mythos.mvp.MVPDispatcher
 import io.chthonic.mythos.mvp.PresenterCacheLoaderCallback
 import io.chthonic.price_converter.R
-import io.chthonic.price_converter.ui.presenter.ConverterPresenter
-import io.chthonic.price_converter.ui.vu.ConverterVu
+import io.chthonic.price_converter.ui.presenter.MainPresenter
+import io.chthonic.price_converter.ui.vu.MainVu
 import timber.log.Timber
 
 
-class MainActivity : MVPActivity<ConverterPresenter, ConverterVu>() {
+class MainActivity : MVPActivity<MainPresenter, MainVu>() {
 
     companion object {
         private val MVP_UID by lazy {
@@ -19,11 +19,11 @@ class MainActivity : MVPActivity<ConverterPresenter, ConverterVu>() {
         }
     }
 
-    override fun createMVPDispatcher(): MVPDispatcher<ConverterPresenter, ConverterVu> {
+    override fun createMVPDispatcher(): MVPDispatcher<MainPresenter, MainVu> {
 
         return MVPDispatcher(MVP_UID,
-                PresenterCacheLoaderCallback(this, { ConverterPresenter() }),
-                ::ConverterVu)
+                PresenterCacheLoaderCallback(this, { MainPresenter() }),
+                ::MainVu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

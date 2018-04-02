@@ -55,15 +55,15 @@ object UiUtils {
     val currencyFormatReplaceRegex: Regex by lazy {
         val chars: MutableList<String> = mutableListOf<String>(" ", """\$PLACE_HOLDER_STRING""")
 
-        val cryptoChars: List<String> = CryptoCurrency.values.map{
-            it.sign.toCharArray().toList()
-        }.flatten().map { it.toString() }
-        chars.addAll(cryptoChars)
-
-        val fiatChars: List<String> = FiatCurrency.values.map{
-            it.sign.toCharArray().toList()
-        }.flatten().map { it.toString() }
-        chars.addAll(fiatChars)
+//        val cryptoChars: List<String> = CryptoCurrency.values.map{
+//            it.sign.toCharArray().toList()
+//        }.flatten().map { it.toString() }
+//        chars.addAll(cryptoChars)
+//
+//        val fiatChars: List<String> = FiatCurrency.values.map{
+//            it.sign.toCharArray().toList()
+//        }.flatten().map { it.toString() }
+//        chars.addAll(fiatChars)
 
         val s = chars.distinct().joinToString (separator = "", transform = {
             it
