@@ -234,7 +234,7 @@ class MainVu(inflater: LayoutInflater,
 
 
     private fun updateActivated(convertToFiat: Boolean): Boolean {
-        val activatedChange = bitcoinInfoLayout.isActivated != convertToFiat
+        val activatedChange = (bitcoinInfoLayout.isActivated != convertToFiat) || (fiatInfoLayout.isActivated != !convertToFiat)
         if (!activatedChange) {
             return false
         }
