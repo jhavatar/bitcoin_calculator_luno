@@ -15,7 +15,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode = projProps.getProperty("versionCode")
         versionName = projProps.getProperty("versionName")
-        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
@@ -73,8 +72,6 @@ dependencies {
     implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:percent:${rootProject.ext.supportLibVersion}"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    betaImplementation "com.android.support:multidex:1.0.2"
-    prodImplementation "com.android.support:multidex:1.0.2"
 
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -88,8 +85,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
     implementation "com.github.akarnokd:rxjava2-extensions:0.18.9"
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
-//    implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:2.1.1'
-//    implementation 'com.jakewharton.rxbinding2:rxbinding-design-kotlin:2.1.1'
 
     // json
     implementation 'com.squareup.moshi:moshi:1.5.0'
