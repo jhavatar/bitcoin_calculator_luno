@@ -2,7 +2,8 @@
 <resources>
     <color name="primaryColor">#26a69a</color>
     <color name="primaryLightColor">#64d8cb</color>
-    <color name="primaryDarkColor">#00766c</color>
+    <color name="primaryDarkColor">#00695c</color>
+    <color name="primaryDarkestColor">#004d40</color>
     <color name="secondaryColor">#FF9900</color>
     <color name="secondaryLightColor">#ffca47</color>
     <color name="secondaryDarkColor">#c66a00</color>
@@ -18,8 +19,6 @@
     <color name="grey_light">#9e9e9e</color>
     <color name="grey_medium">#616161</color>
     <color name="grey_dark">#424242</color>
-
-    <color name="primaryDarkestColor">#004d40</color>
 
     <color name="primaryColor90">#e626a69a</color>
     <color name="primaryColor75">#bf26a69a</color>
