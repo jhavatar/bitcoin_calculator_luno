@@ -16,11 +16,12 @@ import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
 import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.price_converter.R
-import io.chthonic.price_converter.ui.model.CalculationViewModel
 import io.chthonic.price_converter.data.model.CryptoCurrency
-import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.ui.adapter.TickerListAdapter
+import io.chthonic.price_converter.ui.model.CalculationViewModel
+import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.utils.ExchangeUtils
+import io.chthonic.price_converter.utils.TextUtils
 import io.chthonic.price_converter.utils.UiUtils
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -62,14 +63,14 @@ class MainVu(inflater: LayoutInflater,
             var caretPos = 0
 
             override fun afterTextChanged(s: Editable?) {
-                if (s?.toString() == UiUtils.PLACE_HOLDER_STRING) {
+                if (s?.toString() == TextUtils.PLACE_HOLDER_STRING) {
                     return
                 }
 
                 bitcoinInput.removeTextChangedListener(this)
 
-                val sRaw = UiUtils.deFormatCurrency(s?.toString() ?: "")
-                val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw), isCrypto = true)
+                val sRaw = TextUtils.deFormatCurrency(s?.toString() ?: "")
+                val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw), isCrypto = true)
                 bitcoinInput.setText(sFormatted)
 
 //                Timber.d("bitcoinInputWatcher: selection start = ${bitcoinInput.selectionStart}, end = ${bitcoinInput.selectionEnd}, formatLength = ${sFormatted.length}")
@@ -113,14 +114,14 @@ class MainVu(inflater: LayoutInflater,
             var caretPos = 0
 
             override fun afterTextChanged(s: Editable?) {
-                if (s?.toString() == UiUtils.PLACE_HOLDER_STRING) {
+                if (s?.toString() == TextUtils.PLACE_HOLDER_STRING) {
                     return
                 }
 
                 fiatInput.removeTextChangedListener(this)
 
-                val sRaw = UiUtils.deFormatCurrency(s?.toString() ?: "")
-                val sFormatted = UiUtils.formatCurrency(BigDecimal(sRaw))
+                val sRaw = TextUtils.deFormatCurrency(s?.toString() ?: "")
+                val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw))
                 fiatInput.setText(sFormatted)
 
 //                Timber.d("fiatInputWatcher: selection start = ${fiatInput.selectionStart}, end = ${fiatInput.selectionEnd}, formatLength = ${sFormatted.length}")
@@ -205,13 +206,13 @@ class MainVu(inflater: LayoutInflater,
         UiUtils.setRipple(rootView.clicker_bitcoin_info)
         RxView.clicks(rootView.clicker_bitcoin_info)
                 .map {
-                    UiUtils.deFormatCurrency(bitcoinInput.text.toString())
+                    TextUtils.deFormatCurrency(bitcoinInput.text.toString())
                 }.subscribe(bitcoinInputPublisher)
 
         UiUtils.setRipple(rootView.clicker_fiat_info)
         RxView.clicks(rootView.clicker_fiat_info)
                 .map {
-                    UiUtils.deFormatCurrency(fiatInput.text.toString())
+                    TextUtils.deFormatCurrency(fiatInput.text.toString())
                 }.subscribe(fiatInputPublisher)
 
         RxView.focusChanges(bitcoinInput)
@@ -219,7 +220,7 @@ class MainVu(inflater: LayoutInflater,
                 .filter {
                     it && !bitcoinInfoLayout.isActivated
                 }.map {
-                    UiUtils.deFormatCurrency(bitcoinInput.text.toString())
+                    TextUtils.deFormatCurrency(bitcoinInput.text.toString())
                 }.subscribe(bitcoinInputPublisher)
 
         RxView.focusChanges(fiatInput)
@@ -227,7 +228,7 @@ class MainVu(inflater: LayoutInflater,
                 .filter {
                     it && !fiatInfoLayout.isActivated
                 }.map {
-                    UiUtils.deFormatCurrency(fiatInput.text.toString())
+                    TextUtils.deFormatCurrency(fiatInput.text.toString())
                 }.subscribe(fiatInputPublisher)
     }
 
@@ -266,9 +267,9 @@ class MainVu(inflater: LayoutInflater,
 
         if (initPhase || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
-            val text = calc.ticker?.price ?: UiUtils.PLACE_HOLDER_STRING
+            val text = calc.ticker?.price ?: TextUtils.PLACE_HOLDER_STRING
             fiatInput.setText(text)
-            if (text != UiUtils.PLACE_HOLDER_STRING) {
+            if (text != TextUtils.PLACE_HOLDER_STRING) {
                 fiatInput.addTextChangedListener(fiatInputWatcher)
                 fiatInput.isEnabled = true
 
@@ -283,7 +284,7 @@ class MainVu(inflater: LayoutInflater,
             bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
         }
 
-        val nuFiatName = calc.ticker?.name ?: UiUtils.PLACE_HOLDER_STRING
+        val nuFiatName = calc.ticker?.name ?: TextUtils.PLACE_HOLDER_STRING
         val nameChanged = fiatName.text != nuFiatName
 
         // update fiat image and label

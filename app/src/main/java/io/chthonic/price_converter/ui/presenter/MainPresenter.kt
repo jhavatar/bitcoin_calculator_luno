@@ -8,13 +8,15 @@ import com.github.salomonbrys.kodein.lazy
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.business.service.CalculatorService
 import io.chthonic.price_converter.business.service.ExchangeService
-import io.chthonic.price_converter.data.model.*
+import io.chthonic.price_converter.data.model.CalculatorState
+import io.chthonic.price_converter.data.model.ExchangeState
+import io.chthonic.price_converter.data.model.Ticker
 import io.chthonic.price_converter.ui.model.CalculationViewModel
 import io.chthonic.price_converter.ui.model.TickerViewModel
 import io.chthonic.price_converter.ui.vu.MainVu
 import io.chthonic.price_converter.utils.CalculatorUtils
 import io.chthonic.price_converter.utils.ExchangeUtils
-import io.chthonic.price_converter.utils.UiUtils
+import io.chthonic.price_converter.utils.TextUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -133,15 +135,15 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     private fun genCalculationViewModel(calculatorState: CalculatorState, exchangeState: ExchangeState = exchangeService.state): CalculationViewModel {
         Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
         val ticker = CalculatorUtils.getTicker(calculatorState, exchangeState)
-        return CalculationViewModel(UiUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState),
+        return CalculationViewModel(TextUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState),
                 isCrypto = true),
                 calculatorState.convertToFiat,
                 if (ticker != null) {
                     TickerViewModel(ticker.code, ticker.code,
-                            UiUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
+                            TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",
                             true,
-                            UiUtils.getDateTimeString(ticker.timestamp))
+                            TextUtils.getDateTimeString(ticker.timestamp))
                 } else {
                     null
                 })
@@ -156,10 +158,10 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                 .map {
                     TickerViewModel(it.code,
                             it.code,
-                            UiUtils.formatCurrency(CalculatorUtils.getFiatPrice(it, calculatorService.state, tickers)),
+                            TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(it, calculatorService.state, tickers)),
                             ExchangeUtils.getFiatCurrencyForTicker(it)?.sign ?: "",
                             targetTicker?.code == it.code,
-                            UiUtils.getDateTimeString(it.timestamp))
+                            TextUtils.getDateTimeString(it.timestamp))
                 }
     }
 
