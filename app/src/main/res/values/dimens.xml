@@ -9,10 +9,9 @@
 
     <dimen name="content_padding">8dp</dimen>
 
-
     <dimen name="label_small">14sp</dimen> 
-    <dimen name="label_medium">18sp</dimen> 
-    <dimen name="label_large">22sp</dimen>
+    <dimen name="label_medium">16sp</dimen> 
+    <dimen name="label_large">18sp</dimen>
 
     <dimen name="pad_small">6dp</dimen>
     <dimen name="pad_medium">10dp</dimen>

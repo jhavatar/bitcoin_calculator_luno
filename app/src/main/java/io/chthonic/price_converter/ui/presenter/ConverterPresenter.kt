@@ -130,13 +130,13 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                     TickerViewModel(ticker.code, ticker.code,
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeService.state)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",
-                            true)
+                            true,
+                            UiUtils.getTimeString(ticker.timestamp))
                 } else {
                     null
                 }), initPhase)
     }
-
-
+    
     private fun updateTickers(tickers: Map<String, Ticker>) {
         Timber.d("updateTickers: tickers = $tickers")
         val targetTicker = ExchangeUtils.getTicker(calculatorService.state, tickers)
@@ -148,7 +148,8 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                             it.code,
                             UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(it, calculatorService.state, tickers)),
                             ExchangeUtils.getFiatCurrencyForTicker(it)?.sign ?: "",
-                            targetTicker?.code == it.code)
+                            targetTicker?.code == it.code,
+                            UiUtils.getTimeString(it.timestamp))
                 }
         Timber.d("updateTickers: tickerList = $tickerList")
         vu?.updateTickers(tickerList)

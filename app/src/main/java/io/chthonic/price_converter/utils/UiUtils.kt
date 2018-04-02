@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Rect
+import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -19,6 +20,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -33,6 +35,10 @@ object UiUtils {
 
     const val CRYPTO_DECIMAL_DIGITS = 8
     const val FIAT_DECIMAL_DIGITS = 2
+
+    private val timeFormatter: SimpleDateFormat by lazy {
+        SimpleDateFormat("HH:mm:ss")
+    }
 
     fun dipToPixels(dip: Int, context: Context): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip.toFloat(), context.resources.displayMetrics).toInt()
@@ -146,5 +152,9 @@ object UiUtils {
                 .width(width) // size in px
                 .endConfig()
                 .buildRect(text, Color.TRANSPARENT)
+    }
+
+    fun getTimeString(time: Long): String {
+        return timeFormatter.format(Date(time))
     }
 }

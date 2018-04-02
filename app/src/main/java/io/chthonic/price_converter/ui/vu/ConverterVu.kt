@@ -1,6 +1,7 @@
 package io.chthonic.price_converter.ui.vu
 
 import android.app.Activity
+import android.graphics.Rect
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -194,6 +195,12 @@ class ConverterVu(inflater: LayoutInflater,
         tickerAdapter = TickerListAdapter(tickerSelectPublisher)
         listView.adapter = tickerAdapter
         listView.layoutManager = LinearLayoutManager(activity)
+        val interItemPadding = listView.resources.getDimensionPixelSize(R.dimen.content_padding)
+        listView.addItemDecoration(object:RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
+                outRect?.top = interItemPadding
+            }
+        })
 
         bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
         fiatInput.addTextChangedListener(fiatInputWatcher)
