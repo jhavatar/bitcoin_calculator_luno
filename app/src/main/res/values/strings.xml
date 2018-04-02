@@ -16,5 +16,5 @@
     <string name="idr_display_name">"Indonesian Rupiah"</string>
     <string name="ngn_display_name">"Nigerian Naira"</string>
 
-    <string name="placeholder"> - </string>
+    <string name="placeholder">&#x2014;</string>
 </resources>
