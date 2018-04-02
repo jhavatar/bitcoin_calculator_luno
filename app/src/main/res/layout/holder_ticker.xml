@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/ticker_name"
         app:layout_constraintTop_toBottomOf="@id/ticker_name"
-        android:text="updated 2018-09-12"
+        tools:text="Updated 09:24:30"
         android:layout_marginTop="@dimen/pad_small"
         style="@style/ListSecondaryText"/>
     <!--app:layout_constraintTop_toBottomOf="@id/ticker_name"-->

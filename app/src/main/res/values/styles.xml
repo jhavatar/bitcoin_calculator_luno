@@ -16,7 +16,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="titleTextColor">@color/grey_xlight</item>
+    </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -28,6 +30,11 @@
     <style name="ListSecondaryText" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/grey_light</item>
         <item name="android:textSize">@dimen/label_small</item>
+    </style>
+
+    <style name="TitleText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/grey_xlight</item>
+        <item name="android:textSize">@dimen/label_large</item>
     </style>
 
 

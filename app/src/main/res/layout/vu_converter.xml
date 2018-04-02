@@ -73,10 +73,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="XBT"
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_activated_rounded_transparent_selector"
-                            android:padding="4dp"/>
+                            android:layout_gravity="bottom|left"
+                            android:background="@drawable/bg_activated_roundright_transparent_selector"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingEnd="@dimen/activity_horizontal_margin"
+                            android:paddingStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginBottom="?android:attr/actionBarSize"
+                            style = "@style/TitleText"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -111,11 +115,15 @@
                             android:layout_height="wrap_content"
                             android:text=""
                             tools:text="ZAR"
-                            android:gravity="center"
-                            android:layout_gravity="center"
+                            android:layout_gravity="bottom|right"
                             android:id="@+id/label_fiat"
-                            android:background="@drawable/bg_activated_rounded_transparent_selector"
-                            android:padding="4dp"/>
+                            android:background="@drawable/bg_activated_roundleft_transparent_selector"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:paddingStart="@dimen/activity_horizontal_margin"
+                            android:paddingEnd="@dimen/activity_horizontal_margin"
+                            android:layout_marginBottom="?android:attr/actionBarSize"
+                            style = "@style/TitleText"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -131,7 +139,7 @@
 
             <android.support.v7.widget.Toolbar
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?android:attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 android:layout_gravity="bottom"
                 android:contentInsetLeft="0dp"
@@ -145,16 +153,15 @@
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:weightSum="1.0"
                     android:orientation="horizontal"
                     >
 
-
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="0.5"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:paddingStart="@dimen/activity_horizontal_margin"
                         android:paddingEnd="@dimen/content_padding"
@@ -170,6 +177,7 @@
                             android:id="@+id/input_bitcoin"
                             android:inputType="numberDecimal"
                             android:gravity="center"
+                            android:textColor="@color/white"
                             />
 
                     </FrameLayout>
@@ -177,7 +185,7 @@
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_weight="0.5"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:paddingStart="@dimen/content_padding"
                         android:paddingTop="@dimen/content_padding"
                         android:paddingBottom="@dimen/content_padding"
@@ -192,6 +200,7 @@
                             android:id="@+id/input_fiat"
                             android:inputType="numberDecimal"
                             android:gravity="center"
+                            android:textColor="@color/white"
                             />
 
                     </FrameLayout>
