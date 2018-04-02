@@ -19,6 +19,9 @@ import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.TextUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.experimental.ThreadPoolDispatcher
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.newSingleThreadContext
 import timber.log.Timber
 
 /**
@@ -29,10 +32,15 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     private val exchangeService: ExchangeService by kodein.lazy.instance<ExchangeService>()
     private val calculatorService: CalculatorService by kodein.lazy.instance<CalculatorService>()
 
+    private val clearDispatcher: ThreadPoolDispatcher by lazy {
+        newSingleThreadContext("clear")
+    }
+
     override fun onLink(vu: MainVu, inState: Bundle?, args: Bundle) {
         super.onLink(vu, inState, args)
 
-        vu.updateCalculation(genCalculationViewModel(calculatorService.state), true)
+        // force update all ui
+        vu.updateCalculation(genCalculationViewModel(calculatorService.state).copy(forceSet = true))
         vu.updateTickers(genTickerViewModels(exchangeService.state.tickers))
         Timber.d("ui init completed")
 
@@ -131,14 +139,21 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                 }))
     }
 
+    fun clearCalculation() {
+        launch(clearDispatcher) {
+//            Timber.d("clearCalculation: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}")
+            calculatorService.clear()
+        }
+    }
+
 
     private fun genCalculationViewModel(calculatorState: CalculatorState, exchangeState: ExchangeState = exchangeService.state): CalculationViewModel {
         Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
         val ticker = CalculatorUtils.getTicker(calculatorState, exchangeState)
-        return CalculationViewModel(TextUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState),
-                isCrypto = true),
-                calculatorState.convertToFiat,
-                if (ticker != null) {
+        return CalculationViewModel(
+                bitcoinPrice = TextUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState), isCrypto = true),
+                convertToFiat = calculatorState.convertToFiat,
+                ticker = if (ticker != null) {
                     TickerViewModel(ticker.code, ticker.code,
                             TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",
@@ -146,7 +161,8 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                             TextUtils.getDateTimeString(ticker.timestamp))
                 } else {
                     null
-                })
+                },
+                forceSet = (CalculatorState.getFactoryState() == calculatorState))
     }
 
     private fun genTickerViewModels(tickers: Map<String, Ticker>, calcState: CalculatorState = calculatorService.state): List<TickerViewModel> {

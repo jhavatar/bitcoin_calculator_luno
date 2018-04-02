@@ -5,5 +5,6 @@ package io.chthonic.price_converter.ui.model
  */
 data class CalculationViewModel(val bitcoinPrice: String,
                                 val convertToFiat: Boolean,
-                                val ticker: TickerViewModel?) {
+                                val ticker: TickerViewModel?,
+                                val forceSet: Boolean) {
 }

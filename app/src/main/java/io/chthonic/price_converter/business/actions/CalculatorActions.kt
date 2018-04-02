@@ -14,6 +14,7 @@ interface CalculatorActions {
         const val SWITCH_CONVERT_DIRECTION: String = "SWITCH_CONVERT_DIRECTION"
         const val UPDATE_SOURCE: String = "UPDATE_SOURCE"
         const val SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE: String = "SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE"
+        const val CLEAR: String = "CLEAR"
     }
 
     @ActionCreator.Action(SET_TARGET_TICKER)
@@ -27,4 +28,7 @@ interface CalculatorActions {
 
     @ActionCreator.Action(SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE)
     fun switchConvertDirectionAndUpdateSource(convertToFiat: Boolean, source: BigDecimal): Action
+
+    @ActionCreator.Action(CLEAR)
+    fun clear(): Action
 }

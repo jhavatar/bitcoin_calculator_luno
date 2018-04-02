@@ -18,7 +18,10 @@
     <dimen name="pad_large">16dp</dimen>
 
     <dimen name="loading_widget_dimen">72dp</dimen>
+    <dimen name="loading_container_dimen">104dp</dimen>
 
     <dimen name="list_item_height">72dp</dimen>
     <dimen name="list_image_size">40dp</dimen>
+
+    <dimen name="input_bar_height">56dp</dimen>
 </resources>

@@ -31,7 +31,7 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
 
     @AutoReducer.InitialState
     internal fun initialState(): CalculatorState {
-        return CalculatorUtils.getPersistedCalculatorState(prefs, serializer, CalculatorState(null, true, BigDecimal(0)))
+        return CalculatorUtils.getPersistedCalculatorState(prefs, serializer, CalculatorState.getFactoryState())
     }
 
     @AutoReducer.Action(
@@ -71,5 +71,12 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
     fun switchConvertDirectionAndUpdateSource(state: CalculatorState, convertToFiat: Boolean, source: BigDecimal): CalculatorState {
         Timber.d("updateSourceAndSwitchConvertDirection: convertToFiat = $convertToFiat, source = $source")
         return state.copy(convertToFiat = convertToFiat, source = source)
+    }
+
+    @AutoReducer.Action(
+            value = CalculatorActions.CLEAR,
+            from = CalculatorActions::class)
+    fun clear(state: CalculatorState): CalculatorState {
+        return CalculatorState.getFactoryState()
     }
 }

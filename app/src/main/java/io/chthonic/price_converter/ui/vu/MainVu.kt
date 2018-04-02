@@ -255,7 +255,7 @@ class MainVu(inflater: LayoutInflater,
     }
 
 
-    fun updateCalculation(calc: CalculationViewModel, initPhase: Boolean = false) {
+    fun updateCalculation(calc: CalculationViewModel) {
         if (bitcoinInput.isFocused != calc.convertToFiat) {
             bitcoinInput.requestFocus()
         }
@@ -265,7 +265,7 @@ class MainVu(inflater: LayoutInflater,
 
         val convertDirectChanged = updateActivated(calc.convertToFiat)
 
-        if (initPhase || calc.convertToFiat) {
+        if (calc.forceSet || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
             val text = calc.ticker?.price ?: TextUtils.PLACE_HOLDER_STRING
             fiatInput.setText(text)
@@ -278,7 +278,7 @@ class MainVu(inflater: LayoutInflater,
             }
         }
 
-        if (initPhase || !calc.convertToFiat) {
+        if (calc.forceSet || !calc.convertToFiat) {
             bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
             bitcoinInput.setText(calc.bitcoinPrice)
             bitcoinInput.addTextChangedListener(bitcoinInputWatcher)

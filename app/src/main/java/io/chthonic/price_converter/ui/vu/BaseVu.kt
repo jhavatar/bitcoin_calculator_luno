@@ -24,7 +24,7 @@ abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragme
     private val loadingIndicator: PopupWindow by lazy {
         val inflator = LayoutInflater.from(activity)
         val loadingView = inflator.inflate(R.layout.layout_loading, null)
-        val dimen = activity.resources.getDimensionPixelSize(R.dimen.loading_widget_dimen)
+        val dimen = activity.resources.getDimensionPixelSize(R.dimen.loading_container_dimen)
         val popup = PopupWindow(dimen, dimen)
         popup.contentView = loadingView
         popup

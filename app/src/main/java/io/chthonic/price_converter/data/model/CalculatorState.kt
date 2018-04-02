@@ -8,4 +8,9 @@ import java.math.BigDecimal
 data class CalculatorState(val targetTicker: String?,
                       val convertToFiat: Boolean,
                       val source: BigDecimal) {
+    companion object {
+        fun getFactoryState(): CalculatorState {
+            return CalculatorState(null, true, 0.toBigDecimal())
+        }
+    }
 }

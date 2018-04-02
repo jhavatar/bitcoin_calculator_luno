@@ -60,4 +60,8 @@ class CalculatorService(private val stateService: StateService,
 
         stateService.dispatch(calculatorActions.switchConvertDirectionAndUpdateSource(convertToFiat, sourceDecimal))
     }
+
+    fun clear() {
+        stateService.dispatch(calculatorActions.clear())
+    }
 }

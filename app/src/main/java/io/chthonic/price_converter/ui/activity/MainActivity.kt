@@ -43,10 +43,13 @@ class MainActivity : MVPActivity<MainPresenter, MainVu>() {
         super.onPrepareOptionsMenu(menu)
 
         // manually tint icon since xml tint does not work
-        val item = menu.findItem(R.id.action_refresh)
-        val icon = resources.getDrawable(R.drawable.ic_refresh_black_24dp)
-        icon.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
-        item.icon = icon
+        listOf(Pair(menu.findItem(R.id.action_refresh), R.drawable.ic_refresh_black_24dp),
+                Pair(menu.findItem(R.id.action_clear),  R.drawable.ic_delete_black_24dp)).forEach{
+            val icon = resources.getDrawable(it.second)
+            icon.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
+            it.first.icon = icon
+        }
+
         return true
     }
 
@@ -59,6 +62,10 @@ class MainActivity : MVPActivity<MainPresenter, MainVu>() {
         when (item.itemId) {
             R.id.action_refresh -> {
                 mvpDispatcher.presenter?.fetchLatestTickers(true)
+                return true
+            }
+            R.id.action_clear -> {
+                mvpDispatcher.presenter?.clearCalculation()
                 return true
             }
         }
