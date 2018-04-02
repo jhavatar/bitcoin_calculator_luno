@@ -148,10 +148,6 @@ class ConverterVu(inflater: LayoutInflater,
         }
     }
 
-    val toolbar: Toolbar by lazy {
-        rootView.toolbar
-    }
-
     private val listView: RecyclerView by lazy {
         rootView.list_tickers
     }
@@ -190,7 +186,7 @@ class ConverterVu(inflater: LayoutInflater,
     override fun onCreate() {
         super.onCreate()
 
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(rootView.toolbar)
 
         tickerAdapter = TickerListAdapter(tickerSelectPublisher)
         listView.adapter = tickerAdapter
