@@ -69,7 +69,7 @@ object ExchangeUtils {
 
     fun convertToBitcoin(fiatPrice: BigDecimal, ticker: Ticker): BigDecimal {
         Timber.d("convertToBitcoin: fiatPrice = $fiatPrice, ticker = $ticker")
-        return fiatPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL64)
+        return fiatPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL128)
     }
 
 }

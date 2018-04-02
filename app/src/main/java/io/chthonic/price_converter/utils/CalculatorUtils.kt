@@ -82,23 +82,18 @@ object CalculatorUtils {
         return if (calculatorState.convertToFiat) {
             ExchangeUtils.convertToFiat(calculatorState.source, ticker)
 
-        } else if (calculatorState.targetTicker == ticker.pair) {
-            val bitcoinPrice = ExchangeUtils.convertToBitcoin(calculatorState.source, ticker)
-            calculatorState.source
-
         } else if (calculatorState.targetTicker != null) {
-            val bitcoinPrice = if (calculatorState.targetTicker == ticker.pair) {
-                ExchangeUtils.convertToBitcoin(calculatorState.source, ticker)
+            if (calculatorState.targetTicker == ticker.code) {
+                calculatorState.source
 
             } else {
-                getBitcoinPrice(calculatorState, exchangeState)
-            }
+                val bitcoinPrice = getBitcoinPrice(calculatorState, exchangeState)
+                if (bitcoinPrice != null) {
+                    ExchangeUtils.convertToFiat(bitcoinPrice, ticker)
 
-            if (bitcoinPrice != null) {
-                ExchangeUtils.convertToFiat(bitcoinPrice, ticker)
-
-            } else {
-                null
+                } else {
+                    null
+                }
             }
 
         } else {
