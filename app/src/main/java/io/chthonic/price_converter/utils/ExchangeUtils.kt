@@ -57,11 +57,15 @@ object ExchangeUtils {
     }
 
     fun getBitcoinPrice(calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
+        return getBitcoinPrice(calculatorState, exchangeState.tickers)
+    }
+
+    fun getBitcoinPrice(calculatorState: CalculatorState, tickerMap: Map<String, Ticker>): BigDecimal? {
         return if (calculatorState.convertToFiat) {
             calculatorState.source
 
         } else {
-            val ticker = getTicker(calculatorState, exchangeState)
+            val ticker = getTicker(calculatorState, tickerMap)
             if (ticker != null) {
                 convertToBitcoin(calculatorState.source, ticker)
 

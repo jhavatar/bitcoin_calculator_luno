@@ -1,16 +1,14 @@
 package io.chthonic.price_converter.ui.presenter
 
 import android.os.Bundle
+import android.os.Looper
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
 import io.chthonic.price_converter.App
 import io.chthonic.price_converter.business.service.CalculatorService
 import io.chthonic.price_converter.business.service.ExchangeService
-import io.chthonic.price_converter.data.model.CalculationViewModel
-import io.chthonic.price_converter.data.model.CalculatorState
-import io.chthonic.price_converter.data.model.Ticker
-import io.chthonic.price_converter.data.model.TickerViewModel
+import io.chthonic.price_converter.data.model.*
 import io.chthonic.price_converter.ui.vu.ConverterVu
 import io.chthonic.price_converter.utils.ExchangeUtils
 import io.chthonic.price_converter.utils.UiUtils
@@ -29,8 +27,8 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     override fun onLink(vu: ConverterVu, inState: Bundle?, args: Bundle) {
         super.onLink(vu, inState, args)
 
-        updateCalculation(calculatorService.state, true)
-        updateTickers(exchangeService.state.tickers)
+        vu.updateCalculation(genCalculationViewModel(calculatorService.state), true)
+        vu.updateTickers(genTickerViewModels(exchangeService.state.tickers))
         Timber.d("ui init completed")
 
         subscribeServiceListeners()
@@ -42,22 +40,31 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
 
     private fun subscribeServiceListeners() {
         rxSubs.add(exchangeService.observers.tickersChangeObserver
+                .subscribeOn(Schedulers.computation())
+                .map {tickerMap: Map<String, Ticker> ->
+                    genTickerViewModels(tickerMap)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({it: Map<String, Ticker> ->
-                    Timber.d("tickersChangeObserver success = $it")
-                    updateTickers(it)
+                .subscribe({tickers: List<TickerViewModel> ->
+                    Timber.d("tickersChangeObserver success = $tickers")
+                    vu?.updateTickers(tickers)
 
                 }, {it: Throwable ->
                     Timber.e(it, "tickersChangeObserver fail")
                 }))
 
         rxSubs.add(calculatorService.observers.calculationChangeChangeObserver
+                .subscribeOn(Schedulers.computation())
+                .map{ calcState: CalculatorState ->
+                    val exchangeState = exchangeService.state
+                    Pair<CalculationViewModel, List<TickerViewModel>>(genCalculationViewModel(calcState, exchangeState),
+                            genTickerViewModels(exchangeState.tickers, calcState))
+                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({calcState: CalculatorState ->
-                    Timber.d("calculationChangeChangeObserver success = $calcState")
-                    updateCalculation(calcState)
-                    updateTickers(exchangeService.state.tickers)
-
+                .subscribe({viewModels: Pair<CalculationViewModel, List<TickerViewModel>> ->
+                    Timber.d("calculationChangeChangeObserver success = $viewModels")
+                    vu?.updateCalculation(viewModels.first)
+                    vu?.updateTickers(viewModels.second)
 
                 }, {it: Throwable ->
                     Timber.e(it, "fetchTickerLot fail")
@@ -120,27 +127,27 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
     }
 
 
-    private fun updateCalculation(calculatorState: CalculatorState, initPhase: Boolean = false) {
-        val ticker = ExchangeUtils.getTicker(calculatorState, exchangeService.state)
-
-        vu?.updateCalculation(CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeService.state),
+    private fun genCalculationViewModel(calculatorState: CalculatorState, exchangeState: ExchangeState = exchangeService.state): CalculationViewModel {
+        Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
+        val ticker = ExchangeUtils.getTicker(calculatorState, exchangeState)
+        return CalculationViewModel(UiUtils.formatCurrency(ExchangeUtils.getBitcoinPrice(calculatorState, exchangeState),
                 isCrypto = true),
                 calculatorState.convertToFiat,
                 if (ticker != null)  {
                     TickerViewModel(ticker.code, ticker.code,
-                            UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeService.state)),
+                            UiUtils.formatCurrency(ExchangeUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
                             ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign ?: "",
                             true,
                             UiUtils.getTimeString(ticker.timestamp))
                 } else {
                     null
-                }), initPhase)
+                })
     }
-    
-    private fun updateTickers(tickers: Map<String, Ticker>) {
-        Timber.d("updateTickers: tickers = $tickers")
-        val targetTicker = ExchangeUtils.getTicker(calculatorService.state, tickers)
-        val tickerList = tickers.values
+
+    private fun genTickerViewModels(tickers: Map<String, Ticker>, calcState: CalculatorState = calculatorService.state): List<TickerViewModel> {
+        Timber.d("genTickerViewModels: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, tickers = $tickers")
+        val targetTicker = ExchangeUtils.getTicker(calcState, tickers)
+        return tickers.values
                 .filter{ ExchangeUtils.isSupportedFiatCurrency(it) }
                 .sortedBy { it.code }
                 .map {
@@ -151,8 +158,6 @@ class ConverterPresenter(private val kodein: Kodein = App.kodein): BasePresenter
                             targetTicker?.code == it.code,
                             UiUtils.getTimeString(it.timestamp))
                 }
-        Timber.d("updateTickers: tickerList = $tickerList")
-        vu?.updateTickers(tickerList)
     }
 
 }
