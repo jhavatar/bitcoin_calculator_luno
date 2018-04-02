@@ -1,4 +1,4 @@
-package io.chthonic.template_kotlin.utils
+package io.chthonic.price_converter.utils
 
 import android.app.Application
 import okhttp3.OkHttpClient
