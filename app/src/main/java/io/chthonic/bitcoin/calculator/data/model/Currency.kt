@@ -5,5 +5,4 @@ package io.chthonic.bitcoin.calculator.data.model
  */
 interface Currency {
     val code: String
-    val sign: String
 }

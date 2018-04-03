@@ -2,7 +2,6 @@ package io.chthonic.bitcoin.calculator
 
 import com.github.salomonbrys.kodein.Kodein
 import io.chthonic.bitcoin.calculator.utils.DebugUtils
-import timber.log.BuildConfig
 import timber.log.Timber
 
 /**

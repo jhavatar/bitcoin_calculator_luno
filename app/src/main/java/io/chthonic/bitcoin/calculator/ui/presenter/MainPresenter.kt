@@ -17,6 +17,7 @@ import io.chthonic.bitcoin.calculator.ui.vu.MainVu
 import io.chthonic.bitcoin.calculator.utils.CalculatorUtils
 import io.chthonic.bitcoin.calculator.utils.ExchangeUtils
 import io.chthonic.bitcoin.calculator.utils.TextUtils
+import io.chthonic.bitcoin.calculator.utils.UiUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.experimental.ThreadPoolDispatcher
@@ -156,8 +157,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                 ticker = if (ticker != null) {
                     TickerViewModel(ticker.code, ticker.code,
                             TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
-                            ExchangeUtils.getFiatCurrencyForTicker(ticker)?.sign
-                                    ?: "",
+                            UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(ticker), ""),
                             true,
                             TextUtils.getDateTimeString(ticker.timestamp))
                 } else {
@@ -176,8 +176,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                     TickerViewModel(it.code,
                             it.code,
                             TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(it, calculatorService.state, tickers)),
-                            ExchangeUtils.getFiatCurrencyForTicker(it)?.sign
-                                    ?: "",
+                            UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(it), ""),
                             targetTicker?.code == it.code,
                             TextUtils.getDateTimeString(it.timestamp))
                 }

@@ -4,11 +4,11 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import io.chthonic.mythos.mvp.MVPDispatcher
-import io.chthonic.mythos.mvp.PresenterCacheLoaderCallback
 import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.ui.presenter.MainPresenter
 import io.chthonic.bitcoin.calculator.ui.vu.MainVu
+import io.chthonic.mythos.mvp.MVPDispatcher
+import io.chthonic.mythos.mvp.PresenterCacheLoaderCallback
 import timber.log.Timber
 
 

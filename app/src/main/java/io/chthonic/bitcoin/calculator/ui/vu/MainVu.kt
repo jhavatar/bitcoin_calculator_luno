@@ -201,7 +201,9 @@ class MainVu(inflater: LayoutInflater,
         bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
         fiatInput.addTextChangedListener(fiatInputWatcher)
 
-        bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(CryptoCurrency.Bitcoin.sign, bitcoinInput, bitcoinInput.currentTextColor), null,null, null)
+        bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
+                bitcoinInput,
+                bitcoinInput.currentTextColor), null,null, null)
 
         UiUtils.setRipple(rootView.clicker_bitcoin_info)
         RxView.clicks(rootView.clicker_bitcoin_info)
@@ -246,7 +248,7 @@ class MainVu(inflater: LayoutInflater,
 
         bitcoinInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 UiUtils.getCompoundDrawableForTextDrawable(
-                        CryptoCurrency.Bitcoin.sign,
+                        UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
                         bitcoinInput,
                         if (convertToFiat) bitcoinInput.resources.getColor(R.color.secondaryColor) else bitcoinInput.currentTextColor),
                 null,null, null)
@@ -303,7 +305,7 @@ class MainVu(inflater: LayoutInflater,
             if (calc.ticker != null) {
                 fiatInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         UiUtils.getCompoundDrawableForTextDrawable(
-                                ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)!!.sign,
+                                UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)),
                                 fiatInput,
                                 if (!calc.convertToFiat) fiatInput.resources.getColor(R.color.secondaryColor) else fiatInput.currentTextColor),
                         null, null, null)

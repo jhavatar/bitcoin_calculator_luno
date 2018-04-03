@@ -2,13 +2,16 @@ package io.chthonic.bitcoin.calculator.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
+import io.chthonic.bitcoin.calculator.data.model.Currency
 import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
 
 
@@ -16,6 +19,18 @@ import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
  * Created by jhavatar on 3/30/2018.
  */
 object UiUtils {
+
+    private val mapCurrencyToSign: Map<String, String> by lazy {
+        mapOf( Pair(CryptoCurrency.Bitcoin.code,
+                        if (UiUtils.canRenderGlyp("\u20BF")) "\u20BF" else "B"),
+                Pair(CryptoCurrency.Ethereum.code,
+                        if (UiUtils.canRenderGlyp("\u039E")) "\u039E" else "E"),
+                Pair(FiatCurrency.Zar.code, "\u0052"),
+                Pair(FiatCurrency.Myr.code, "\u0052\u004d"),
+                Pair(FiatCurrency.Idr.code, "\u0052\u0070"),
+                Pair(FiatCurrency.Ngn.code,
+                        if (UiUtils.canRenderGlyp("\u20a6")) "\u20a6" else "N"))
+    }
 
     fun dipToPixels(dip: Int, context: Context): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip.toFloat(), context.resources.displayMetrics).toInt()
@@ -25,6 +40,22 @@ object UiUtils {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.toFloat(), context.resources.displayMetrics).toInt()
     }
 
+    fun canRenderGlyp(s: String): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Paint().hasGlyph(s)
+
+        } else {
+            EmojiRenderableChecker().isRenderable(s)
+        }
+    }
+
+    fun getCurrencySign(currency: Currency?, fallback: String? = null): String {
+        return getCurrencySign(currency?.code, fallback)
+    }
+
+    fun getCurrencySign(code: String?, fallback: String? = null): String {
+        return mapCurrencyToSign[code] ?: (fallback ?: throw RuntimeException("code $code should not exist"))
+    }
 
     fun getCurrencyVectorRes(code: String): Int {
         return when (code) {
