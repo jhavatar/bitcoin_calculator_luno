@@ -16,6 +16,7 @@ object TextUtils {
     const val PLACE_HOLDER_STRING: String = "\u2014"
     const val CRYPTO_DECIMAL_DIGITS = 8
     const val FIAT_DECIMAL_DIGITS = 2
+    const val TOO_MANY_DIGITS_MSG = "MAX"
 
     internal val timeFormatter: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm:ss")
@@ -26,24 +27,11 @@ object TextUtils {
     }
 
     private val currencyFormatReplaceRegex: Regex by lazy {
-        val chars: MutableList<String> = mutableListOf<String>(" ", PLACE_HOLDER_STRING)
+        """[ $PLACE_HOLDER_STRING[:alpha:]]""".toRegex()
+    }
 
-//        val cryptoChars: List<String> = CryptoCurrency.values.map{
-//            it.sign.toCharArray().toList()
-//        }.flatten().map { it.toString() }
-//        chars.addAll(cryptoChars)
-//
-//        val fiatChars: List<String> = FiatCurrency.values.map{
-//            it.sign.toCharArray().toList()
-//        }.flatten().map { it.toString() }
-//        chars.addAll(fiatChars)
-
-        val s = chars.distinct().joinToString (separator = "", transform = {
-            it
-        })
-        Timber.d("currencyFormatReplaceRegex: s = $s")
-
-        """[$s]""".toRegex()
+    fun isCurrencyInWarningState(s: String?): Boolean {
+        return (s == TextUtils.PLACE_HOLDER_STRING) || (s == TextUtils.TOO_MANY_DIGITS_MSG)
     }
 
     private val fiatCurrencyFormat: DecimalFormat by lazy {
