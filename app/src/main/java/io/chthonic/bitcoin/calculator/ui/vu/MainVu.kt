@@ -272,7 +272,7 @@ class MainVu(inflater: LayoutInflater,
             val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
                 it is InputFilter.LengthFilter
             } as? InputFilter.LengthFilter
-            val tooManyDigits = (text.length >= (lengthFilter?.max ?: Int.MAX_VALUE))
+            val tooManyDigits = (text.length > (lengthFilter?.max ?: Int.MAX_VALUE))
             if (tooManyDigits) {
                 fiatInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
 
@@ -302,7 +302,8 @@ class MainVu(inflater: LayoutInflater,
             val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
                 it is InputFilter.LengthFilter
             } as? InputFilter.LengthFilter
-            if (text.length >= (lengthFilter?.max ?: Int.MAX_VALUE)) {
+            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${lengthFilter?.max}")
+            if (text.length > (lengthFilter?.max ?: Int.MAX_VALUE)) {
                 bitcoinInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
                 if (calc.convertToFiat) {
                     // must be able to change text if selected
