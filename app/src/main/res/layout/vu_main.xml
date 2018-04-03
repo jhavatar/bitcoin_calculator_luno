@@ -181,6 +181,7 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/input_text_size"
                             android:maxLength="@integer/input_text_limit"
+                            android:imeOptions="actionDone"
                             />
 
                     </FrameLayout>
@@ -207,6 +208,7 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/input_text_size"
                             android:maxLength="@integer/input_text_limit"
+                            android:imeOptions="actionDone"
                             />
 
                     </FrameLayout>
