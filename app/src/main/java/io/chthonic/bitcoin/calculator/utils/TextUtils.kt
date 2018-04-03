@@ -34,6 +34,10 @@ object TextUtils {
         return (s == TextUtils.PLACE_HOLDER_STRING) || (s == TextUtils.TOO_MANY_DIGITS_MSG)
     }
 
+    fun wasCurrencyWarningState(prevS: String?, delAction: Boolean): Boolean {
+        return delAction && ((prevS == TextUtils.PLACE_HOLDER_STRING) || (prevS == TextUtils.TOO_MANY_DIGITS_MSG))
+    }
+
     private val fiatCurrencyFormat: DecimalFormat by lazy {
         val pattern = "###,##0.00";
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)

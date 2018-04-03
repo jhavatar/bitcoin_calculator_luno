@@ -60,17 +60,25 @@ class MainVu(inflater: LayoutInflater,
     private val bitcoinInputWatcher by lazy {
         object : TextWatcher {
             var prevString = ""
-            var delAction = false
-            var caretPos = 0
+            private var delAction = false
+            private var caretPos = 0
 
             override fun afterTextChanged(editable: Editable?) {
                 val s = editable?.toString()
-                if (TextUtils.isCurrencyInWarningState(s)) {
+                if (s == null) {
+                    return
+                } else if (TextUtils.isCurrencyInWarningState(s)) {
+                    prevString = s
                     return
                 }
                 bitcoinInput.removeTextChangedListener(this)
 
-                val sRaw = TextUtils.deFormatCurrency(s ?: "0")
+                val sRaw = if (TextUtils.wasCurrencyWarningState(prevString, delAction)) {
+                    "0.00"
+
+                } else {
+                    TextUtils.deFormatCurrency(s ?: "0")
+                }
                 val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw), isCrypto = true)
                 bitcoinInput.setText(sFormatted)
 
@@ -111,22 +119,31 @@ class MainVu(inflater: LayoutInflater,
     private val fiatInputWatcher by lazy {
         object:TextWatcher {
             var prevString = ""
-            var delAction = false
-            var caretPos = 0
+            private var delAction = false
+            private var caretPos = 0
 
             override fun afterTextChanged(editable: Editable?) {
                 val s = editable?.toString()
-                if (TextUtils.isCurrencyInWarningState(s)) {
+                if (s == null) {
+                    return
+
+                } else if (TextUtils.isCurrencyInWarningState(s)) {
+                    prevString = s
                     return
                 }
                 fiatInput.removeTextChangedListener(this)
 
-                val sRaw = TextUtils.deFormatCurrency(s ?: "0")
+                val sRaw = if (TextUtils.wasCurrencyWarningState(prevString, delAction)) {
+                    "0.00"
+
+                } else {
+                    TextUtils.deFormatCurrency(s ?: "0")
+                }
                 val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw))
                 fiatInput.setText(sFormatted)
 
 //                Timber.d("fiatInputWatcher: selection start = ${fiatInput.selectionStart}, end = ${fiatInput.selectionEnd}, formatLength = ${sFormatted.length}")
-                Timber.d("fiatInputWatcher: delAction = $delAction, caretPos = $caretPos")
+//                Timber.d("fiatInputWatcher: delAction = $delAction, caretPos = $caretPos")
                 if (delAction) {
                     fiatInput.setSelection(Math.max(Math.min(sFormatted.length, caretPos - 1), 0))
 
@@ -273,12 +290,14 @@ class MainVu(inflater: LayoutInflater,
                 it is InputFilter.LengthFilter
             } as? InputFilter.LengthFilter
             val tooManyDigits = (text.length > (lengthFilter?.max ?: Int.MAX_VALUE))
+
             if (tooManyDigits) {
                 fiatInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
 
             } else {
                 fiatInput.setText(text)
             }
+            fiatInputWatcher.prevString = fiatInput.text.toString()
 
             if (text == TextUtils.PLACE_HOLDER_STRING) {
                 fiatInput.isEnabled = false
@@ -318,6 +337,7 @@ class MainVu(inflater: LayoutInflater,
                 bitcoinInput.setText(text)
                 bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
             }
+            bitcoinInputWatcher.prevString = bitcoinInput.text.toString()
         }
 
         val nuFiatName = calc.ticker?.name ?: TextUtils.PLACE_HOLDER_STRING
