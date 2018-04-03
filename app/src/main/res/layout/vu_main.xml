@@ -178,6 +178,8 @@
                             android:inputType="numberDecimal"
                             android:gravity="center"
                             android:textColor="@color/white"
+                            android:textSize="@dimen/input_text_size"
+                            android:maxLength="15"
                             />
 
                     </FrameLayout>
@@ -201,6 +203,8 @@
                             android:inputType="numberDecimal"
                             android:gravity="center"
                             android:textColor="@color/white"
+                            android:textSize="@dimen/input_text_size"
+                            android:maxLength="15"
                             />
 
                     </FrameLayout>

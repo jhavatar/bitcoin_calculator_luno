@@ -12,6 +12,8 @@
     <dimen name="label_medium">16sp</dimen> 
     <dimen name="label_large">18sp</dimen>
 
+    <dimen name="input_text_size">@dimen/label_small</dimen>
+
     <dimen name="pad_small">6dp</dimen>
     <dimen name="pad_medium">10dp</dimen>
     <dimen name="pad_large">16dp</dimen>
