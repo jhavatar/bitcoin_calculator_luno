@@ -81,8 +81,22 @@ class MainVu(inflater: LayoutInflater,
         rootView.input_bitcoin
     }
 
+    private val maxBitcoinInputLength: Int by lazy {
+        val lengthFilter: InputFilter.LengthFilter? = bitcoinInput.filters.find {
+            it is InputFilter.LengthFilter
+        } as? InputFilter.LengthFilter
+        lengthFilter?.max ?: Int.MAX_VALUE
+    }
+
     private val fiatInput: EditText by lazy {
         rootView.input_fiat
+    }
+
+    private val maxFiatInputLength: Int by lazy {
+        val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
+            it is InputFilter.LengthFilter
+        } as? InputFilter.LengthFilter
+        lengthFilter?.max ?: Int.MAX_VALUE
     }
 
     private val bitcoinInfoLayout: View by lazy {
@@ -192,11 +206,7 @@ class MainVu(inflater: LayoutInflater,
         if (calc.forceSet || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
             val text = calc.ticker?.price ?: TextUtils.PLACE_HOLDER_STRING
-
-            val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
-                it is InputFilter.LengthFilter
-            } as? InputFilter.LengthFilter
-            val tooManyDigits = (text.length > (lengthFilter?.max ?: Int.MAX_VALUE))
+            val tooManyDigits = (text.length > maxFiatInputLength)
 
             if (tooManyDigits) {
                 fiatInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
@@ -225,11 +235,8 @@ class MainVu(inflater: LayoutInflater,
         if (calc.forceSet || !calc.convertToFiat) {
             bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
             val text = calc.bitcoinPrice
-            val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
-                it is InputFilter.LengthFilter
-            } as? InputFilter.LengthFilter
-            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${lengthFilter?.max}")
-            if (text.length > (lengthFilter?.max ?: Int.MAX_VALUE)) {
+            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
+            if (text.length > maxBitcoinInputLength) {
                 bitcoinInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
                 if (calc.convertToFiat) {
                     // must be able to change text if selected
