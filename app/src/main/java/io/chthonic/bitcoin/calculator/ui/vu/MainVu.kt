@@ -56,7 +56,7 @@ class MainVu(inflater: LayoutInflater,
                 .toFlowable(BackpressureStrategy.LATEST)
 
     private val bitcoinInputWatcher by lazy {
-        CurrencyInputWatcher(bitcoinInput, bitcoinInputPublisher, true)
+        CurrencyInputWatcher(bitcoinInput, bitcoinInputPublisher, true, maxBitcoinInputLength)
     }
 
 
@@ -70,7 +70,7 @@ class MainVu(inflater: LayoutInflater,
                 .toFlowable(BackpressureStrategy.LATEST)
 
     private val fiatInputWatcher by lazy {
-        CurrencyInputWatcher(fiatInput, fiatInputPublisher, false)
+        CurrencyInputWatcher(fiatInput, fiatInputPublisher, false, maxFiatInputLength)
     }
 
     private val listView: RecyclerView by lazy {

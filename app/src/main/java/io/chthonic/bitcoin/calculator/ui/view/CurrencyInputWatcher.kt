@@ -11,7 +11,7 @@ import java.math.BigDecimal
 /**
  * Created by jhavatar on 4/4/2018.
  */
-class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: PublishSubject<String>, val isCrypto: Boolean) : TextWatcher {
+class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: PublishSubject<String>, val isCrypto: Boolean, val maxLength: Int) : TextWatcher {
     var prevString = ""
     private var delAction = false
     private var caretPos = 0
@@ -26,17 +26,31 @@ class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: Pu
         }
         inputView.removeTextChangedListener(this)
 
+        var ignoreChange = false
         val sRaw = if (TextUtils.wasCurrencyWarningState(prevString, delAction)) {
             "0.00"
 
         } else {
             TextUtils.deFormatCurrency(s ?: "0")
         }
-        val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw), isCrypto = isCrypto)
-        inputView.setText(sFormatted)
+        val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw), isCrypto = isCrypto).let {
+            // do not allow input change if its formatting pushes the length over the limit
+            if (it.length <= maxLength) {
+                it
 
+            } else {
+                ignoreChange = true
+                prevString
+            }
+        }
+//        Timber.d("afterTextChanged: sFormatted = $sFormatted, length = ${sFormatted.length}, maxLength = ${maxLength}")
+        inputView.setText(sFormatted)
 //        Timber.d("afterTextChanged: delAction = $delAction, caretPos = $caretPos")
-        if (delAction) {
+
+        if (ignoreChange) {
+            inputView.setSelection(Math.max(Math.min(sFormatted.length, caretPos), 0))
+
+        } else if (delAction) {
             inputView.setSelection(Math.max(Math.min(sFormatted.length, caretPos - 1), 0))
 
         } else {
@@ -45,7 +59,10 @@ class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: Pu
         prevString = sFormatted
 
         inputView.addTextChangedListener(this)
-        inputChangePublisher.onNext(sRaw)
+
+        if (!ignoreChange) {
+            inputChangePublisher.onNext(sRaw)
+        }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
