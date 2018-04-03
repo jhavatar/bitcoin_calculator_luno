@@ -175,11 +175,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/input_bitcoin"
-                            android:inputType="numberDecimal"
+                            android:inputType="number"
+                            android:digits="0123456789"
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="@dimen/input_text_size"
-                            android:maxLength="15"
+                            android:maxLength="@integer/input_text_limit"
                             />
 
                     </FrameLayout>
@@ -200,11 +201,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/input_fiat"
-                            android:inputType="numberDecimal"
+                            android:inputType="number"
+                            android:digits="0123456789"
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="@dimen/input_text_size"
-                            android:maxLength="15"
+                            android:maxLength="@integer/input_text_limit"
                             />
 
                     </FrameLayout>
