@@ -5,8 +5,7 @@ import android.graphics.Rect
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,22 +13,22 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
-import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.ui.adapter.TickerListAdapter
 import io.chthonic.bitcoin.calculator.ui.model.CalculationViewModel
 import io.chthonic.bitcoin.calculator.ui.model.TickerViewModel
+import io.chthonic.bitcoin.calculator.ui.view.CurrencyInputWatcher
 import io.chthonic.bitcoin.calculator.utils.ExchangeUtils
 import io.chthonic.bitcoin.calculator.utils.TextUtils
 import io.chthonic.bitcoin.calculator.utils.UiUtils
+import io.chthonic.mythos.mvp.FragmentWrapper
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.vu_main.view.*
 import timber.log.Timber
-import java.math.BigDecimal
 
 /**
  * Created by jhavatar on 3/28/2018.
@@ -57,44 +56,7 @@ class MainVu(inflater: LayoutInflater,
                 .toFlowable(BackpressureStrategy.LATEST)
 
     private val bitcoinInputWatcher by lazy {
-        object : TextWatcher {
-            var prevString = ""
-            var delAction = false
-            var caretPos = 0
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.toString() == TextUtils.PLACE_HOLDER_STRING) {
-                    return
-                }
-
-                bitcoinInput.removeTextChangedListener(this)
-
-                val sRaw = TextUtils.deFormatCurrency(s?.toString() ?: "")
-                val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw), isCrypto = true)
-                bitcoinInput.setText(sFormatted)
-
-//                Timber.d("bitcoinInputWatcher: selection start = ${bitcoinInput.selectionStart}, end = ${bitcoinInput.selectionEnd}, formatLength = ${sFormatted.length}")
-                Timber.d("bitcoinInputWatcher: delAction = $delAction, caretPos = $caretPos")
-                if (delAction) {
-                    bitcoinInput.setSelection(Math.max(Math.min(sFormatted.length, caretPos - 1), 0))
-
-                } else {
-                    bitcoinInput.setSelection(Math.min(sFormatted.length, caretPos + 1))
-                }
-                prevString = sFormatted
-
-                bitcoinInput.addTextChangedListener(this)
-                bitcoinInputPublisher.onNext(sRaw)
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                caretPos = bitcoinInput.selectionStart
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                delAction = s?.length ?: 0 < prevString.length
-            }
-        }
+        CurrencyInputWatcher(bitcoinInput, bitcoinInputPublisher, true, maxBitcoinInputLength)
     }
 
 
@@ -108,44 +70,7 @@ class MainVu(inflater: LayoutInflater,
                 .toFlowable(BackpressureStrategy.LATEST)
 
     private val fiatInputWatcher by lazy {
-        object:TextWatcher {
-            var prevString = ""
-            var delAction = false
-            var caretPos = 0
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.toString() == TextUtils.PLACE_HOLDER_STRING) {
-                    return
-                }
-
-                fiatInput.removeTextChangedListener(this)
-
-                val sRaw = TextUtils.deFormatCurrency(s?.toString() ?: "")
-                val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw))
-                fiatInput.setText(sFormatted)
-
-//                Timber.d("fiatInputWatcher: selection start = ${fiatInput.selectionStart}, end = ${fiatInput.selectionEnd}, formatLength = ${sFormatted.length}")
-                Timber.d("fiatInputWatcher: delAction = $delAction, caretPos = $caretPos")
-                if (delAction) {
-                    fiatInput.setSelection(Math.max(Math.min(sFormatted.length, caretPos - 1), 0))
-
-                } else {
-                    fiatInput.setSelection(Math.min(sFormatted.length, caretPos + 1))
-                }
-                prevString = sFormatted
-
-                fiatInput.addTextChangedListener(this)
-                fiatInputPublisher.onNext(sRaw)
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                caretPos = fiatInput.selectionStart
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                delAction = s?.length ?: 0 < prevString.length
-            }
-        }
+        CurrencyInputWatcher(fiatInput, fiatInputPublisher, false, maxFiatInputLength)
     }
 
     private val listView: RecyclerView by lazy {
@@ -156,8 +81,22 @@ class MainVu(inflater: LayoutInflater,
         rootView.input_bitcoin
     }
 
+    private val maxBitcoinInputLength: Int by lazy {
+        val lengthFilter: InputFilter.LengthFilter? = bitcoinInput.filters.find {
+            it is InputFilter.LengthFilter
+        } as? InputFilter.LengthFilter
+        lengthFilter?.max ?: Int.MAX_VALUE
+    }
+
     private val fiatInput: EditText by lazy {
         rootView.input_fiat
+    }
+
+    private val maxFiatInputLength: Int by lazy {
+        val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
+            it is InputFilter.LengthFilter
+        } as? InputFilter.LengthFilter
+        lengthFilter?.max ?: Int.MAX_VALUE
     }
 
     private val bitcoinInfoLayout: View by lazy {
@@ -197,9 +136,6 @@ class MainVu(inflater: LayoutInflater,
                 outRect?.top = interItemPadding
             }
         })
-
-        bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
-        fiatInput.addTextChangedListener(fiatInputWatcher)
 
         bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
                 bitcoinInput,
@@ -270,20 +206,52 @@ class MainVu(inflater: LayoutInflater,
         if (calc.forceSet || calc.convertToFiat) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
             val text = calc.ticker?.price ?: TextUtils.PLACE_HOLDER_STRING
-            fiatInput.setText(text)
-            if (text != TextUtils.PLACE_HOLDER_STRING) {
-                fiatInput.addTextChangedListener(fiatInputWatcher)
-                fiatInput.isEnabled = true
+            val tooManyDigits = (text.length > maxFiatInputLength)
+
+            if (tooManyDigits) {
+                fiatInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
 
             } else {
+                fiatInput.setText(text)
+            }
+            fiatInputWatcher.prevString = fiatInput.text.toString()
+
+            if (text == TextUtils.PLACE_HOLDER_STRING) {
                 fiatInput.isEnabled = false
+
+            } else {
+
+                // must be able to change text if selected
+                if (!tooManyDigits || !calc.convertToFiat) {
+                    fiatInput.addTextChangedListener(fiatInputWatcher)
+                    fiatInput.isEnabled = true
+
+                } else {
+                    fiatInput.isEnabled = false
+                }
             }
         }
 
         if (calc.forceSet || !calc.convertToFiat) {
             bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
-            bitcoinInput.setText(calc.bitcoinPrice)
-            bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+            val text = calc.bitcoinPrice
+            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
+            if (text.length > maxBitcoinInputLength) {
+                bitcoinInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
+                if (calc.convertToFiat) {
+                    // must be able to change text if selected
+                    bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+
+                } else {
+                    bitcoinInput.isEnabled = false
+                }
+
+            } else {
+                bitcoinInput.isEnabled = true
+                bitcoinInput.setText(text)
+                bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+            }
+            bitcoinInputWatcher.prevString = bitcoinInput.text.toString()
         }
 
         val nuFiatName = calc.ticker?.name ?: TextUtils.PLACE_HOLDER_STRING
