@@ -2,7 +2,6 @@ package io.chthonic.bitcoin.calculator.ui.presenter
 
 import android.os.Bundle
 import android.os.Looper
-import android.util.DisplayMetrics
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.lazy
@@ -52,15 +51,6 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
         Timber.d("listeners subscribe completed")
 
         fetchLatestTickers()
-
-        val display = vu?.activity.getWindowManager().getDefaultDisplay()
-        val outMetrics = DisplayMetrics()
-        display.getMetrics(outMetrics)
-
-        val density = vu?.activity.getResources().getDisplayMetrics().density
-        val dpHeight = outMetrics.heightPixels / density
-        val dpWidth = outMetrics.widthPixels / density
-        Timber.d("density = $density, dpHeight = $dpHeight, dpWidth = $dpWidth")
     }
 
     private fun subscribeServiceListeners() {
