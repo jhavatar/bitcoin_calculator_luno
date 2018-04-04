@@ -23,7 +23,7 @@ class TextUtilsTest {
 
     @Before
     fun before() {
-        ShadowLog.stream = System.out;
+        ShadowLog.stream = System.out
     }
 
     @Test

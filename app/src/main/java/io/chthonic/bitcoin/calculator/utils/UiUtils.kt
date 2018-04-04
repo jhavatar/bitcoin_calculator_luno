@@ -86,6 +86,7 @@ object UiUtils {
         val typedArray = view.context.obtainStyledAttributes(attrs)
         val backgroundResource = typedArray.getResourceId(0, 0)
         view.setBackgroundResource(backgroundResource)
+        typedArray.recycle()
     }
 
 

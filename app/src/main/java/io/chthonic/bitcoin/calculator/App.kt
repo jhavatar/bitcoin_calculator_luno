@@ -22,7 +22,7 @@ class App : android.app.Application() {
             return
         }
         Timber.plant(if (BuildConfig.DEBUG) Timber.DebugTree() else object: Timber.Tree() {
-            override fun log(priority: Int, tag: String?, message: String?, t: Throwable?) {
+            override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
                 // ignore
             }
         })

@@ -5,7 +5,6 @@ import android.text.TextWatcher
 import android.widget.EditText
 import io.chthonic.bitcoin.calculator.utils.TextUtils
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import java.math.BigDecimal
 
 /**
@@ -20,6 +19,7 @@ class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: Pu
         val s = editable?.toString()
         if (s == null) {
             return
+
         } else if (TextUtils.isCurrencyInWarningState(s)) {
             prevString = s
             return
@@ -31,7 +31,7 @@ class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: Pu
             "0.00"
 
         } else {
-            TextUtils.deFormatCurrency(s ?: "0")
+            TextUtils.deFormatCurrency(s)
         }
         val sFormatted = TextUtils.formatCurrency(BigDecimal(sRaw), isCrypto = isCrypto).let {
             // do not allow input change if its formatting pushes the length over the limit

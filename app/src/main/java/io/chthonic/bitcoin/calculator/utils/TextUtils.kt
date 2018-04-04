@@ -38,7 +38,7 @@ object TextUtils {
     }
 
     private val fiatCurrencyFormat: DecimalFormat by lazy {
-        val pattern = "###,##0.00";
+        val pattern = "###,##0.00"
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.setDecimalSeparator('.')
         formatSymbols.setGroupingSeparator(' ')
@@ -46,7 +46,7 @@ object TextUtils {
     }
 
     private  val cryptoCurrencyFormat: DecimalFormat by lazy {
-        val pattern = "###,##0.00${"#".repeat(CRYPTO_DECIMAL_DIGITS - 2)}";
+        val pattern = "###,##0.00${"#".repeat(CRYPTO_DECIMAL_DIGITS - 2)}"
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.setDecimalSeparator('.')
         formatSymbols.setGroupingSeparator(' ')
