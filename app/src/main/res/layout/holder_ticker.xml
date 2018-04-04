@@ -53,7 +53,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/ticker_name"
+        app:layout_constraintEnd_toStartOf="@+id/ticker_price"
         app:layout_constraintTop_toBottomOf="@id/ticker_name"
+        app:layout_constraintHorizontal_bias="0"
         tools:text="Updated 09:24:30"
         android:layout_marginTop="@dimen/pad_small"
         style="@style/ListSecondaryText"/>
@@ -61,16 +63,20 @@
 
     <TextView
         android:id="@+id/ticker_price"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="right"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ticker_name"
+        app:layout_constraintStart_toEndOf="@id/ticker_date"
         app:layout_constraintHorizontal_bias="1"
         tools:text="R100"
         style="@style/ListPrimaryText"
+        android:ellipsize="end"
+        android:maxLines="1"
         />
 
 </android.support.constraint.ConstraintLayout>

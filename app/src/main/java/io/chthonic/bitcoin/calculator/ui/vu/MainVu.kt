@@ -235,7 +235,7 @@ class MainVu(inflater: LayoutInflater,
         if (calc.forceSet || !calc.convertToFiat) {
             bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
             val text = calc.bitcoinPrice
-            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
+//            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
             if (text.length > maxBitcoinInputLength) {
                 bitcoinInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
                 if (calc.convertToFiat) {
