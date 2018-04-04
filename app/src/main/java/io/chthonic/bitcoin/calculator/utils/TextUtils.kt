@@ -1,7 +1,6 @@
 package io.chthonic.bitcoin.calculator.utils
 
 import android.text.format.DateUtils
-import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -27,7 +26,7 @@ object TextUtils {
     }
 
     private val currencyFormatReplaceRegex: Regex by lazy {
-        """[ $PLACE_HOLDER_STRING[:alpha:]]""".toRegex()
+        """[ $PLACE_HOLDER_STRING[a-zA-Z]]""".toRegex()
     }
 
     fun isCurrencyInWarningState(s: String?): Boolean {
@@ -46,7 +45,7 @@ object TextUtils {
         DecimalFormat(pattern, formatSymbols)
     }
 
-   private  val cryptoCurrencyFormat: DecimalFormat by lazy {
+    private  val cryptoCurrencyFormat: DecimalFormat by lazy {
         val pattern = "###,##0.00${"#".repeat(CRYPTO_DECIMAL_DIGITS - 2)}";
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.setDecimalSeparator('.')
@@ -69,6 +68,7 @@ object TextUtils {
     }
 
     fun deFormatCurrency(s: String): String {
+//        Timber.d("deFormatCurrency: s = $s, result = ${s.replace(currencyFormatReplaceRegex, "")}")
         return s.replace(currencyFormatReplaceRegex, "")
     }
 

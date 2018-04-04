@@ -1,12 +1,16 @@
 package io.chthonic.bitcoin.calculator.utils
 
 import io.chthonic.bitcoin.calculator.BuildConfig
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLog
 import java.math.BigDecimal
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 
 /**
@@ -16,6 +20,11 @@ import kotlin.test.assertEquals
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class)
 class TextUtilsTest {
+
+    @Before
+    fun before() {
+        ShadowLog.stream = System.out;
+    }
 
     @Test
     fun testFormatCurrency() {
@@ -119,6 +128,13 @@ class TextUtilsTest {
         assertEquals(TextUtils.deFormatCurrency(TextUtils.PLACE_HOLDER_STRING), "")
         assertEquals(TextUtils.deFormatCurrency("${TextUtils.PLACE_HOLDER_STRING}${TextUtils.PLACE_HOLDER_STRING}${TextUtils.PLACE_HOLDER_STRING}"), "")
 
+        assertEquals(TextUtils.deFormatCurrency("abcdefg"), "")
+        assertEquals(TextUtils.deFormatCurrency("a bc defg"), "")
+        assertEquals(TextUtils.deFormatCurrency("ABCDEFG"), "")
+        assertEquals(TextUtils.deFormatCurrency("a Bc DEFG"), "")
+        assertEquals(TextUtils.deFormatCurrency(TextUtils.TOO_MANY_DIGITS_MSG), "")
+        assertEquals(TextUtils.deFormatCurrency("${TextUtils.TOO_MANY_DIGITS_MSG}${TextUtils.TOO_MANY_DIGITS_MSG}${TextUtils.TOO_MANY_DIGITS_MSG}"), "")
+
         assertEquals(TextUtils.deFormatCurrency("0.00000000"), "0.00000000")
         assertEquals(TextUtils.deFormatCurrency("0.00"), "0.00")
         assertEquals(TextUtils.deFormatCurrency("1"), "1")
@@ -137,5 +153,29 @@ class TextUtilsTest {
         dateTime = "2001-02-03"
         date = TextUtils.dateFormatter.parse(dateTime)
         assertEquals(TextUtils.getDateTimeString(date.time), dateTime)
+    }
+
+    @Test
+    fun testIsCurrencyInWarningState() {
+        assertFalse(TextUtils.isCurrencyInWarningState(null))
+        assertFalse(TextUtils.isCurrencyInWarningState(""))
+        assertFalse(TextUtils.isCurrencyInWarningState("foo"))
+        assertFalse(TextUtils.isCurrencyInWarningState("12.34"))
+
+        assertTrue(TextUtils.isCurrencyInWarningState(TextUtils.PLACE_HOLDER_STRING))
+        assertTrue(TextUtils.isCurrencyInWarningState(TextUtils.TOO_MANY_DIGITS_MSG))
+    }
+
+    @Test
+    fun testWasCurrencyInWarningState() {
+        assertFalse(TextUtils.wasCurrencyWarningState(null, true))
+        assertFalse(TextUtils.wasCurrencyWarningState("", true))
+        assertFalse(TextUtils.wasCurrencyWarningState("foo", true))
+        assertFalse(TextUtils.wasCurrencyWarningState("12.34", true))
+
+        assertFalse(TextUtils.wasCurrencyWarningState(TextUtils.PLACE_HOLDER_STRING, false))
+        assertFalse(TextUtils.wasCurrencyWarningState(TextUtils.TOO_MANY_DIGITS_MSG, false))
+        assertTrue(TextUtils.wasCurrencyWarningState(TextUtils.PLACE_HOLDER_STRING, true))
+        assertTrue(TextUtils.wasCurrencyWarningState(TextUtils.TOO_MANY_DIGITS_MSG, true))
     }
 }
