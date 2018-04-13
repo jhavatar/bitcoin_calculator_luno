@@ -10,7 +10,7 @@ data class CalculatorState(val targetTicker: String?,
                       val source: BigDecimal) {
     companion object {
         fun getFactoryState(): CalculatorState {
-            return CalculatorState(null, true, 0.toBigDecimal())
+            return CalculatorState(null, true, 1.toBigDecimal())
         }
     }
 }
