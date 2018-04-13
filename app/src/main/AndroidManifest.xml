@@ -14,7 +14,9 @@
         <activity
             android:name="io.chthonic.bitcoin.calculator.ui.activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppThemeSplash">
+            android:theme="@style/AppThemeSplash"
+            android:windowSoftInputMode="adjustResize"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

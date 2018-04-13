@@ -141,7 +141,11 @@ class MainVu(inflater: LayoutInflater,
                 bitcoinInput,
                 bitcoinInput.currentTextColor), null,null, null)
 
+        if (UiUtils.isHorizontal(rootView.resources)) {
+            rootView.app_bar.setExpanded(false)
+        }
         UiUtils.setRipple(rootView.clicker_bitcoin_info)
+
         RxView.clicks(rootView.clicker_bitcoin_info)
                 .map {
                     TextUtils.deFormatCurrency(bitcoinInput.text.toString())

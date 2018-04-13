@@ -1,6 +1,8 @@
 package io.chthonic.bitcoin.calculator.utils
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
@@ -104,6 +106,11 @@ object UiUtils {
                 .width(width) // size in px
                 .endConfig()
                 .buildRect(text, Color.TRANSPARENT)
+    }
+
+
+    fun isHorizontal(res: Resources): Boolean {
+        return res.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
 
