@@ -10,36 +10,6 @@ import timber.log.Timber
  */
 class CalculatorObservers: AppStateChangeObservers() {
 
-//    private val targetTickerChangePublisher: AppStateChangePublisher<NullSafeWrapper<String>> by lazy {
-//        object : AppStateChangePublisher<NullSafeWrapper<String>>() {
-//            override fun getPublishInfo(state: AppState): NullSafeWrapper<String> {
-//                return NullSafeWrapper(state.calculatorState.targetTicker)
-//            }
-//
-//            override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
-//                return hasObservers() && (oldState?.calculatorState?.targetTicker != state.calculatorState?.targetTicker)
-//            }
-//        }
-//    }
-//    val targetTickerChangeObserver: Observable<NullSafeWrapper<String>>
-//        get() = targetTickerChangePublisher.observable
-
-
-//    private val conversionDirectionChangePublisher: AppStateChangePublisher<Boolean> by lazy {
-//        object : AppStateChangePublisher<Boolean>() {
-//            override fun getPublishInfo(state: AppState): Boolean {
-//                return state.calculatorState.convertToFiat
-//            }
-//
-//            override fun shouldPublish(state: AppState, oldState: AppState?): Boolean {
-//                return hasObservers() && (oldState?.calculatorState?.convertToFiat != state.calculatorState?.convertToFiat)
-//            }
-//        }
-//    }
-//    val conversionDirectionChangeObserver: Observable<NullSafeWrapper<String>>
-//        get() = targetTickerChangePublisher.observable
-
-
     private val calculationChangePublisher: AppStateChangePublisher<CalculatorState> by lazy {
         object : AppStateChangePublisher<CalculatorState>() {
             override fun getPublishInfo(state: AppState): CalculatorState {
