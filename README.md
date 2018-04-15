@@ -1,1 +1,1 @@
-# Bitcoin calculator/converter with prices based on the Luno exchange rate.
+Bitcoin calculator/converter with prices based on the Luno exchange rate.
