@@ -1,1 +1,1 @@
-# droid_project_template
+# Bitcoin calculator/converter with prices based on the Luno exchange rate.
