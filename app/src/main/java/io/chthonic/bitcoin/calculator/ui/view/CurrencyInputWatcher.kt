@@ -17,10 +17,7 @@ class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: Pu
                     isCrypto = isCrypto)
 
     override fun afterTextChanged(editable: Editable?) {
-        val s = editable?.toString()
-        if (s == null) {
-            return
-        }
+        val s = editable?.toString() ?: return
 
         inputView.removeTextChangedListener(this)
 
