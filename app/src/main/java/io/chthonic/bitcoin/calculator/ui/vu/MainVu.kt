@@ -28,7 +28,6 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.vu_main.view.*
-import timber.log.Timber
 
 /**
  * Created by jhavatar on 3/28/2018.
@@ -218,7 +217,6 @@ class MainVu(inflater: LayoutInflater,
             } else {
                 fiatInput.setText(text)
             }
-            fiatInputWatcher.prevString = fiatInput.text.toString()
 
             if (text == TextUtils.PLACE_HOLDER_STRING) {
                 fiatInput.isEnabled = false
@@ -255,7 +253,6 @@ class MainVu(inflater: LayoutInflater,
                 bitcoinInput.setText(text)
                 bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
             }
-            bitcoinInputWatcher.prevString = bitcoinInput.text.toString()
         }
 
         val nuFiatName = calc.ticker?.name ?: TextUtils.PLACE_HOLDER_STRING

@@ -1,12 +1,14 @@
 package io.chthonic.bitcoin.calculator.utils
 
 import io.chthonic.bitcoin.calculator.BuildConfig
+import io.chthonic.bitcoin.calculator.data.model.CurrencyRealtimeFormatInput
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLog
+import org.w3c.dom.Text
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -141,6 +143,9 @@ class TextUtilsTest {
         assertEquals(TextUtils.deFormatCurrency("123.00"), "123.00")
         assertEquals(TextUtils.deFormatCurrency("1 234.00"), "1234.00")
         assertEquals(TextUtils.deFormatCurrency("1 234 567.00"), "1234567.00")
+        assertEquals(TextUtils.deFormatCurrency("123.45"), "123.45")
+
+        assertEquals(TextUtils.deFormatCurrency("01.23"), "01.23")
     }
 
 
@@ -177,5 +182,193 @@ class TextUtilsTest {
         assertFalse(TextUtils.wasCurrencyWarningState(TextUtils.TOO_MANY_DIGITS_MSG, false))
         assertTrue(TextUtils.wasCurrencyWarningState(TextUtils.PLACE_HOLDER_STRING, true))
         assertTrue(TextUtils.wasCurrencyWarningState(TextUtils.TOO_MANY_DIGITS_MSG, true))
+    }
+
+
+
+    @Test
+    fun testRealtimeFormatInput() {
+        var input = CurrencyRealtimeFormatInput.factoryReset()
+
+        // warning states
+        input = input.copy(s = TextUtils.PLACE_HOLDER_STRING)
+        var output = TextUtils.realtimeFormatInput(input)
+        assertTrue(output.doNothing)
+
+        input = input.copy(sPrev = TextUtils.TOO_MANY_DIGITS_MSG)
+        output = TextUtils.realtimeFormatInput(input)
+        assertTrue(output.doNothing)
+
+        // fallback states
+        input = input.copy(s="",
+                sPrev = "0.00",
+                delAction = false)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, TextUtils.FALLBACK_CURRENCY_STRING)
+        assertEquals(output.sFormatted, TextUtils.FALLBACK_CURRENCY_STRING)
+
+        input = input.copy(s="123.45",
+                sPrev = TextUtils.PLACE_HOLDER_STRING,
+                delAction = true)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, TextUtils.FALLBACK_CURRENCY_STRING)
+        assertEquals(output.sFormatted, TextUtils.FALLBACK_CURRENCY_STRING)
+
+        input = input.copy(s="123.45",
+                sPrev = TextUtils.TOO_MANY_DIGITS_MSG,
+                delAction = true)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, TextUtils.FALLBACK_CURRENCY_STRING)
+        assertEquals(output.sFormatted, TextUtils.FALLBACK_CURRENCY_STRING)
+
+        input = input.copy(s="foo",
+                sPrev = "0.00",
+                delAction = false)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, TextUtils.FALLBACK_CURRENCY_STRING)
+        assertEquals(output.sFormatted, TextUtils.FALLBACK_CURRENCY_STRING)
+
+
+        // del non numeric
+        input = input.copy(s="12345",
+                sPrev = "123.45",
+                changed = ".",
+                delAction = true,
+                caretPos = 4)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertTrue(output.revert)
+        assertEquals(output.sRaw, "123.45")
+        assertEquals(output.sFormatted, input.sPrev)
+        assertEquals(output.caretPos, 3)
+
+        input = input.copy(s="1234.56",
+                sPrev = "1 234.56",
+                changed = " ",
+                delAction = true,
+                caretPos = 2)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertTrue(output.revert)
+        assertEquals(output.sRaw, "1234.56")
+        assertEquals(output.sFormatted, input.sPrev)
+        assertEquals(output.caretPos, 1)
+
+
+
+
+        // add group separator
+        input = input.copy(s="1234.56",
+                sPrev = "234.56",
+                changed = "1",
+                delAction = false,
+                caretPos = 0)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, "1234.56")
+        assertEquals(output.sFormatted, "1${TextUtils.GROUPING_SEPARATOR}234.56")
+        assertEquals(output.caretPos, 2)
+
+        input = input.copy(s="1 2347.56",
+                sPrev = "1 234.56",
+                changed = "7",
+                delAction = false,
+                caretPos = 5)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, "12347.56")
+        assertEquals(output.sFormatted, "12${TextUtils.GROUPING_SEPARATOR}347.56")
+        assertEquals(output.caretPos, 6)
+
+
+        input = input.copy(s="123 4596.78",
+                sPrev = "123 456.78",
+                changed = "9",
+                delAction = false,
+                caretPos = 6)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, "1234596.78")
+        assertEquals(output.sFormatted, "1${TextUtils.GROUPING_SEPARATOR}234${TextUtils.GROUPING_SEPARATOR}596.78")
+        assertEquals(output.caretPos, 8)
+
+
+        // keep minimal currency format
+        input = input.copy(s=".00",
+                sPrev = "1.00",
+                changed = "1",
+                delAction = true,
+                caretPos = 1)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, "0.00")
+        assertEquals(output.sFormatted, "0.00")
+        assertEquals(output.caretPos, 0)
+
+        input = input.copy(s="1.0",
+                sPrev = "1.00",
+                changed = "0",
+                delAction = true,
+                caretPos = 4)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, "1.00")
+        assertEquals(output.sFormatted, "1.00")
+        assertEquals(output.caretPos, 3)
+
+
+        // formatted longer than max_length
+        input = input.copy(s="1234.00",
+                sPrev = "123.00",
+                changed = "4",
+                delAction = false,
+                caretPos = 3,
+                maxLength = 7)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertTrue(output.revert)
+        assertEquals(output.sRaw, "123.00")
+        assertEquals(output.sFormatted, "123.00")
+        assertEquals(output.caretPos, 3)
+
+        input = input.copy(s="123 456 7891.00",
+                sPrev = "123 456 789.00",
+                changed = "1",
+                delAction = false,
+                caretPos = 11,
+                maxLength = 15)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertTrue(output.revert)
+        assertEquals(output.sRaw, "123456789.00")
+        assertEquals(output.sFormatted, "123 456 789.00")
+        assertEquals(output.caretPos, 11)
+
+
+        // keep caret on same side of decimal
+        input = input.copy(s="01.00",
+                sPrev = "0.00",
+                changed = "1",
+                delAction = false,
+                caretPos = 1)
+        output = TextUtils.realtimeFormatInput(input)
+        assertFalse(output.doNothing)
+        assertFalse(output.revert)
+        assertEquals(output.sRaw, "1.00")
+        assertEquals(output.sFormatted, "1.00")
+        assertEquals(output.caretPos, 1)
     }
 }
