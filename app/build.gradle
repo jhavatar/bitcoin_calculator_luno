@@ -82,7 +82,6 @@ repositories {
     maven {
         url 'https://jitpack.io'
     }
-    maven { url 'http://dl.bintray.com/amulyakhare/maven' }
 }
 
 dependencies {
@@ -128,9 +127,7 @@ dependencies {
     kapt 'com.yheriatovych:reductor-processor:0.14.0'
 
     // mvp
-    implementation('io.chthonic.mythos:mythos:0.9.3') {
-        exclude group: 'org.jetbrains'
-    }
+    implementation "com.github.jhavatar:mythos:1.0.5"
 
     // ui
     implementation 'com.wang.avi:library:2.1.3'
