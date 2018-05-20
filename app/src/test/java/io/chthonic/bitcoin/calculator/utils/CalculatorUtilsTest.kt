@@ -90,12 +90,12 @@ class CalculatorUtilsTest {
         // convert directly from bitcoin (selected)
         calcState = CalculatorState(fooTicker.code, true, source)
         bigDecimalResult = CalculatorUtils.getFiatPrice(fooTicker, calcState, exchangeState)
-        assertEquals(bigDecimalResult, ExchangeUtils.convertToFiat(calcState.source, fooTicker))
+        assertEquals(bigDecimalResult, ExchangeUtils.convertFromBitcoin(calcState.source, fooTicker))
 
         // convert directly from bitcoin (not selected)
         calcState = CalculatorState(barTicker.code, true, source)
         bigDecimalResult = CalculatorUtils.getFiatPrice(fooTicker, calcState, exchangeState)
-        assertEquals(bigDecimalResult, ExchangeUtils.convertToFiat(calcState.source, fooTicker))
+        assertEquals(bigDecimalResult, ExchangeUtils.convertFromBitcoin(calcState.source, fooTicker))
 
         // convert to bitcoin then to foo fiat
         calcState = CalculatorState(barTicker.code, false, source)

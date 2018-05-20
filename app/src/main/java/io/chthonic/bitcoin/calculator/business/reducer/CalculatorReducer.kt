@@ -47,7 +47,7 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
             value = CalculatorActions.SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE,
             from = CalculatorActions::class)
     fun switchConvertDirectionAndUpdateSource(state: CalculatorState, convertToFiat: Boolean, source: BigDecimal): CalculatorState {
-        Timber.d("updateSourceAndSwitchConvertDirection: convertToFiat = $convertToFiat, source = $source")
+        Timber.d("updateSourceAndSwitchConvertDirection: convertFromBitcoin = $convertToFiat, source = $source")
         return state.copy(convertToFiat = convertToFiat, source = source)
     }
 

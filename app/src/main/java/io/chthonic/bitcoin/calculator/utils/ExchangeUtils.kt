@@ -2,9 +2,7 @@ package io.chthonic.bitcoin.calculator.utils
 
 import android.content.SharedPreferences
 import com.squareup.moshi.JsonAdapter
-import io.chthonic.bitcoin.calculator.data.model.ExchangeState
-import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
-import io.chthonic.bitcoin.calculator.data.model.Ticker
+import io.chthonic.bitcoin.calculator.data.model.*
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.MathContext
@@ -16,8 +14,11 @@ object ExchangeUtils {
 
     private const val PERSIST_KEY_NAME = "exchange_state"
 
-    private val codeToFiatCurrencyMap: Map<String, FiatCurrency> by lazy {
-        FiatCurrency.values.associateBy( {it.code}, {it} )
+    private val codeToCurrencyMap: Map<String, out Currency> by lazy {
+        val m = mutableMapOf<String, Currency>()
+        m.putAll(FiatCurrency.values.associateBy( {it.code}, {it} ))
+        m.putAll(CryptoCurrency.values.associateBy( {it.code}, {it} ))
+        m
     }
 
     fun getPersistedExchangeState(prefs: SharedPreferences, serializer: JsonAdapter<ExchangeState>, fallbackState: ExchangeState): ExchangeState {
@@ -53,19 +54,19 @@ object ExchangeUtils {
     }
 
 
-    fun getFiatCurrencyForTicker(ticker: Ticker): FiatCurrency? {
-        return getFiatCurrencyForTicker(ticker.code)
+    fun getCurrencyForTicker(ticker: Ticker): Currency? {
+        return getCurrencyForTicker(ticker.code)
     }
 
-    fun getFiatCurrencyForTicker(code: String): FiatCurrency? {
-        return codeToFiatCurrencyMap[code]
+    fun getCurrencyForTicker(code: String): Currency? {
+        return codeToCurrencyMap[code]
     }
 
-    fun isSupportedFiatCurrency(ticker: Ticker): Boolean {
-        return getFiatCurrencyForTicker(ticker) != null
+    fun isSupportedCurrency(ticker: Ticker): Boolean {
+        return getCurrencyForTicker(ticker) != null
     }
 
-    fun convertToFiat(bitcoinPrice: BigDecimal, ticker: Ticker): BigDecimal {
+    fun convertFromBitcoin(bitcoinPrice: BigDecimal, ticker: Ticker): BigDecimal {
         return bitcoinPrice.multiply(ticker.bid.toBigDecimal())
     }
 

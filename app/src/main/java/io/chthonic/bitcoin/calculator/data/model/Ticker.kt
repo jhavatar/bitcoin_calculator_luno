@@ -11,5 +11,8 @@ data class Ticker(val timestamp: Long,
                   val pair: String) {
 
     val code: String
-        get() = pair.replace(CryptoCurrency.Bitcoin.code, "")
+        get() {
+            val c = pair.replace(CryptoCurrency.Bitcoin.code, "")
+            return if (c.isNullOrEmpty()) CryptoCurrency.Bitcoin.code else c
+        }
 }

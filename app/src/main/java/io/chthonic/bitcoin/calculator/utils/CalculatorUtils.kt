@@ -80,7 +80,7 @@ object CalculatorUtils {
 
     fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
         return if (calculatorState.convertToFiat) {
-            ExchangeUtils.convertToFiat(calculatorState.source, ticker)
+            ExchangeUtils.convertFromBitcoin(calculatorState.source, ticker)
 
         } else if (calculatorState.targetTicker != null) {
             if (calculatorState.targetTicker == ticker.code) {
@@ -89,7 +89,7 @@ object CalculatorUtils {
             } else {
                 val bitcoinPrice = getBitcoinPrice(calculatorState, exchangeState)
                 if (bitcoinPrice != null) {
-                    ExchangeUtils.convertToFiat(bitcoinPrice, ticker)
+                    ExchangeUtils.convertFromBitcoin(bitcoinPrice, ticker)
 
                 } else {
                     null

@@ -47,7 +47,7 @@ class CalculatorService(private val stateService: StateService,
     }
 
     fun switchConvertDirectionAndUpdateSource(convertToFiat: Boolean, source: String) {
-//        Timber.d("switchConvertDirectionAndUpdateSource: convertToFiat = $convertToFiat, source = $source")
+//        Timber.d("switchConvertDirectionAndUpdateSource: convertFromBitcoin = $convertFromBitcoin, source = $source")
         val sourceDecimal = try {
             source.toBigDecimal()
         } catch (t: Throwable) {

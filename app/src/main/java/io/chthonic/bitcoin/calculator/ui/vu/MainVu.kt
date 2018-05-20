@@ -28,6 +28,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.vu_main.view.*
+import timber.log.Timber
 
 /**
  * Created by jhavatar on 3/28/2018.
@@ -197,16 +198,17 @@ class MainVu(inflater: LayoutInflater,
 
 
     fun updateCalculation(calc: CalculationViewModel) {
-        if (bitcoinInput.isFocused != calc.convertToFiat) {
+        Timber.d("updateCalculation: calc = $calc")
+        if (bitcoinInput.isFocused != calc.convertFromBitcoin) {
             bitcoinInput.requestFocus()
         }
-        if (fiatInput.isFocused != !calc.convertToFiat) {
+        if (fiatInput.isFocused != !calc.convertFromBitcoin) {
             fiatInput.requestFocus()
         }
 
-        val convertDirectChanged = updateActivated(calc.convertToFiat)
+        val convertDirectChanged = updateActivated(calc.convertFromBitcoin)
 
-        if (calc.forceSet || calc.convertToFiat) {
+        if (calc.forceSet || calc.convertFromBitcoin) {
             fiatInput.removeTextChangedListener(fiatInputWatcher)
             val text = calc.ticker?.price ?: TextUtils.PLACE_HOLDER_STRING
             val tooManyDigits = (text.length > maxFiatInputLength)
@@ -224,7 +226,7 @@ class MainVu(inflater: LayoutInflater,
             } else {
 
                 // must be able to change text if selected
-                if (!tooManyDigits || !calc.convertToFiat) {
+                if (!tooManyDigits || !calc.convertFromBitcoin) {
                     fiatInput.addTextChangedListener(fiatInputWatcher)
                     fiatInput.isEnabled = true
 
@@ -234,13 +236,13 @@ class MainVu(inflater: LayoutInflater,
             }
         }
 
-        if (calc.forceSet || !calc.convertToFiat) {
+        if (calc.forceSet || !calc.convertFromBitcoin) {
             bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
             val text = calc.bitcoinPrice
 //            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
             if (text.length > maxBitcoinInputLength) {
                 bitcoinInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
-                if (calc.convertToFiat) {
+                if (calc.convertFromBitcoin) {
                     // must be able to change text if selected
                     bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
 
@@ -274,9 +276,9 @@ class MainVu(inflater: LayoutInflater,
             if (calc.ticker != null) {
                 fiatInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         UiUtils.getCompoundDrawableForTextDrawable(
-                                UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)),
+                                UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(calc.ticker.code)),
                                 fiatInput,
-                                if (!calc.convertToFiat) fiatInput.resources.getColor(R.color.secondaryColor) else fiatInput.currentTextColor),
+                                if (!calc.convertFromBitcoin) fiatInput.resources.getColor(R.color.secondaryColor) else fiatInput.currentTextColor),
                         null, null, null)
 
             } else {

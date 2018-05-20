@@ -19,17 +19,30 @@ import kotlin.test.assertTrue
 class ExchangeUtilsTest {
 
     @Test
-    fun testGetFiatCurrencyForTicker() {
+    fun testGetCurrencyForTicker() {
         FiatCurrency.values.forEach { fiat ->
-            assertEquals(ExchangeUtils.getFiatCurrencyForTicker(Ticker(pair = CryptoCurrency.Bitcoin.code + fiat.code,
+            val currency = ExchangeUtils.getCurrencyForTicker(Ticker(pair = CryptoCurrency.Bitcoin.code + fiat.code,
                     timestamp = 1,
                     ask = "",
                     bid = "",
                     rolling_24_hour_volume = "",
-                    last_trade = "")), fiat)
+                    last_trade = ""))
+            println("testGetCurrencyForTicker: currency = $currency, fiat = $fiat, code = ${fiat.code}")
+            assertEquals(currency, fiat)
         }
 
-        assertNull(ExchangeUtils.getFiatCurrencyForTicker(Ticker(pair = CryptoCurrency.Bitcoin.code + "foo",
+        CryptoCurrency.values.forEach { crypto ->
+            val currency = ExchangeUtils.getCurrencyForTicker(Ticker(pair = crypto.code + CryptoCurrency.Bitcoin.code,
+                    timestamp = 1,
+                    ask = "",
+                    bid = "",
+                    rolling_24_hour_volume = "",
+                    last_trade = ""))
+            println("testGetCurrencyForTicker: currency = $currency, crypto = $crypto, code = ${crypto.code}")
+            assertEquals(currency, crypto)
+        }
+
+        assertNull(ExchangeUtils.getCurrencyForTicker(Ticker(pair = CryptoCurrency.Bitcoin.code + "foo",
                 timestamp = 1,
                 ask = "",
                 bid = "",
@@ -41,7 +54,7 @@ class ExchangeUtilsTest {
     @Test
     fun testIsSupportedFiatCurrency() {
         FiatCurrency.values.forEach { fiat ->
-            assertTrue(ExchangeUtils.isSupportedFiatCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code + fiat.code,
+            assertTrue(ExchangeUtils.isSupportedCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code + fiat.code,
                     timestamp = 1,
                     ask = "",
                     bid = "",
@@ -49,14 +62,16 @@ class ExchangeUtilsTest {
                     last_trade = "")))
         }
 
-        assertFalse(ExchangeUtils.isSupportedFiatCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code,
-                timestamp = 1,
-                ask = "",
-                bid = "",
-                rolling_24_hour_volume = "",
-                last_trade = "")))
+        CryptoCurrency.values.forEach { crypto ->
+            assertTrue(ExchangeUtils.isSupportedCurrency(Ticker(pair = crypto.code + CryptoCurrency.Bitcoin.code,
+                    timestamp = 1,
+                    ask = "",
+                    bid = "",
+                    rolling_24_hour_volume = "",
+                    last_trade = "")))
+        }
 
-        assertFalse(ExchangeUtils.isSupportedFiatCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code + "foo",
+        assertFalse(ExchangeUtils.isSupportedCurrency(Ticker(pair = CryptoCurrency.Bitcoin.code + "foo",
                 timestamp = 1,
                 ask = "",
                 bid = "",
@@ -66,9 +81,9 @@ class ExchangeUtilsTest {
 
 
     @Test
-    fun testConvertToFiat() {
+    fun testConvertFromBitcoin() {
         val ticker = Ticker(10, "10", "11", "12", "foo", "bar")
-        val fiatVal = ExchangeUtils.convertToFiat(BigDecimal(100), ticker)
+        val fiatVal = ExchangeUtils.convertFromBitcoin(BigDecimal(100), ticker)
         assertEquals(fiatVal, BigDecimal(100).multiply(ticker.bid.toBigDecimal()))
     }
 

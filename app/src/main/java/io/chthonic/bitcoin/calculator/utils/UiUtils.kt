@@ -15,6 +15,7 @@ import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.data.model.Currency
 import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
+import timber.log.Timber
 
 
 /**
@@ -52,16 +53,19 @@ object UiUtils {
     }
 
     fun getCurrencySign(currency: Currency?, fallback: String? = null): String {
+        Timber.d("getCurrencySign: currency = $currency")
         return getCurrencySign(currency?.code, fallback)
     }
 
     fun getCurrencySign(code: String?, fallback: String? = null): String {
+        Timber.d("getCurrencySign: code = $code, fallback = $fallback, mapCurrencyToSign = $mapCurrencyToSign")
         return mapCurrencyToSign[code] ?: (fallback ?: throw RuntimeException("code $code should not exist"))
     }
 
     fun getCurrencyVectorRes(code: String): Int {
         return when (code) {
             CryptoCurrency.Bitcoin.code -> R.drawable.ic_xbt
+            CryptoCurrency.Ethereum.code -> R.drawable.ic_eth
             FiatCurrency.Zar.code -> R.drawable.ic_zar
             FiatCurrency.Myr.code -> R.drawable.ic_myr
             FiatCurrency.Idr.code -> R.drawable.ic_idr
@@ -70,8 +74,10 @@ object UiUtils {
         }
     }
 
-    fun getFiatImageSmallRes(code: String): Int {
+    fun getCurrencyImageSmallRes(code: String): Int {
         return when (code) {
+            CryptoCurrency.Bitcoin.code -> R.drawable.ic_xbt_320px
+            CryptoCurrency.Ethereum.code -> R.drawable.ic_eth_320px
             FiatCurrency.Zar.code -> R.drawable.ic_zar_320px
             FiatCurrency.Myr.code -> R.drawable.ic_myr_320px
             FiatCurrency.Idr.code -> R.drawable.ic_idr_320px

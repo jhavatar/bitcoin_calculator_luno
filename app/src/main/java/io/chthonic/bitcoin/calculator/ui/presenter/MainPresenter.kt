@@ -152,13 +152,15 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     private fun genCalculationViewModel(calculatorState: CalculatorState, exchangeState: ExchangeState = exchangeService.state): CalculationViewModel {
         Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
         val ticker = CalculatorUtils.getTicker(calculatorState, exchangeState)
+        Timber.d("genCalculationViewModel: ticker = $ticker, code = ${ticker?.code}")
+        Timber.d("genCalculationViewModel: currency = ${ExchangeUtils.getCurrencyForTicker(ticker!!)}")
         return CalculationViewModel(
                 bitcoinPrice = TextUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState), isCrypto = true),
-                convertToFiat = calculatorState.convertToFiat,
+                convertFromBitcoin = calculatorState.convertToFiat,
                 ticker = if (ticker != null) {
                     TickerViewModel(ticker.code, ticker.code,
                             TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
-                            UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(ticker), ""),
+                            UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(ticker), ""),
                             true,
                             TextUtils.getDateTimeString(ticker.timestamp))
                 } else {
@@ -171,13 +173,13 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
         Timber.d("genTickerViewModels: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, tickers = $tickers")
         val targetTicker = CalculatorUtils.getTicker(calcState, tickers)
         return tickers.values
-                .filter{ ExchangeUtils.isSupportedFiatCurrency(it) }
+                .filter{ ExchangeUtils.isSupportedCurrency(it) }
                 .sortedBy { it.code }
                 .map {
                     TickerViewModel(it.code,
                             it.code,
                             TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(it, calculatorService.state, tickers)),
-                            UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(it), ""),
+                            UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(it), ""),
                             targetTicker?.code == it.code,
                             TextUtils.getDateTimeString(it.timestamp))
                 }
