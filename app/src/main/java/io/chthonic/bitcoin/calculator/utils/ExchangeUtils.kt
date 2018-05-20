@@ -14,6 +14,16 @@ object ExchangeUtils {
 
     private const val PERSIST_KEY_NAME = "exchange_state"
 
+    val BITCOIN_TICKER: Ticker by lazy {
+        Ticker(timestamp = System.currentTimeMillis(),
+                bid = "1.0",
+                ask = "1.0",
+                last_trade = "",
+                rolling_24_hour_volume = "",
+                pair = CryptoCurrency.Bitcoin.code
+        )
+    }
+
     private val codeToCurrencyMap: Map<String, out Currency> by lazy {
         val m = mutableMapOf<String, Currency>()
         m.putAll(FiatCurrency.values.associateBy( {it.code}, {it} ))
@@ -74,5 +84,4 @@ object ExchangeUtils {
         Timber.d("convertToBitcoin: fiatPrice = $fiatPrice, ticker = $ticker")
         return fiatPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL128)
     }
-
 }

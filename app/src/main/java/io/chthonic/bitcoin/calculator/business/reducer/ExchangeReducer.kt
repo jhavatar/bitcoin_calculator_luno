@@ -12,6 +12,7 @@ import io.chthonic.bitcoin.calculator.data.model.ExchangeState
 import io.chthonic.bitcoin.calculator.data.model.TickerLot
 import io.chthonic.bitcoin.calculator.utils.ExchangeUtils
 import io.chthonic.bitcoin.calculator.business.reducer.ExchangeReducerImpl
+import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import timber.log.Timber
 
 /**
@@ -31,7 +32,8 @@ abstract class ExchangeReducer : Reducer<ExchangeState> {
 
     @AutoReducer.InitialState
     internal fun initialState(): ExchangeState {
-        return ExchangeUtils.getPersistedExchangeState(prefs, serializer, ExchangeState(mapOf()))
+        return ExchangeUtils.getPersistedExchangeState(prefs, serializer,
+                ExchangeState(mapOf(Pair(ExchangeUtils.BITCOIN_TICKER.code, ExchangeUtils.BITCOIN_TICKER))))
     }
 
 
@@ -40,6 +42,9 @@ abstract class ExchangeReducer : Reducer<ExchangeState> {
             from = ExchangeActions::class)
     fun updateTickers(state: ExchangeState, tickerLot: TickerLot): ExchangeState {
         Timber.d("updateTickers $tickerLot")
-        return state.copy(tickers = tickerLot.tickers.associateBy ( {it.code}, {it} ))
+        return state.copy(tickers = tickerLot.tickers
+                .toMutableList().apply {
+                    add(ExchangeUtils.BITCOIN_TICKER)
+                }.associateBy ( {it.code}, {it} ))
     }
 }
