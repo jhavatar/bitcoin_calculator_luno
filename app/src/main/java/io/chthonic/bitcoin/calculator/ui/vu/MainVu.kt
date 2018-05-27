@@ -102,11 +102,19 @@ class MainVu(inflater: LayoutInflater,
         rootView.layout_left_info
     }
 
+    private val leftName: TextView by lazy {
+        rootView.label_left
+    }
+
+    private val leftImage: ImageView by lazy {
+        rootView.image_left
+    }
+
     private val rightInfoLayout: View by lazy {
         rootView.layout_right_info
     }
 
-    private val leftName: TextView by lazy {
+    private val rightName: TextView by lazy {
         rootView.label_right
     }
 
@@ -256,12 +264,41 @@ class MainVu(inflater: LayoutInflater,
             }
         }
 
-        val nuFiatName = calc.rightTicker?.name ?: TextUtils.PLACE_HOLDER_STRING
-        val nameChanged = leftName.text != nuFiatName
+        val nuLeftName = calc.leftTicker?.name ?: TextUtils.PLACE_HOLDER_STRING
+        val leftNameChanged = leftName.text != nuLeftName
+        // update left image and label
+        if (leftNameChanged) {
+            leftName.text = nuLeftName
+            if (calc.leftTicker != null) {
+                leftImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.leftTicker.code))
 
-        // update fiat image and label
-        if (nameChanged) {
-            leftName.text = nuFiatName
+            } else {
+                leftImage.setImageDrawable(null)
+            }
+        }
+
+        // update right compound image
+        if (leftNameChanged || convertDirectChanged)  {
+            if (calc.leftTicker != null) {
+                leftInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        UiUtils.getCompoundDrawableForTextDrawable(
+                                UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(calc.leftTicker.code)),
+                                leftInput,
+                                if (calc.leftTickerIsSource) leftInput.resources.getColor(R.color.secondaryColor) else leftInput.currentTextColor),
+                        null, null, null)
+
+            } else {
+                leftInput.setCompoundDrawablesRelative(null, null, null, null)
+            }
+        }
+
+
+        val nuRightName = calc.rightTicker?.name ?: TextUtils.PLACE_HOLDER_STRING
+        val rightNameChanged = rightName.text != nuRightName
+
+        // update right image and label
+        if (rightNameChanged) {
+            rightName.text = nuRightName
             if (calc.rightTicker != null) {
                 rightImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.rightTicker.code))
 
@@ -270,8 +307,8 @@ class MainVu(inflater: LayoutInflater,
             }
         }
 
-        // update fiat compound image
-        if (nameChanged || convertDirectChanged)  {
+        // update right compound image
+        if (rightNameChanged || convertDirectChanged)  {
             if (calc.rightTicker != null) {
                 rightInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         UiUtils.getCompoundDrawableForTextDrawable(

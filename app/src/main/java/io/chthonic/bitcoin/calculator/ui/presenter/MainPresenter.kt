@@ -100,9 +100,9 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
 
         rxSubs.add(vu!!.leftInputObserver
                 .observeOn(Schedulers.computation())
-                .subscribe({bitcoinAmount: String ->
-                    Timber.d("leftInputObserver success = $bitcoinAmount")
-                    calculatorService.updateSourceDirectionAndSourceValue(true, bitcoinAmount)
+                .subscribe({amount: String ->
+                    Timber.d("leftInputObserver success = $amount")
+                    calculatorService.updateSourceDirectionAndSourceValue(true, amount)
 
                 }, {
 
@@ -111,9 +111,9 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
 
         rxSubs.add(vu!!.rightInputObserver
                 .observeOn(Schedulers.computation())
-                .subscribe({fiatAmount: String ->
-                    Timber.d("rightInputObserver success = $fiatAmount")
-                    calculatorService.updateSourceDirectionAndSourceValue(false, fiatAmount)
+                .subscribe({amount: String ->
+                    Timber.d("rightInputObserver success = $amount")
+                    calculatorService.updateSourceDirectionAndSourceValue(false, amount)
 
                 }, {
 
