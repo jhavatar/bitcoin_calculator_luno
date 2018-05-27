@@ -15,11 +15,13 @@ interface CalculatorActions {
         const val CLEAR: String = "CLEAR"
     }
 
+//    fun setSourceDirection(leftTickerIsSource: Boolean) {
+
     @ActionCreator.Action(SET_TARGET_TICKER)
     fun setTargetTicker(tickerCode: String): Action
 
     @ActionCreator.Action(SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE)
-    fun switchConvertDirectionAndUpdateSource(convertToFiat: Boolean, source: BigDecimal): Action
+    fun updateSourceDirectionAndSourceValue(leftTickerIsSource: Boolean, sourceValue: BigDecimal): Action
 
     @ActionCreator.Action(CLEAR)
     fun clear(): Action

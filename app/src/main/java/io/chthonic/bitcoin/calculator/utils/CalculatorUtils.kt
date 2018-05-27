@@ -2,10 +2,7 @@ package io.chthonic.bitcoin.calculator.utils
 
 import android.content.SharedPreferences
 import com.squareup.moshi.JsonAdapter
-import io.chthonic.bitcoin.calculator.data.model.CalculatorSerializableState
-import io.chthonic.bitcoin.calculator.data.model.CalculatorState
-import io.chthonic.bitcoin.calculator.data.model.ExchangeState
-import io.chthonic.bitcoin.calculator.data.model.Ticker
+import io.chthonic.bitcoin.calculator.data.model.*
 import timber.log.Timber
 import java.math.BigDecimal
 
@@ -47,12 +44,20 @@ object CalculatorUtils {
         }
     }
 
-    fun getTicker(calculatorState: CalculatorState, exchangeState: ExchangeState): Ticker? {
-        return getTicker(calculatorState, exchangeState.tickers)
+    fun getRightTicker(calculatorState: CalculatorState, exchangeState: ExchangeState): Ticker? {
+        return getRightTicker(calculatorState, exchangeState.tickers)
     }
 
-    fun getTicker(calculatorState: CalculatorState, tickers: Map<String, Ticker>): Ticker? {
-        return tickers.get(calculatorState.targetTicker)
+    fun getRightTicker(calculatorState: CalculatorState, tickers: Map<String, Ticker>): Ticker? {
+        return tickers.get(calculatorState.rightTickerCode)
+    }
+
+    fun getLeftTicker(calculatorState: CalculatorState, exchangeState: ExchangeState): Ticker? {
+        return getLeftTicker(calculatorState, exchangeState.tickers)
+    }
+
+    fun getLeftTicker(calculatorState: CalculatorState, tickers: Map<String, Ticker>): Ticker? {
+        return tickers.get(calculatorState.leftTickerCode)
     }
 
     fun getBitcoinPrice(calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
@@ -60,13 +65,17 @@ object CalculatorUtils {
     }
 
     fun getBitcoinPrice(calculatorState: CalculatorState, tickerMap: Map<String, Ticker>): BigDecimal? {
-        return if (calculatorState.convertToFiat) {
-            calculatorState.source
+        return if (calculatorState.sourceTickerCode == CryptoCurrency.Bitcoin.code) {
+
+            // source is bitcoin
+            calculatorState.sourceValue
 
         } else {
-            val ticker = getTicker(calculatorState, tickerMap)
+
+            // convert source to bitcoin
+            val ticker = tickerMap.get(calculatorState.sourceTickerCode)
             if (ticker != null) {
-                ExchangeUtils.convertToBitcoin(calculatorState.source, ticker)
+                ExchangeUtils.convertToBitcoin(calculatorState.sourceValue, ticker)
 
             } else {
                 null
@@ -74,30 +83,50 @@ object CalculatorUtils {
         }
     }
 
-    fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, tickers: Map<String, Ticker>): BigDecimal? {
-        return getFiatPrice(ticker, calculatorState, ExchangeState(tickers))
+    fun getPrice(ticker: Ticker, calculatorState: CalculatorState, tickers: Map<String, Ticker>): BigDecimal? {
+        return getPrice(ticker, calculatorState, ExchangeState(tickers))
     }
 
-    fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
-        return if (calculatorState.convertToFiat) {
-            ExchangeUtils.convertFromBitcoin(calculatorState.source, ticker)
-
-        } else if (calculatorState.targetTicker != null) {
-            if (calculatorState.targetTicker == ticker.code) {
-                calculatorState.source
-
-            } else {
-                val bitcoinPrice = getBitcoinPrice(calculatorState, exchangeState)
-                if (bitcoinPrice != null) {
-                    ExchangeUtils.convertFromBitcoin(bitcoinPrice, ticker)
-
-                } else {
-                    null
-                }
-            }
+    fun getPrice(ticker: Ticker, calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
+        return if (calculatorState.sourceTickerCode == ticker.code) {
+            calculatorState.sourceValue
 
         } else {
-            null
+            val bitcoinPrice = getBitcoinPrice(calculatorState, exchangeState)
+            if (bitcoinPrice != null) {
+                ExchangeUtils.convertFromBitcoin(bitcoinPrice, ticker)
+
+            } else {
+                null
+            }
         }
     }
+
+
+//    fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, tickers: Map<String, Ticker>): BigDecimal? {
+//        return getFiatPrice(ticker, calculatorState, ExchangeState(tickers))
+//    }
+//
+//    fun getFiatPrice(ticker: Ticker, calculatorState: CalculatorState, exchangeState: ExchangeState): BigDecimal? {
+//        return if (calculatorState.convertFromBitcoin) {
+//            ExchangeUtils.convertFromBitcoin(calculatorState.sourceValue, ticker)
+//
+//        } else if (calculatorState.targetTickerCode != null) {
+//            if (calculatorState.targetTickerCode == ticker.code) {
+//                calculatorState.sourceValue
+//
+//            } else {
+//                val bitcoinPrice = getBitcoinPrice(calculatorState, exchangeState)
+//                if (bitcoinPrice != null) {
+//                    ExchangeUtils.convertFromBitcoin(bitcoinPrice, ticker)
+//
+//                } else {
+//                    null
+//                }
+//            }
+//
+//        } else {
+//            null
+//        }
+//    }
 }

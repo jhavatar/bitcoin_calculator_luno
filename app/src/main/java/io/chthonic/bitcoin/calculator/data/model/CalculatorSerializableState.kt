@@ -5,17 +5,18 @@ import java.math.BigDecimal
 /**
  * Created by jhavatar on 4/2/2018.
  */
-data class CalculatorSerializableState(val targetTicker: String?,
-                                       val convertToFiat: Boolean,
-                                       val source: String) {
+data class CalculatorSerializableState(val leftTickerCode: String,
+                                       val rightTickerCode: String?,
+                                       val leftTickerIsSource: Boolean,
+                                       val sourceValue: String) {
 
     companion object {
         fun fromCalculatorState(state: CalculatorState): CalculatorSerializableState {
-            return CalculatorSerializableState(state.targetTicker, state.convertToFiat, state.source.toString())
+            return CalculatorSerializableState(state.leftTickerCode, state.rightTickerCode, state.leftTickerIsSource, state.sourceValue.toString())
         }
     }
 
     fun toCalculatorState(): CalculatorState {
-        return CalculatorState(targetTicker, convertToFiat, BigDecimal(source))
+        return CalculatorState(leftTickerCode, rightTickerCode, leftTickerIsSource, BigDecimal(sourceValue))
     }
 }

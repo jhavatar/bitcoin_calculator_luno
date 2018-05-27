@@ -39,16 +39,17 @@ abstract class CalculatorReducer : Reducer<CalculatorState> {
             value = CalculatorActions.SET_TARGET_TICKER,
             from = CalculatorActions::class)
     fun setTargetTicker(state: CalculatorState, tickerCode: String): CalculatorState {
-        Timber.d("setTargetTicker $tickerCode")
-        return state.copy(targetTicker = tickerCode)
+        Timber.d("setTicker setTicker = tickerCode = $tickerCode, state = $state")
+        return state.copy(leftTickerCode = if (state.leftTickerIsSource) state.leftTickerCode else tickerCode,
+                rightTickerCode = if (state.leftTickerIsSource) tickerCode else state.rightTickerCode)
     }
 
     @AutoReducer.Action(
             value = CalculatorActions.SWITCH_CONVERT_DIRECTION_AND_UPDATE_SOURCE,
             from = CalculatorActions::class)
-    fun switchConvertDirectionAndUpdateSource(state: CalculatorState, convertToFiat: Boolean, source: BigDecimal): CalculatorState {
-        Timber.d("updateSourceAndSwitchConvertDirection: convertFromBitcoin = $convertToFiat, source = $source")
-        return state.copy(convertToFiat = convertToFiat, source = source)
+    fun updateSourceDirectionAndSourceValue(state: CalculatorState, leftTickerIsSource: Boolean, sourceValue: BigDecimal): CalculatorState {
+        Timber.d("updateSourceDirectionAndSourceValue: leftTickerIsSource = $leftTickerIsSource, source = $sourceValue")
+        return state.copy(leftTickerIsSource = leftTickerIsSource, sourceValue = sourceValue)
     }
 
     @AutoReducer.Action(

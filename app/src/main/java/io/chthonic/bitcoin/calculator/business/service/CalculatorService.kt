@@ -46,16 +46,17 @@ class CalculatorService(private val stateService: StateService,
         stateService.dispatch(calculatorActions.setTargetTicker(tickerCode))
     }
 
-    fun switchConvertDirectionAndUpdateSource(convertToFiat: Boolean, source: String) {
-//        Timber.d("switchConvertDirectionAndUpdateSource: convertFromBitcoin = $convertFromBitcoin, source = $source")
+    fun updateSourceDirectionAndSourceValue(leftTickerIsSource: Boolean, source: String) {
+        Timber.d("updateSourceDirectionAndSourceValue: leftTickerIsSource = $leftTickerIsSource, source = $source")
         val sourceDecimal = try {
             source.toBigDecimal()
+
         } catch (t: Throwable) {
-            Timber.w(t, "switchConvertDirectionAndUpdateSource: source $source is not numeric")
+            Timber.w(t, "updateSourceDirectionAndSourceValue: leftTickerIsSource = $leftTickerIsSource, source $source is not numeric")
             return
         }
 
-        stateService.dispatch(calculatorActions.switchConvertDirectionAndUpdateSource(convertToFiat, sourceDecimal))
+        stateService.dispatch(calculatorActions.updateSourceDirectionAndSourceValue(leftTickerIsSource, sourceDecimal))
     }
 
     fun clear() {

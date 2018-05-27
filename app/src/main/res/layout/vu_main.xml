@@ -64,12 +64,12 @@
                             android:layout_weight="0.5"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:id="@+id/layout_bitcoin_info"
+                            android:id="@+id/layout_left_info"
                             android:background="@drawable/bg_activated_selector"
                             >
 
                             <ImageView
-                                android:id="@+id/image_bitcoin"
+                                android:id="@+id/image_left"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:src="@drawable/ic_xbt"
@@ -81,6 +81,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/label_left"
                                 android:text="XBT"
                                 android:layout_gravity="bottom|left"
                                 android:background="@drawable/bg_activated_roundright_transparent_selector"
@@ -95,7 +96,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/selectableItemBackground"
-                                android:id="@+id/clicker_bitcoin_info"
+                                android:id="@+id/clicker_left_info"
                                 android:clickable="true"/>
 
                         </FrameLayout>
@@ -105,14 +106,14 @@
                             android:layout_weight="0.5"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
-                            android:id="@+id/layout_fiat_info"
+                            android:id="@+id/layout_right_info"
                             android:background="@drawable/bg_activated_selector"
                             >
 
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:id="@+id/image_fiat"
+                                android:id="@+id/image_right"
                                 tools:src="@drawable/ic_zar"
                                 android:scaleType="centerCrop"
                                 android:layout_gravity="center"
@@ -125,7 +126,7 @@
                                 android:text=""
                                 tools:text="ZAR"
                                 android:layout_gravity="bottom|right"
-                                android:id="@+id/label_fiat"
+                                android:id="@+id/label_right"
                                 android:background="@drawable/bg_activated_roundleft_transparent_selector"
                                 android:paddingTop="4dp"
                                 android:paddingBottom="4dp"
@@ -138,7 +139,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="?android:attr/selectableItemBackground"
-                                android:id="@+id/clicker_fiat_info"
+                                android:id="@+id/clicker_right_info"
                                 android:clickable="true"
                                 />
 
@@ -177,13 +178,13 @@
                             android:paddingTop="@dimen/content_padding"
                             android:paddingBottom="@dimen/content_padding"
                             android:background="@drawable/bg_activated_transparent_selector"
-                            android:id="@+id/layout_bitcoin_input"
+                            android:id="@+id/layout_left_input"
                             >
 
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/input_bitcoin"
+                                android:id="@+id/input_left"
                                 android:inputType="number"
                                 android:digits="0123456789"
                                 android:gravity="center"
@@ -203,14 +204,14 @@
                             android:paddingTop="@dimen/content_padding"
                             android:paddingBottom="@dimen/content_padding"
                             android:paddingEnd="@dimen/activity_horizontal_margin"
-                            android:id="@+id/layout_fiat_input"
+                            android:id="@+id/layout_right_input"
                             android:background="@drawable/bg_activated_transparent_selector"
                             >
 
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/input_fiat"
+                                android:id="@+id/input_right"
                                 android:inputType="number"
                                 android:digits="0123456789"
                                 android:gravity="center"

@@ -26,16 +26,16 @@ class CalculatorUtilsTest {
         val exchangeState = ExchangeState(tickers)
 
         var calcState = CalculatorState(barTicker.code, true, BigDecimal(100))
-        assertEquals(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState ), barTicker)
+        assertEquals(CalculatorUtils.getRightTicker(calcState, exchangeState = exchangeState ), barTicker)
 
         calcState = CalculatorState(fooTicker.code, true, BigDecimal(100))
-        assertEquals(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState), fooTicker)
+        assertEquals(CalculatorUtils.getRightTicker(calcState, exchangeState = exchangeState), fooTicker)
 
         calcState = CalculatorState(null, true, BigDecimal(100))
-        assertNull(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState))
+        assertNull(CalculatorUtils.getRightTicker(calcState, exchangeState = exchangeState))
 
         calcState = CalculatorState("unknown", true, BigDecimal(100))
-        assertNull(CalculatorUtils.getTicker(calcState, exchangeState = exchangeState))
+        assertNull(CalculatorUtils.getRightTicker(calcState, exchangeState = exchangeState))
     }
 
     @Test

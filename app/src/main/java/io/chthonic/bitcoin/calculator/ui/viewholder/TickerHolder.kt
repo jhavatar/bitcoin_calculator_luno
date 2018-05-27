@@ -40,11 +40,11 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         // note, circleImageView does not work with vectors
         itemView.ticker_image.setImageResource(UiUtils.getCurrencyImageSmallRes(ticker.code))
 
-        val selectedVis = if (ticker.selected) View.VISIBLE else View.GONE
+        val selectedVis = if (ticker.isRight) View.VISIBLE else View.GONE
         if (itemView.ticker_selected.visibility != selectedVis) {
             itemView.ticker_selected.visibility = selectedVis
-            itemView.ticker_image.borderColor = itemView.resources.getColor(if (ticker.selected) R.color.secondaryColor else R.color.primaryDarkestColor)
-            itemView.ticker_image.borderWidth = if (ticker.selected) UiUtils.dipToPixels(4, itemView.context) else UiUtils.dipToPixels(1, itemView.context)
+            itemView.ticker_image.borderColor = itemView.resources.getColor(if (ticker.isRight) R.color.secondaryColor else R.color.primaryDarkestColor)
+            itemView.ticker_image.borderWidth = if (ticker.isRight) UiUtils.dipToPixels(4, itemView.context) else UiUtils.dipToPixels(1, itemView.context)
         }
     }
 

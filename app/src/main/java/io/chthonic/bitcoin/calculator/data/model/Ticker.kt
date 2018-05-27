@@ -15,4 +15,7 @@ data class Ticker(val timestamp: Long,
             val c = pair.replace(CryptoCurrency.Bitcoin.code, "")
             return if (c.isNullOrEmpty()) CryptoCurrency.Bitcoin.code else c
         }
+
+//    val convertFromBitcoin: Boolean
+//        get() = pair.indexOf(CryptoCurrency.Bitcoin.code) > 0
 }

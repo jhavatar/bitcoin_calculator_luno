@@ -47,72 +47,71 @@ class MainVu(inflater: LayoutInflater,
     val tickerSelectObservable: Observable<String>
         get() = tickerSelectPublisher.hide()
 
-    private val bitcoinInputPublisher: PublishSubject<String> by lazy {
+    private val leftInputPublisher: PublishSubject<String> by lazy {
         PublishSubject.create<String>()
     }
-    val bitcoinInputObserver: Flowable<String>
-        get() = bitcoinInputPublisher
+    val leftInputObserver: Flowable<String>
+        get() = leftInputPublisher
                 .hide()
                 .toFlowable(BackpressureStrategy.LATEST)
 
-    private val bitcoinInputWatcher by lazy {
-        CurrencyInputWatcher(bitcoinInput, bitcoinInputPublisher, true, maxBitcoinInputLength)
+    private val leftInputWatcher by lazy {
+        CurrencyInputWatcher(leftInput, leftInputPublisher, true, maxBitcoinInputLength)
     }
 
-
-
-    private val fiatInputPublisher: PublishSubject<String> by lazy {
+    private val rightInputPublisher: PublishSubject<String> by lazy {
         PublishSubject.create<String>()
     }
-    val fiatInputObserver: Flowable<String>
-        get() = fiatInputPublisher
+
+    val rightInputObserver: Flowable<String>
+        get() = rightInputPublisher
                 .hide()
                 .toFlowable(BackpressureStrategy.LATEST)
 
-    private val fiatInputWatcher by lazy {
-        CurrencyInputWatcher(fiatInput, fiatInputPublisher, false, maxFiatInputLength)
+    private val rightInputWatcher by lazy {
+        CurrencyInputWatcher(rightInput, rightInputPublisher, false, maxFiatInputLength)
     }
 
     private val listView: RecyclerView by lazy {
         rootView.list_tickers
     }
 
-    private val bitcoinInput: EditText by lazy {
-        rootView.input_bitcoin
+    private val leftInput: EditText by lazy {
+        rootView.input_left
     }
 
     private val maxBitcoinInputLength: Int by lazy {
-        val lengthFilter: InputFilter.LengthFilter? = bitcoinInput.filters.find {
+        val lengthFilter: InputFilter.LengthFilter? = leftInput.filters.find {
             it is InputFilter.LengthFilter
         } as? InputFilter.LengthFilter
         lengthFilter?.max ?: Int.MAX_VALUE
     }
 
-    private val fiatInput: EditText by lazy {
-        rootView.input_fiat
+    private val rightInput: EditText by lazy {
+        rootView.input_right
     }
 
     private val maxFiatInputLength: Int by lazy {
-        val lengthFilter: InputFilter.LengthFilter? = fiatInput.filters.find {
+        val lengthFilter: InputFilter.LengthFilter? = rightInput.filters.find {
             it is InputFilter.LengthFilter
         } as? InputFilter.LengthFilter
         lengthFilter?.max ?: Int.MAX_VALUE
     }
 
-    private val bitcoinInfoLayout: View by lazy {
-        rootView.layout_bitcoin_info
+    private val leftInfoLayout: View by lazy {
+        rootView.layout_left_info
     }
 
-    private val fiatInfoLayout: View by lazy {
-        rootView.layout_fiat_info
+    private val rightInfoLayout: View by lazy {
+        rootView.layout_right_info
     }
 
-    private val fiatName: TextView by lazy {
-        rootView.label_fiat
+    private val leftName: TextView by lazy {
+        rootView.label_right
     }
 
-    private val fiatImage: ImageView by lazy {
-        rootView.image_fiat
+    private val rightImage: ImageView by lazy {
+        rootView.image_right
     }
 
 
@@ -137,60 +136,60 @@ class MainVu(inflater: LayoutInflater,
             }
         })
 
-        bitcoinInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
-                bitcoinInput,
-                bitcoinInput.currentTextColor), null,null, null)
+        leftInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
+                leftInput,
+                leftInput.currentTextColor), null,null, null)
 
         if (UiUtils.isHorizontal(rootView.resources)) {
             rootView.app_bar.setExpanded(false)
         }
-        UiUtils.setRipple(rootView.clicker_bitcoin_info)
+        UiUtils.setRipple(rootView.clicker_left_info)
 
-        RxView.clicks(rootView.clicker_bitcoin_info)
+        RxView.clicks(rootView.clicker_left_info)
                 .map {
-                    TextUtils.deFormatCurrency(bitcoinInput.text.toString())
-                }.subscribe(bitcoinInputPublisher)
+                    TextUtils.deFormatCurrency(leftInput.text.toString())
+                }.subscribe(leftInputPublisher)
 
-        UiUtils.setRipple(rootView.clicker_fiat_info)
-        RxView.clicks(rootView.clicker_fiat_info)
+        UiUtils.setRipple(rootView.clicker_right_info)
+        RxView.clicks(rootView.clicker_right_info)
                 .map {
-                    TextUtils.deFormatCurrency(fiatInput.text.toString())
-                }.subscribe(fiatInputPublisher)
+                    TextUtils.deFormatCurrency(rightInput.text.toString())
+                }.subscribe(rightInputPublisher)
 
-        RxView.focusChanges(bitcoinInput)
+        RxView.focusChanges(leftInput)
                 .skipInitialValue()
                 .filter {
-                    it && !bitcoinInfoLayout.isActivated
+                    it && !leftInfoLayout.isActivated
                 }.map {
-                    TextUtils.deFormatCurrency(bitcoinInput.text.toString())
-                }.subscribe(bitcoinInputPublisher)
+                    TextUtils.deFormatCurrency(leftInput.text.toString())
+                }.subscribe(leftInputPublisher)
 
-        RxView.focusChanges(fiatInput)
+        RxView.focusChanges(rightInput)
                 .skipInitialValue()
                 .filter {
-                    it && !fiatInfoLayout.isActivated
+                    it && !rightInfoLayout.isActivated
                 }.map {
-                    TextUtils.deFormatCurrency(fiatInput.text.toString())
-                }.subscribe(fiatInputPublisher)
+                    TextUtils.deFormatCurrency(rightInput.text.toString())
+                }.subscribe(rightInputPublisher)
     }
 
 
-    private fun updateActivated(convertToFiat: Boolean): Boolean {
-        val activatedChange = (bitcoinInfoLayout.isActivated != convertToFiat) || (fiatInfoLayout.isActivated != !convertToFiat)
+    private fun updateActivated(leftTickerIsSource: Boolean): Boolean {
+        val activatedChange = (leftInfoLayout.isActivated != leftTickerIsSource) || (rightInfoLayout.isActivated != !leftTickerIsSource)
         if (!activatedChange) {
             return false
         }
 
-        bitcoinInfoLayout.isActivated = convertToFiat
-        rootView.layout_bitcoin_input.isActivated = convertToFiat
-        fiatInfoLayout.isActivated = !convertToFiat
-        rootView.layout_fiat_input.isActivated = !convertToFiat
+        leftInfoLayout.isActivated = leftTickerIsSource
+        rootView.layout_left_input.isActivated = leftTickerIsSource
+        rightInfoLayout.isActivated = !leftTickerIsSource
+        rootView.layout_right_input.isActivated = !leftTickerIsSource
 
-        bitcoinInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        leftInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 UiUtils.getCompoundDrawableForTextDrawable(
                         UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
-                        bitcoinInput,
-                        if (convertToFiat) bitcoinInput.resources.getColor(R.color.secondaryColor) else bitcoinInput.currentTextColor),
+                        leftInput,
+                        if (leftTickerIsSource) leftInput.resources.getColor(R.color.secondaryColor) else leftInput.currentTextColor),
                 null,null, null)
 
         return true
@@ -199,90 +198,90 @@ class MainVu(inflater: LayoutInflater,
 
     fun updateCalculation(calc: CalculationViewModel) {
         Timber.d("updateCalculation: calc = $calc")
-        if (bitcoinInput.isFocused != calc.convertFromBitcoin) {
-            bitcoinInput.requestFocus()
+        if (leftInput.isFocused != calc.leftTickerIsSource) {
+            leftInput.requestFocus()
         }
-        if (fiatInput.isFocused != !calc.convertFromBitcoin) {
-            fiatInput.requestFocus()
+        if (rightInput.isFocused != !calc.leftTickerIsSource) {
+            rightInput.requestFocus()
         }
 
-        val convertDirectChanged = updateActivated(calc.convertFromBitcoin)
+        val convertDirectChanged = updateActivated(calc.leftTickerIsSource)
 
-        if (calc.forceSet || calc.convertFromBitcoin) {
-            fiatInput.removeTextChangedListener(fiatInputWatcher)
-            val text = calc.ticker?.price ?: TextUtils.PLACE_HOLDER_STRING
+        if (calc.forceSet || calc.leftTickerIsSource) {
+            rightInput.removeTextChangedListener(rightInputWatcher)
+            val text = calc.rightTicker?.price ?: TextUtils.PLACE_HOLDER_STRING
             val tooManyDigits = (text.length > maxFiatInputLength)
 
             if (tooManyDigits) {
-                fiatInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
+                rightInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
 
             } else {
-                fiatInput.setText(text)
+                rightInput.setText(text)
             }
 
             if (text == TextUtils.PLACE_HOLDER_STRING) {
-                fiatInput.isEnabled = false
+                rightInput.isEnabled = false
 
             } else {
 
                 // must be able to change text if selected
-                if (!tooManyDigits || !calc.convertFromBitcoin) {
-                    fiatInput.addTextChangedListener(fiatInputWatcher)
-                    fiatInput.isEnabled = true
+                if (!tooManyDigits || !calc.leftTickerIsSource) {
+                    rightInput.addTextChangedListener(rightInputWatcher)
+                    rightInput.isEnabled = true
 
                 } else {
-                    fiatInput.isEnabled = false
+                    rightInput.isEnabled = false
                 }
             }
         }
 
-        if (calc.forceSet || !calc.convertFromBitcoin) {
-            bitcoinInput.removeTextChangedListener(bitcoinInputWatcher)
-            val text = calc.bitcoinPrice
+        if (calc.forceSet || !calc.leftTickerIsSource) {
+            leftInput.removeTextChangedListener(leftInputWatcher)
+            val text = calc.leftTicker?.price ?: TextUtils.PLACE_HOLDER_STRING
 //            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
             if (text.length > maxBitcoinInputLength) {
-                bitcoinInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
-                if (calc.convertFromBitcoin) {
+                leftInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
+                if (calc.leftTickerIsSource) {
                     // must be able to change text if selected
-                    bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+                    leftInput.addTextChangedListener(leftInputWatcher)
 
                 } else {
-                    bitcoinInput.isEnabled = false
+                    leftInput.isEnabled = false
                 }
 
             } else {
-                bitcoinInput.isEnabled = true
-                bitcoinInput.setText(text)
-                bitcoinInput.addTextChangedListener(bitcoinInputWatcher)
+                leftInput.isEnabled = true
+                leftInput.setText(text)
+                leftInput.addTextChangedListener(leftInputWatcher)
             }
         }
 
-        val nuFiatName = calc.ticker?.name ?: TextUtils.PLACE_HOLDER_STRING
-        val nameChanged = fiatName.text != nuFiatName
+        val nuFiatName = calc.rightTicker?.name ?: TextUtils.PLACE_HOLDER_STRING
+        val nameChanged = leftName.text != nuFiatName
 
         // update fiat image and label
         if (nameChanged) {
-            fiatName.text = nuFiatName
-            if (calc.ticker != null) {
-                fiatImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.ticker.code))
+            leftName.text = nuFiatName
+            if (calc.rightTicker != null) {
+                rightImage.setImageResource(UiUtils.getCurrencyVectorRes(calc.rightTicker.code))
 
             } else {
-                fiatImage.setImageDrawable(null)
+                rightImage.setImageDrawable(null)
             }
         }
 
         // update fiat compound image
         if (nameChanged || convertDirectChanged)  {
-            if (calc.ticker != null) {
-                fiatInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            if (calc.rightTicker != null) {
+                rightInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         UiUtils.getCompoundDrawableForTextDrawable(
-                                UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(calc.ticker.code)),
-                                fiatInput,
-                                if (!calc.convertFromBitcoin) fiatInput.resources.getColor(R.color.secondaryColor) else fiatInput.currentTextColor),
+                                UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(calc.rightTicker.code)),
+                                rightInput,
+                                if (!calc.leftTickerIsSource) rightInput.resources.getColor(R.color.secondaryColor) else rightInput.currentTextColor),
                         null, null, null)
 
             } else {
-                fiatInput.setCompoundDrawablesRelative(null, null, null, null)
+                rightInput.setCompoundDrawablesRelative(null, null, null, null)
             }
         }
     }

@@ -98,26 +98,26 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                     Timber.e(t, "tickerSelectObservable failed")
                 }))
 
-        rxSubs.add(vu!!.bitcoinInputObserver
+        rxSubs.add(vu!!.leftInputObserver
                 .observeOn(Schedulers.computation())
                 .subscribe({bitcoinAmount: String ->
-                    Timber.d("bitcoinInputObserver success = $bitcoinAmount")
-                    calculatorService.switchConvertDirectionAndUpdateSource(true, bitcoinAmount)
+                    Timber.d("leftInputObserver success = $bitcoinAmount")
+                    calculatorService.updateSourceDirectionAndSourceValue(true, bitcoinAmount)
 
                 }, {
 
-                    Timber.e(it, "bitcoinInputObserver failed")
+                    Timber.e(it, "leftInputObserver failed")
                 }))
 
-        rxSubs.add(vu!!.fiatInputObserver
+        rxSubs.add(vu!!.rightInputObserver
                 .observeOn(Schedulers.computation())
                 .subscribe({fiatAmount: String ->
-                    Timber.d("fiatInputObserver success = $fiatAmount")
-                    calculatorService.switchConvertDirectionAndUpdateSource(false, fiatAmount)
+                    Timber.d("rightInputObserver success = $fiatAmount")
+                    calculatorService.updateSourceDirectionAndSourceValue(false, fiatAmount)
 
                 }, {
 
-                    Timber.e(it, "fiatInputObserver failed")
+                    Timber.e(it, "rightInputObserver failed")
                 }))
     }
 
@@ -151,36 +151,54 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
 
     private fun genCalculationViewModel(calculatorState: CalculatorState, exchangeState: ExchangeState = exchangeService.state): CalculationViewModel {
         Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
-        val ticker = CalculatorUtils.getTicker(calculatorState, exchangeState)
-        Timber.d("genCalculationViewModel: ticker = $ticker, code = ${ticker?.code}")
-        Timber.d("genCalculationViewModel: currency = ${ExchangeUtils.getCurrencyForTicker(ticker!!)}")
+        val leftTicker = CalculatorUtils.getLeftTicker(calculatorState, exchangeState)
+        val leftTickerViewModel = if (leftTicker != null) {
+            TickerViewModel(leftTicker.code, leftTicker.code,
+                    TextUtils.formatCurrency(CalculatorUtils.getPrice(leftTicker, calculatorState, exchangeState)),
+                    UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(leftTicker), ""),
+                    true,
+                    false,
+                    TextUtils.getDateTimeString(leftTicker.timestamp))
+        } else {
+            null
+        }
+        Timber.d("genCalculationViewModel: leftTicker = $leftTicker, \nleftTickerViewModel = $leftTickerViewModel")
+
+        val rightTicker = CalculatorUtils.getRightTicker(calculatorState, exchangeState)
+        val rightTickerViewModel = if (rightTicker != null) {
+            TickerViewModel(rightTicker.code, rightTicker.code,
+                    TextUtils.formatCurrency(CalculatorUtils.getPrice(rightTicker, calculatorState, exchangeState)),
+                    UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(rightTicker), ""),
+                    false,
+                    true,
+                    TextUtils.getDateTimeString(rightTicker.timestamp))
+        } else {
+            null
+        }
+        Timber.d("genCalculationViewModel: rightTicker = $rightTicker, \nrightTickerViewModel = $rightTickerViewModel")
+
+//        Timber.d("genCalculationViewModel: currency = ${ExchangeUtils.getCurrencyForTicker(ticker!!)}")
         return CalculationViewModel(
-                bitcoinPrice = TextUtils.formatCurrency(CalculatorUtils.getBitcoinPrice(calculatorState, exchangeState), isCrypto = true),
-                convertFromBitcoin = calculatorState.convertToFiat,
-                ticker = if (ticker != null) {
-                    TickerViewModel(ticker.code, ticker.code,
-                            TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(ticker, calculatorState, exchangeState)),
-                            UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(ticker), ""),
-                            true,
-                            TextUtils.getDateTimeString(ticker.timestamp))
-                } else {
-                    null
-                },
+                calculatorState.leftTickerIsSource,
+                leftTicker = leftTickerViewModel,
+                rightTicker = rightTickerViewModel,
                 forceSet = (CalculatorState.getFactoryState() == calculatorState))
     }
 
     private fun genTickerViewModels(tickers: Map<String, Ticker>, calcState: CalculatorState = calculatorService.state): List<TickerViewModel> {
         Timber.d("genTickerViewModels: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, tickers = $tickers")
-        val targetTicker = CalculatorUtils.getTicker(calcState, tickers)
+        val rightTicker = CalculatorUtils.getRightTicker(calcState, tickers)
+        val leftTicker = CalculatorUtils.getLeftTicker(calcState, tickers)
         return tickers.values
                 .filter{ ExchangeUtils.isSupportedCurrency(it) }
                 .sortedBy { it.code }
                 .map {
                     TickerViewModel(it.code,
                             it.code,
-                            TextUtils.formatCurrency(CalculatorUtils.getFiatPrice(it, calculatorService.state, tickers)),
+                            TextUtils.formatCurrency(CalculatorUtils.getPrice(it, calculatorService.state, tickers)),
                             UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(it), ""),
-                            targetTicker?.code == it.code,
+                            leftTicker?.code == it.code,
+                            rightTicker?.code == it.code,
                             TextUtils.getDateTimeString(it.timestamp))
                 }
     }
