@@ -16,6 +16,6 @@ data class Ticker(val timestamp: Long,
             return if (c.isNullOrEmpty()) CryptoCurrency.Bitcoin.code else c
         }
 
-//    val convertFromBitcoin: Boolean
-//        get() = pair.indexOf(CryptoCurrency.Bitcoin.code) > 0
+    val exchangeMappingFromBitcoin: Boolean
+        get() = pair.indexOf(CryptoCurrency.Bitcoin.code) == 0
 }

@@ -77,11 +77,21 @@ object ExchangeUtils {
     }
 
     fun convertFromBitcoin(bitcoinPrice: BigDecimal, ticker: Ticker): BigDecimal {
-        return bitcoinPrice.multiply(ticker.bid.toBigDecimal())
+        return if (ticker.exchangeMappingFromBitcoin) {
+            bitcoinPrice.multiply(ticker.bid.toBigDecimal())
+
+        } else {
+            bitcoinPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL128)
+        }
     }
 
     fun convertToBitcoin(tickerPrice: BigDecimal, ticker: Ticker): BigDecimal {
         Timber.d("convertToBitcoin: tickerPrice = $tickerPrice, ticker = $ticker")
-        return tickerPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL128)
+        return if (ticker.exchangeMappingFromBitcoin) {
+            tickerPrice.divide(ticker.ask.toBigDecimal(), MathContext.DECIMAL128)
+
+        } else {
+            tickerPrice.multiply(ticker.ask.toBigDecimal())
+        }
     }
 }
