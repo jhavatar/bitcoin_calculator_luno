@@ -1,5 +1,7 @@
 package io.chthonic.bitcoin.calculator.data.model
 
+import io.chthonic.bitcoin.calculator.utils.TextUtils
+
 /**
  * Created by jhavatar on 4/14/2018.
  */
@@ -9,7 +11,7 @@ data class CurrencyRealtimeFormatInput(val s: String,
                                        val delAction: Boolean,
                                        val caretPos: Int,
                                        val maxLength: Int,
-                                       val isCrypto: Boolean) {
+                                       val decimalDigits: Int) {
 
     companion object {
 
@@ -20,7 +22,7 @@ data class CurrencyRealtimeFormatInput(val s: String,
                     delAction = false,
                     caretPos = 0,
                     maxLength = Int.MAX_VALUE,
-                    isCrypto = false
+                    decimalDigits = Currency.FIAT_DECIMAL_DIGITS
                     )
         }
     }

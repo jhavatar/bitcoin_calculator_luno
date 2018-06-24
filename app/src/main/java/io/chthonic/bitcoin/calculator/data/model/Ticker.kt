@@ -12,10 +12,10 @@ data class Ticker(val timestamp: Long,
 
     val code: String
         get() {
-            val c = pair.replace(CryptoCurrency.Bitcoin.code, "")
-            return if (c.isNullOrEmpty()) CryptoCurrency.Bitcoin.code else c
+            val c = pair.replace(Currency.Bitcoin.code, "")
+            return if (c.isNullOrEmpty()) Currency.Bitcoin.code else c
         }
 
     val exchangeMappingFromBitcoin: Boolean
-        get() = pair.indexOf(CryptoCurrency.Bitcoin.code) == 0
+        get() = pair.indexOf(Currency.Bitcoin.code) == 0
 }

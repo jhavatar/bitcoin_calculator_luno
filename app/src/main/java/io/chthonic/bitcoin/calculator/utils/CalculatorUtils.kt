@@ -65,7 +65,7 @@ object CalculatorUtils {
     }
 
     fun getBitcoinPrice(calculatorState: CalculatorState, tickerMap: Map<String, Ticker>): BigDecimal? {
-        return if (calculatorState.sourceTickerCode == CryptoCurrency.Bitcoin.code) {
+        return if (calculatorState.sourceTickerCode == Currency.Bitcoin.code) {
 
             // source is bitcoin
             calculatorState.sourceValue

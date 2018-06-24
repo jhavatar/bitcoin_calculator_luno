@@ -12,9 +12,7 @@ import android.view.View
 import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import io.chthonic.bitcoin.calculator.R
-import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.data.model.Currency
-import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
 import timber.log.Timber
 
 
@@ -24,14 +22,14 @@ import timber.log.Timber
 object UiUtils {
 
     private val mapCurrencyToSign: Map<String, String> by lazy {
-        mapOf( Pair(CryptoCurrency.Bitcoin.code,
+        mapOf( Pair(Currency.Bitcoin.code,
                         if (UiUtils.canRenderGlyp("\u20BF")) "\u20BF" else "B"),
-                Pair(CryptoCurrency.Ethereum.code,
+                Pair(Currency.Ethereum.code,
                         if (UiUtils.canRenderGlyp("\u039E")) "\u039E" else "E"),
-                Pair(FiatCurrency.Zar.code, "\u0052"),
-                Pair(FiatCurrency.Myr.code, "\u0052\u004d"),
-                Pair(FiatCurrency.Idr.code, "\u0052\u0070"),
-                Pair(FiatCurrency.Ngn.code,
+                Pair(Currency.Zar.code, "\u0052"),
+                Pair(Currency.Myr.code, "\u0052\u004d"),
+                Pair(Currency.Idr.code, "\u0052\u0070"),
+                Pair(Currency.Ngn.code,
                         if (UiUtils.canRenderGlyp("\u20a6")) "\u20a6" else "N"))
     }
 
@@ -64,24 +62,24 @@ object UiUtils {
 
     fun getCurrencyVectorRes(code: String): Int {
         return when (code) {
-            CryptoCurrency.Bitcoin.code -> R.drawable.ic_xbt
-            CryptoCurrency.Ethereum.code -> R.drawable.ic_eth
-            FiatCurrency.Zar.code -> R.drawable.ic_zar
-            FiatCurrency.Myr.code -> R.drawable.ic_myr
-            FiatCurrency.Idr.code -> R.drawable.ic_idr
-            FiatCurrency.Ngn.code -> R.drawable.ic_ngn
+            Currency.Bitcoin.code -> R.drawable.ic_xbt
+            Currency.Ethereum.code -> R.drawable.ic_eth
+            Currency.Zar.code -> R.drawable.ic_zar
+            Currency.Myr.code -> R.drawable.ic_myr
+            Currency.Idr.code -> R.drawable.ic_idr
+            Currency.Ngn.code -> R.drawable.ic_ngn
             else -> throw RuntimeException("code $code should not exist")
         }
     }
 
     fun getCurrencyImageSmallRes(code: String): Int {
         return when (code) {
-            CryptoCurrency.Bitcoin.code -> R.drawable.ic_xbt_320px
-            CryptoCurrency.Ethereum.code -> R.drawable.ic_eth_320px
-            FiatCurrency.Zar.code -> R.drawable.ic_zar_320px
-            FiatCurrency.Myr.code -> R.drawable.ic_myr_320px
-            FiatCurrency.Idr.code -> R.drawable.ic_idr_320px
-            FiatCurrency.Ngn.code -> R.drawable.ic_ngn_320px
+            Currency.Bitcoin.code -> R.drawable.ic_xbt_320px
+            Currency.Ethereum.code -> R.drawable.ic_eth_320px
+            Currency.Zar.code -> R.drawable.ic_zar_320px
+            Currency.Myr.code -> R.drawable.ic_myr_320px
+            Currency.Idr.code -> R.drawable.ic_idr_320px
+            Currency.Ngn.code -> R.drawable.ic_ngn_320px
             else -> throw RuntimeException("code $code should not exist")
         }
     }

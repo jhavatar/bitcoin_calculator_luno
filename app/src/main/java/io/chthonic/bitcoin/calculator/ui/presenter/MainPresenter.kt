@@ -9,6 +9,7 @@ import io.chthonic.bitcoin.calculator.App
 import io.chthonic.bitcoin.calculator.business.service.CalculatorService
 import io.chthonic.bitcoin.calculator.business.service.ExchangeService
 import io.chthonic.bitcoin.calculator.data.model.CalculatorState
+import io.chthonic.bitcoin.calculator.data.model.Currency
 import io.chthonic.bitcoin.calculator.data.model.ExchangeState
 import io.chthonic.bitcoin.calculator.data.model.Ticker
 import io.chthonic.bitcoin.calculator.ui.model.CalculationViewModel
@@ -153,9 +154,11 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
         Timber.d("genCalculationViewModel: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, calculatorState = $calculatorState")
         val leftTicker = CalculatorUtils.getLeftTicker(calculatorState, exchangeState)
         val leftTickerViewModel = if (leftTicker != null) {
+            val leftCurrency = ExchangeUtils.getCurrencyForTicker(leftTicker)
             TickerViewModel(leftTicker.code, leftTicker.code,
-                    TextUtils.formatCurrency(CalculatorUtils.getPrice(leftTicker, calculatorState, exchangeState)),
+                    TextUtils.formatCurrency(CalculatorUtils.getPrice(leftTicker, calculatorState, exchangeState), leftCurrency?.decimalDigits),
                     UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(leftTicker), ""),
+                    leftCurrency?.decimalDigits ?: Currency.FIAT_DECIMAL_DIGITS,
                     true,
                     false,
                     TextUtils.getDateTimeString(leftTicker.timestamp))
@@ -166,9 +169,11 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
 
         val rightTicker = CalculatorUtils.getRightTicker(calculatorState, exchangeState)
         val rightTickerViewModel = if (rightTicker != null) {
+            val rightCurrency = ExchangeUtils.getCurrencyForTicker(rightTicker)
             TickerViewModel(rightTicker.code, rightTicker.code,
-                    TextUtils.formatCurrency(CalculatorUtils.getPrice(rightTicker, calculatorState, exchangeState)),
+                    TextUtils.formatCurrency(CalculatorUtils.getPrice(rightTicker, calculatorState, exchangeState), rightCurrency?.decimalDigits),
                     UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(rightTicker), ""),
+                    rightCurrency?.decimalDigits ?: Currency.FIAT_DECIMAL_DIGITS,
                     false,
                     true,
                     TextUtils.getDateTimeString(rightTicker.timestamp))
@@ -193,10 +198,12 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                 .filter{ ExchangeUtils.isSupportedCurrency(it) }
                 .sortedBy { it.code }
                 .map {
+                    val currency = ExchangeUtils.getCurrencyForTicker(it)
                     TickerViewModel(it.code,
                             it.code,
-                            TextUtils.formatCurrency(CalculatorUtils.getPrice(it, calculatorService.state, tickers)),
+                            TextUtils.formatCurrency(CalculatorUtils.getPrice(it, calculatorService.state, tickers), currency?.decimalDigits),
                             UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(it), ""),
+                            currency?.decimalDigits ?: Currency.FIAT_DECIMAL_DIGITS,
                             leftTicker?.code == it.code,
                             rightTicker?.code == it.code,
                             TextUtils.getDateTimeString(it.timestamp))

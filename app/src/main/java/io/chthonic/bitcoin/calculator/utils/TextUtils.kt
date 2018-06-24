@@ -1,9 +1,9 @@
 package io.chthonic.bitcoin.calculator.utils
 
 import android.text.format.DateUtils
+import android.util.SparseArray
 import io.chthonic.bitcoin.calculator.data.model.CurrencyRealtimeFormatInput
 import io.chthonic.bitcoin.calculator.data.model.CurrencyRealtimeFormatOutput
-import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -20,10 +20,9 @@ object TextUtils {
     const val DECIMAL_SEPARATOR_STRING = DECIMAL_SEPARATOR.toString()
     const val GROUPING_SEPARATOR: Char = ' '
     const val GROUPING_SEPARATOR_STRING = GROUPING_SEPARATOR.toString()
-    const val CRYPTO_DECIMAL_DIGITS = 8
-    const val FIAT_DECIMAL_DIGITS = 2
     const val TOO_MANY_DIGITS_MSG = "MAX"
     const val FALLBACK_CURRENCY_STRING = "0.00"
+    const val BASE_DECIMAL_FORMAT = "###,##0.00"
 
     internal val timeFormatter: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm:ss")
@@ -32,6 +31,8 @@ object TextUtils {
     internal val dateFormatter: SimpleDateFormat by lazy {
         SimpleDateFormat("yyyy-MM-dd")
     }
+
+    private val decimalFormatterList: SparseArray<DecimalFormat> = SparseArray()
 
     private val currencyFormatReplaceRegex: Regex by lazy {
         """[$GROUPING_SEPARATOR_STRING$PLACE_HOLDER_STRING[a-zA-Z]]""".toRegex()
@@ -45,30 +46,55 @@ object TextUtils {
         return delAction && ((prevS == TextUtils.PLACE_HOLDER_STRING) || (prevS == TextUtils.TOO_MANY_DIGITS_MSG))
     }
 
-    private val fiatCurrencyFormat: DecimalFormat by lazy {
-        val pattern = "###,##0.00"
+    private fun createDecimalFormatter(decimalDigits: Int): DecimalFormat {
+        val pattern = if (decimalDigits <= 2) {
+            BASE_DECIMAL_FORMAT
+
+        } else {
+            "$BASE_DECIMAL_FORMAT${"#".repeat(decimalDigits - 2)}"
+        }
         val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
         formatSymbols.setDecimalSeparator(DECIMAL_SEPARATOR)
         formatSymbols.setGroupingSeparator(GROUPING_SEPARATOR)
-        DecimalFormat(pattern, formatSymbols)
+        return DecimalFormat(pattern, formatSymbols)
     }
 
-    private  val cryptoCurrencyFormat: DecimalFormat by lazy {
-        val pattern = "###,##0.00${"#".repeat(CRYPTO_DECIMAL_DIGITS - 2)}"
-        val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
-        formatSymbols.setDecimalSeparator('.')
-        formatSymbols.setGroupingSeparator(' ')
-        DecimalFormat(pattern, formatSymbols)
-    }
-
-    fun formatCurrency(amount: BigDecimal?, fallback: String = PLACE_HOLDER_STRING, isCrypto: Boolean = false): String {
-        return if (amount != null) {
-            if (isCrypto) {
-                cryptoCurrencyFormat.format(amount.setScale(CRYPTO_DECIMAL_DIGITS, RoundingMode.DOWN))
-
-            } else {
-                fiatCurrencyFormat.format(amount.setScale(FIAT_DECIMAL_DIGITS, RoundingMode.DOWN))
+    private fun getDecimalFormatter(decimalDigits: Int): DecimalFormat {
+        return synchronized(decimalFormatterList) {
+            decimalFormatterList[decimalDigits] ?: decimalFormatterList.let {
+                val formatter = createDecimalFormatter(decimalDigits)
+                it.append(decimalDigits, formatter)
+                formatter
             }
+        }
+    }
+
+//    private val fiatCurrencyFormat: DecimalFormat by lazy {
+//        val pattern = "###,##0.00"
+//        val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
+//        formatSymbols.setDecimalSeparator(DECIMAL_SEPARATOR)
+//        formatSymbols.setGroupingSeparator(GROUPING_SEPARATOR)
+//        DecimalFormat(pattern, formatSymbols)
+//    }
+//
+//    private  val cryptoCurrencyFormat: DecimalFormat by lazy {
+//        val pattern = "###,##0.00${"#".repeat(BITCOIN_DECIMAL_DIGITS - 2)}"
+//        val formatSymbols = DecimalFormatSymbols(Locale.ENGLISH)
+//        formatSymbols.setDecimalSeparator('.')
+//        formatSymbols.setGroupingSeparator(' ')
+//        DecimalFormat(pattern, formatSymbols)
+//    }
+
+    fun formatCurrency(amount: BigDecimal?, decimalDigits: Int?, fallback: String = PLACE_HOLDER_STRING): String {
+        val verifiedDecimalDigits = decimalDigits ?: io.chthonic.bitcoin.calculator.data.model.Currency.FIAT_DECIMAL_DIGITS
+        return if (amount != null) {
+            getDecimalFormatter(verifiedDecimalDigits).format(amount.setScale(verifiedDecimalDigits, RoundingMode.DOWN))
+//            if (isCrypto) {
+//                cryptoCurrencyFormat.format(amount.setScale(BITCOIN_DECIMAL_DIGITS, RoundingMode.DOWN))
+//
+//            } else {
+//                fiatCurrencyFormat.format(amount.setScale(FIAT_DECIMAL_DIGITS, RoundingMode.DOWN))
+//            }
 
         } else {
             fallback
@@ -118,7 +144,7 @@ object TextUtils {
         }
 //        Timber.d("realtimeFormatInput: sRawTemp = $sRawTemp")
 
-        val sFormattedTemp = TextUtils.formatCurrency(BigDecimal(sRawTemp), isCrypto = input.isCrypto)
+        val sFormattedTemp = TextUtils.formatCurrency(BigDecimal(sRawTemp), input.decimalDigits)
         val revert = (sFormattedTemp.length >= input.maxLength) || (input.changed == DECIMAL_SEPARATOR_STRING) || (input.changed == GROUPING_SEPARATOR_STRING)
         val sFormatted = if (revert) {
             input.sPrev

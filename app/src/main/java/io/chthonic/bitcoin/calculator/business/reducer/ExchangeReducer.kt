@@ -12,7 +12,6 @@ import io.chthonic.bitcoin.calculator.data.model.ExchangeState
 import io.chthonic.bitcoin.calculator.data.model.TickerLot
 import io.chthonic.bitcoin.calculator.utils.ExchangeUtils
 import io.chthonic.bitcoin.calculator.business.reducer.ExchangeReducerImpl
-import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import timber.log.Timber
 
 /**

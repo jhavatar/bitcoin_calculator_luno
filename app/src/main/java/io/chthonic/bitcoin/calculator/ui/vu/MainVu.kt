@@ -14,7 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.jakewharton.rxbinding2.view.RxView
 import io.chthonic.bitcoin.calculator.R
-import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
+import io.chthonic.bitcoin.calculator.data.model.Currency
 import io.chthonic.bitcoin.calculator.ui.adapter.TickerListAdapter
 import io.chthonic.bitcoin.calculator.ui.model.CalculationViewModel
 import io.chthonic.bitcoin.calculator.ui.model.TickerViewModel
@@ -56,7 +56,7 @@ class MainVu(inflater: LayoutInflater,
                 .toFlowable(BackpressureStrategy.LATEST)
 
     private val leftInputWatcher by lazy {
-        CurrencyInputWatcher(leftInput, leftInputPublisher, true, maxBitcoinInputLength)
+        CurrencyInputWatcher(leftInput, leftInputPublisher, leftInputLength)
     }
 
     private val rightInputPublisher: PublishSubject<String> by lazy {
@@ -69,7 +69,7 @@ class MainVu(inflater: LayoutInflater,
                 .toFlowable(BackpressureStrategy.LATEST)
 
     private val rightInputWatcher by lazy {
-        CurrencyInputWatcher(rightInput, rightInputPublisher, false, maxFiatInputLength)
+        CurrencyInputWatcher(rightInput, rightInputPublisher, rightInputLength)
     }
 
     private val listView: RecyclerView by lazy {
@@ -80,7 +80,7 @@ class MainVu(inflater: LayoutInflater,
         rootView.input_left
     }
 
-    private val maxBitcoinInputLength: Int by lazy {
+    private val leftInputLength: Int by lazy {
         val lengthFilter: InputFilter.LengthFilter? = leftInput.filters.find {
             it is InputFilter.LengthFilter
         } as? InputFilter.LengthFilter
@@ -91,7 +91,7 @@ class MainVu(inflater: LayoutInflater,
         rootView.input_right
     }
 
-    private val maxFiatInputLength: Int by lazy {
+    private val rightInputLength: Int by lazy {
         val lengthFilter: InputFilter.LengthFilter? = rightInput.filters.find {
             it is InputFilter.LengthFilter
         } as? InputFilter.LengthFilter
@@ -122,7 +122,6 @@ class MainVu(inflater: LayoutInflater,
         rootView.image_right
     }
 
-
     private lateinit var tickerAdapter: TickerListAdapter
 
     override fun getRootViewLayoutId(): Int {
@@ -144,7 +143,7 @@ class MainVu(inflater: LayoutInflater,
             }
         })
 
-        leftInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
+        leftInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(Currency.Bitcoin),
                 leftInput,
                 leftInput.currentTextColor), null,null, null)
 
@@ -195,7 +194,7 @@ class MainVu(inflater: LayoutInflater,
 
         leftInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 UiUtils.getCompoundDrawableForTextDrawable(
-                        UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
+                        UiUtils.getCurrencySign(Currency.Bitcoin),
                         leftInput,
                         if (leftTickerIsSource) leftInput.resources.getColor(R.color.secondaryColor) else leftInput.currentTextColor),
                 null,null, null)
@@ -218,7 +217,7 @@ class MainVu(inflater: LayoutInflater,
         if (calc.forceSet || calc.leftTickerIsSource) {
             rightInput.removeTextChangedListener(rightInputWatcher)
             val text = calc.rightTicker?.price ?: TextUtils.PLACE_HOLDER_STRING
-            val tooManyDigits = (text.length > maxFiatInputLength)
+            val tooManyDigits = (text.length > rightInputLength)
 
             if (tooManyDigits) {
                 rightInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
@@ -246,8 +245,8 @@ class MainVu(inflater: LayoutInflater,
         if (calc.forceSet || !calc.leftTickerIsSource) {
             leftInput.removeTextChangedListener(leftInputWatcher)
             val text = calc.leftTicker?.price ?: TextUtils.PLACE_HOLDER_STRING
-//            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${maxBitcoinInputLength}")
-            if (text.length > maxBitcoinInputLength) {
+//            Timber.d("setBitcoin: text = $text, length = ${text.length}, maxLength = ${leftInputLength}")
+            if (text.length > leftInputLength) {
                 leftInput.setText(TextUtils.TOO_MANY_DIGITS_MSG)
                 if (calc.leftTickerIsSource) {
                     // must be able to change text if selected
@@ -280,6 +279,7 @@ class MainVu(inflater: LayoutInflater,
         // update right compound image
         if (leftNameChanged || convertDirectChanged)  {
             if (calc.leftTicker != null) {
+                leftInputWatcher.updateInputType(calc.leftTicker.decimalDigits)
                 leftInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         UiUtils.getCompoundDrawableForTextDrawable(
                                 UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(calc.leftTicker.code)),
@@ -310,6 +310,7 @@ class MainVu(inflater: LayoutInflater,
         // update right compound image
         if (rightNameChanged || convertDirectChanged)  {
             if (calc.rightTicker != null) {
+                rightInputWatcher.updateInputType(calc.rightTicker.decimalDigits)
                 rightInput.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         UiUtils.getCompoundDrawableForTextDrawable(
                                 UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(calc.rightTicker.code)),

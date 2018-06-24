@@ -7,6 +7,7 @@ data class TickerViewModel(val code: String,
                            val name: String,
                            val price: String,
                            val sign: String,
+                           val decimalDigits: Int,
                            val isLeft: Boolean,
                            val isRight: Boolean,
                            val dateTime: String) {

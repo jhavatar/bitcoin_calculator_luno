@@ -12,7 +12,7 @@ data class CalculatorState(val leftTickerCode: String,
                            ) {
     companion object {
         fun getFactoryState(): CalculatorState {
-            return CalculatorState(CryptoCurrency.Bitcoin.code, null,true, 1.toBigDecimal())
+            return CalculatorState(Currency.Bitcoin.code, null,true, 1.toBigDecimal())
         }
     }
 

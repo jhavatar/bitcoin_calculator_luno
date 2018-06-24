@@ -20,14 +20,13 @@ object ExchangeUtils {
                 ask = "1.0",
                 last_trade = "",
                 rolling_24_hour_volume = "",
-                pair = CryptoCurrency.Bitcoin.code
+                pair = Currency.Bitcoin.code
         )
     }
 
     private val codeToCurrencyMap: Map<String, out Currency> by lazy {
         val m = mutableMapOf<String, Currency>()
-        m.putAll(FiatCurrency.values.associateBy( {it.code}, {it} ))
-        m.putAll(CryptoCurrency.values.associateBy( {it.code}, {it} ))
+        m.putAll(Currency.values.associateBy( {it.code}, {it} ))
         m
     }
 

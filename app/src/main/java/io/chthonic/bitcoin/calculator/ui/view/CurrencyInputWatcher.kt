@@ -11,10 +11,10 @@ import timber.log.Timber
 /**
  * Created by jhavatar on 4/4/2018.
  */
-class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: PublishSubject<String>, val isCrypto: Boolean, val maxLength: Int) : TextWatcher {
+class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: PublishSubject<String>, val maxLength: Int) : TextWatcher {
     var inputState: CurrencyRealtimeFormatInput = CurrencyRealtimeFormatInput.factoryReset()
-            .copy(maxLength = maxLength,
-                    isCrypto = isCrypto)
+            .copy(maxLength = maxLength)
+
 
     override fun afterTextChanged(editable: Editable?) {
         val s = editable?.toString() ?: return
@@ -35,6 +35,10 @@ class CurrencyInputWatcher(val inputView: EditText, val inputChangePublisher: Pu
         if (!(output.doNothing || output.revert)) {
             inputChangePublisher.onNext(output.sRaw)
         }
+    }
+
+    fun updateInputType(decimalDigits: Int) {
+        inputState.copy(decimalDigits = decimalDigits)
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
