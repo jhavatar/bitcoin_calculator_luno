@@ -20,6 +20,7 @@
         app:layout_constraintEnd_toEndOf="@+id/ticker_image"
         tools:visibility="visible"
         android:visibility="visible"
+        android:background="@color/primaryDarkColor"
         />
 
     <View
@@ -27,10 +28,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="0dp"
+        android:background="@color/primaryLightColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@id/ticker_image"
+        app:layout_constraintStart_toEndOf="@id/ticker_left"
         app:layout_constraintEnd_toStartOf="@+id/ticker_name"
         tools:visibility="visible"
         android:visibility="invisible"
