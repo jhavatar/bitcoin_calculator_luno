@@ -21,10 +21,6 @@ class TickerHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         }
     }
 
-    fun init() {
-        UiUtils.setRipple(itemView)
-    }
-
     fun update(ticker: TickerViewModel) {
         itemView.ticker_name.text = ticker.name
 

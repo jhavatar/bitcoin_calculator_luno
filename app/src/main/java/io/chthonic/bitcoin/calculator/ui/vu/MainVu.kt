@@ -122,7 +122,9 @@ class MainVu(inflater: LayoutInflater,
         rootView.image_right
     }
 
-    private lateinit var tickerAdapter: TickerListAdapter
+    private val tickerAdapter: TickerListAdapter by lazy {
+        TickerListAdapter(tickerSelectPublisher)
+    }
 
     override fun getRootViewLayoutId(): Int {
         return R.layout.vu_main
@@ -133,7 +135,6 @@ class MainVu(inflater: LayoutInflater,
 
         (activity as AppCompatActivity).setSupportActionBar(rootView.toolbar)
 
-        tickerAdapter = TickerListAdapter(tickerSelectPublisher)
         listView.adapter = tickerAdapter
         listView.layoutManager = LinearLayoutManager(activity)
         val interItemPadding = listView.resources.getDimensionPixelSize(R.dimen.content_padding)
@@ -150,14 +151,12 @@ class MainVu(inflater: LayoutInflater,
         if (UiUtils.isHorizontal(rootView.resources)) {
             rootView.app_bar.setExpanded(false)
         }
-        UiUtils.setRipple(rootView.clicker_left_info)
 
         RxView.clicks(rootView.clicker_left_info)
                 .map {
                     TextUtils.deFormatCurrency(leftInput.text.toString())
                 }.subscribe(leftInputPublisher)
 
-        UiUtils.setRipple(rootView.clicker_right_info)
         RxView.clicks(rootView.clicker_right_info)
                 .map {
                     TextUtils.deFormatCurrency(rightInput.text.toString())
