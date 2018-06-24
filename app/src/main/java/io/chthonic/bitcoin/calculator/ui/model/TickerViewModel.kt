@@ -10,5 +10,9 @@ data class TickerViewModel(val code: String,
                            val decimalDigits: Int,
                            val isLeft: Boolean,
                            val isRight: Boolean,
+                           val isSource: Boolean,
                            val dateTime: String) {
+
+    val isSink: Boolean
+    get() = !isSource && (isLeft || isRight)
 }

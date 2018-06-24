@@ -137,12 +137,12 @@ class MainVu(inflater: LayoutInflater,
 
         listView.adapter = tickerAdapter
         listView.layoutManager = LinearLayoutManager(activity)
-        val interItemPadding = listView.resources.getDimensionPixelSize(R.dimen.content_padding)
-        listView.addItemDecoration(object:RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
-                outRect?.top = interItemPadding
-            }
-        })
+//        val interItemPadding = listView.resources.getDimensionPixelSize(R.dimen.content_padding)
+//        listView.addItemDecoration(object:RecyclerView.ItemDecoration() {
+//            override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
+//                outRect?.top = interItemPadding
+//            }
+//        })
 
         leftInput.setCompoundDrawablesRelative(UiUtils.getCompoundDrawableForTextDrawable(UiUtils.getCurrencySign(Currency.Bitcoin),
                 leftInput,

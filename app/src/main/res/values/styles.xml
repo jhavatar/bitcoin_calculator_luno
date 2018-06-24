@@ -45,5 +45,10 @@
         <item name="android:textSize">@dimen/label_large</item>
     </style>
 
+    <style name="TitleTextActivated" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/txt_activated_selector</item>
+        <item name="android:textSize">@dimen/label_large</item>
+    </style>
+
 
 </resources>

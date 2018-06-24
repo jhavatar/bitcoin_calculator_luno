@@ -161,6 +161,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                     leftCurrency?.decimalDigits ?: Currency.FIAT_DECIMAL_DIGITS,
                     true,
                     false,
+                    calculatorState.leftTickerIsSource,
                     TextUtils.getDateTimeString(leftTicker.timestamp))
         } else {
             null
@@ -176,6 +177,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                     rightCurrency?.decimalDigits ?: Currency.FIAT_DECIMAL_DIGITS,
                     false,
                     true,
+                    !calculatorState.leftTickerIsSource,
                     TextUtils.getDateTimeString(rightTicker.timestamp))
         } else {
             null
@@ -192,20 +194,24 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
 
     private fun genTickerViewModels(tickers: Map<String, Ticker>, calcState: CalculatorState = calculatorService.state): List<TickerViewModel> {
         Timber.d("genTickerViewModels: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, tickers = $tickers")
-        val rightTicker = CalculatorUtils.getRightTicker(calcState, tickers)
         val leftTicker = CalculatorUtils.getLeftTicker(calcState, tickers)
+        val rightTicker = CalculatorUtils.getRightTicker(calcState, tickers)
         return tickers.values
                 .filter{ ExchangeUtils.isSupportedCurrency(it) }
                 .sortedBy { it.code }
                 .map {
                     val currency = ExchangeUtils.getCurrencyForTicker(it)
+                    val isLeft = leftTicker?.code == it.code
+                    val isRight = rightTicker?.code == it.code
+                    val isSource = (isLeft && calcState.leftTickerIsSource) || (isRight && !calcState.leftTickerIsSource)
                     TickerViewModel(it.code,
                             it.code,
                             TextUtils.formatCurrency(CalculatorUtils.getPrice(it, calculatorService.state, tickers), currency?.decimalDigits),
                             UiUtils.getCurrencySign(ExchangeUtils.getCurrencyForTicker(it), ""),
                             currency?.decimalDigits ?: Currency.FIAT_DECIMAL_DIGITS,
-                            leftTicker?.code == it.code,
-                            rightTicker?.code == it.code,
+                            isLeft,
+                            isRight,
+                            isSource,
                             TextUtils.getDateTimeString(it.timestamp))
                 }
     }

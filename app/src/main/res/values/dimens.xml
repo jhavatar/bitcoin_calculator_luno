@@ -15,8 +15,10 @@
     <dimen name="input_text_size">@dimen/label_small</dimen>
 
     <dimen name="pad_small">6dp</dimen>
-    <dimen name="pad_medium">10dp</dimen>
-    <dimen name="pad_large">16dp</dimen>
+    <dimen name="pad_medium">8dp</dimen>
+    <dimen name="pad_large">12dp</dimen>
+    <dimen name="pad_xlarge">16dp</dimen>
+    <dimen name="pad_xxlarge">24dp</dimen>
 
     <dimen name="loading_widget_dimen">72dp</dimen>
     <dimen name="loading_container_dimen">104dp</dimen>
@@ -25,4 +27,6 @@
     <dimen name="list_image_size">40dp</dimen>
 
     <dimen name="input_bar_height">56dp</dimen>
+
+    <dimen name="corner_radius">7dp</dimen>
 </resources>

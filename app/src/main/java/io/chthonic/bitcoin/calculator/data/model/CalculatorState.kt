@@ -16,7 +16,7 @@ data class CalculatorState(val leftTickerCode: String,
         }
     }
 
-    val targetTickerCode: String?
+    val sinkTickerCode: String?
         get() = if (leftTickerIsSource) rightTickerCode else leftTickerCode
 
     val sourceTickerCode: String
