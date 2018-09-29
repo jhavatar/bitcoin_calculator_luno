@@ -8,7 +8,7 @@ import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.ui.presenter.MainPresenter
 import io.chthonic.bitcoin.calculator.ui.vu.MainVu
 import io.chthonic.mythos.mvp.MVPDispatcher
-import io.chthonic.mythos.mvp.PresenterCacheLoaderCallback
+import io.chthonic.mythos.viewmodel.PesenterCacheViewModel
 import timber.log.Timber
 
 
@@ -23,7 +23,7 @@ class MainActivity : MVPActivity<MainPresenter, MainVu>() {
     override fun createMVPDispatcher(): MVPDispatcher<MainPresenter, MainVu> {
 
         return MVPDispatcher(MVP_UID,
-                PresenterCacheLoaderCallback(this, { MainPresenter() }),
+                PesenterCacheViewModel.getViewModelPresenterCache(this, MVP_UID, { MainPresenter() }),
                 ::MainVu)
     }
 

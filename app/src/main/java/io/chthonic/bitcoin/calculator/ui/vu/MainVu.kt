@@ -2,6 +2,7 @@ package io.chthonic.bitcoin.calculator.ui.vu
 
 import android.app.Activity
 import android.graphics.Rect
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -22,7 +23,6 @@ import io.chthonic.bitcoin.calculator.ui.view.CurrencyInputWatcher
 import io.chthonic.bitcoin.calculator.utils.ExchangeUtils
 import io.chthonic.bitcoin.calculator.utils.TextUtils
 import io.chthonic.bitcoin.calculator.utils.UiUtils
-import io.chthonic.mythos.mvp.FragmentWrapper
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
@@ -34,10 +34,10 @@ import kotlinx.android.synthetic.main.vu_main.view.*
  */
 class MainVu(inflater: LayoutInflater,
              activity: Activity,
-             fragmentWrapper: FragmentWrapper? = null,
+             fragment: Fragment? = null,
              parentView: ViewGroup? = null) : BaseVu(inflater,
         activity = activity,
-        fragmentWrapper = fragmentWrapper,
+        fragment = fragment,
         parentView = parentView) {
 
     private val tickerSelectPublisher: PublishSubject<String> by lazy {

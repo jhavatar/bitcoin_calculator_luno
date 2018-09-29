@@ -1,11 +1,11 @@
 package io.chthonic.bitcoin.calculator.ui.vu
 
 import android.app.Activity
+import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupWindow
-import io.chthonic.mythos.mvp.FragmentWrapper
 import io.chthonic.mythos.mvp.Vu
 import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.ui.activity.BaseActivity
@@ -14,8 +14,8 @@ import timber.log.Timber
 /**
  * Created by jhavatar on 3/7/17.
  */
-abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragmentWrapper: FragmentWrapper?, parentView: ViewGroup?) :
-        Vu(layoutInflater, activity, fragmentWrapper, parentView) {
+abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragment: Fragment?, parentView: ViewGroup?) :
+        Vu(layoutInflater, activity, fragment, parentView) {
 
     val baseActivity: BaseActivity
         get() = activity as BaseActivity
@@ -31,7 +31,7 @@ abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragme
     }
 
     fun showLoading() {
-        rootView.post({
+        rootView.post{
             try {
                 if (!loadingIndicator.isShowing) {
                     loadingIndicator.showAtLocation(rootView, Gravity.CENTER, 0, 0)
@@ -40,7 +40,7 @@ abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragme
             } catch (t: Throwable) {
                 Timber.w(t, "showLoading failed.")
             }
-        })
+        }
     }
 
     fun hideLoading() {

@@ -98,6 +98,10 @@ dependencies {
     implementation "com.google.firebase:firebase-core:${rootProject.ext.firebaseVersion}"
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
 
+    // arch
+    implementation "android.arch.lifecycle:viewmodel:${rootProject.ext.lifecycle_version}"
+    implementation "android.arch.lifecycle:extensions:${rootProject.ext.lifecycle_version}"
+
     // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -128,9 +132,8 @@ dependencies {
     kapt 'com.yheriatovych:reductor-processor:0.14.0'
 
     // mvp
-    implementation('io.chthonic.mythos:mythos:0.9.3') {
-        exclude group: 'org.jetbrains'
-    }
+    implementation "com.github.jhavatar.mythos:mvp:1.1.5"
+    implementation "com.github.jhavatar.mythos:viewmodel:1.1.5"
 
     // ui
     implementation 'com.wang.avi:library:2.1.3'
