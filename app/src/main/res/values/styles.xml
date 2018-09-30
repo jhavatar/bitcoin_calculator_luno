@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
@@ -10,9 +10,10 @@
         <item name="android:textColorSecondary">@color/secondaryTextColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="preferenceTheme">@style/AppTheme.prefsTheme</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="@style/AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -43,6 +44,11 @@
     <style name="TitleText" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/grey_xlight</item>
         <item name="android:textSize">@dimen/label_large</item>
+    </style>
+
+
+    <style name="AppTheme.prefsTheme" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="android:textColor">@color/prefs_text_color</item>
     </style>
 
 

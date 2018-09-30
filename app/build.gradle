@@ -92,10 +92,12 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:percent:${rootProject.ext.supportLibVersion}"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "com.android.support:preference-v14:${rootProject.ext.supportLibVersion}"
+    implementation "com.android.support:customtabs:${rootProject.ext.supportLibVersion}"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     // firebase
-    implementation "com.google.firebase:firebase-core:${rootProject.ext.firebaseVersion}"
+    implementation "com.google.firebase:firebase-core:16.0.3"
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
 
     // arch

@@ -6,7 +6,10 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Build
+import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -113,5 +116,13 @@ object UiUtils {
         return res.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 
+
+    fun showUrl(context: Context, url: String) {
+        val resources = context.resources
+        val builder = CustomTabsIntent.Builder()
+                .setToolbarColor(ResourcesCompat.getColor(resources, R.color.primaryColor, context.theme))
+        val customTabsIntent = builder.build()
+        customTabsIntent.launchUrl(context, Uri.parse(url))
+    }
 
 }

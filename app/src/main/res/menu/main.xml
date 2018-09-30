@@ -20,4 +20,11 @@
         android:iconTint="@color/white"
         android:iconTintMode="multiply"
         android:tooltipText="@string/menu_item_clear"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="102"
+        android:title="@string/menu_item_settings"
+        app:showAsAction="never"
+        android:tooltipText="@string/menu_item_settings"/>
 </menu>

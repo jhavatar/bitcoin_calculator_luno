@@ -1,7 +1,9 @@
 package io.chthonic.bitcoin.calculator.ui.activity
 
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.support.v4.content.res.ResourcesCompat
 import android.view.Menu
 import android.view.MenuItem
 import io.chthonic.bitcoin.calculator.R
@@ -45,8 +47,8 @@ class MainActivity : MVPActivity<MainPresenter, MainVu>() {
         // manually tint icon since xml tint does not work
         listOf(Pair(menu.findItem(R.id.action_refresh), R.drawable.ic_refresh_black_24dp),
                 Pair(menu.findItem(R.id.action_clear),  R.drawable.ic_delete_black_24dp)).forEach{
-            val icon = resources.getDrawable(it.second)
-            icon.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
+            val icon = ResourcesCompat.getDrawable(resources, it.second, theme)
+            icon?.setColorFilter(ResourcesCompat.getColor(resources, R.color.white, theme), PorterDuff.Mode.SRC_IN)
             it.first.icon = icon
         }
 
@@ -66,6 +68,10 @@ class MainActivity : MVPActivity<MainPresenter, MainVu>() {
             }
             R.id.action_clear -> {
                 mvpDispatcher.presenter?.clearCalculation()
+                return true
+            }
+            R.id.action_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
                 return true
             }
         }
