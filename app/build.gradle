@@ -4,9 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
-Properties projProps = new Properties()
-projProps.load(project.rootProject.file('project.properties').newDataInputStream())
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -14,8 +11,8 @@ android {
         applicationId "io.chthonic.bitcoin.calculator"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode = projProps.getProperty("versionCode")
-        versionName = projProps.getProperty("versionName")
+        versionCode = rootProject.ext.versionCode
+        versionName = rootProject.ext.versionName
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         flavorDimensions "default"
@@ -27,28 +24,26 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "boolean", "ANALYTICS_ENABLED", ((projProps.getProperty("debugAnalytics") as Integer == 1) ? "true" : "false")
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "boolean", "ANALYTICS_ENABLED", "true"
         }
     }
     productFlavors {
         dev {
             applicationIdSuffix = ".dev"
-            resValue "string", "app_name", (projProps.getProperty("appName") + "_dev")
-            resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_dev_leaks")
+            resValue "string", "app_name", (rootProject.ext.appName + "_dev")
+            resValue "string", "leak_canary_display_activity_label", (rootProject.ext.appName + "_dev_leaks")
         }
         beta {
             applicationIdSuffix = ".beta"
-            resValue "string", "app_name", (projProps.getProperty("appName") + "_beta")
-            resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_beta_leaks")
+            resValue "string", "app_name", (rootProject.ext.appName + "_beta")
+            resValue "string", "leak_canary_display_activity_label", (rootProject.ext.appName + "_beta_leaks")
         }
         prod {
-            resValue "string", "app_name", projProps.getProperty("appName")
-            resValue "string", "leak_canary_display_activity_label", (projProps.getProperty("appName") + "_leaks")
+            resValue "string", "app_name", rootProject.ext.appName
+            resValue "string", "leak_canary_display_activity_label", (rootProject.ext.appName + "_leaks")
         }
     }
     signingConfigs {
