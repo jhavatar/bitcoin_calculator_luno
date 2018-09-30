@@ -1,8 +1,12 @@
 package io.chthonic.bitcoin.calculator.ui.vu
 
+import `in`.srain.cube.views.ptr.PtrFrameLayout
+import `in`.srain.cube.views.ptr.PtrHandler
 import android.app.Activity
 import android.graphics.Rect
+import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -59,6 +63,11 @@ class MainVu(inflater: LayoutInflater,
     }
 
 
+    private val refreshPublisher: PublishSubject<Any> by lazy {
+        PublishSubject.create<Any>()
+    }
+    val refreshObservable: Observable<Any>
+        get() = refreshPublisher.hide()
 
     private val fiatInputPublisher: PublishSubject<String> by lazy {
         PublishSubject.create<String>()
@@ -115,7 +124,24 @@ class MainVu(inflater: LayoutInflater,
     }
 
 
-    private lateinit var tickerAdapter: TickerListAdapter
+    private val tickerAdapter: TickerListAdapter by lazy {
+        TickerListAdapter(tickerSelectPublisher)
+    }
+
+    private val listLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(activity)
+    }
+
+    private val barOffsetChangeListener: IsExpandOnOffsetChangedListener by lazy {
+        object: IsExpandOnOffsetChangedListener {
+            override var isExpanded: Boolean = UiUtils.isHorizontal(rootView.resources)
+                private set
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout?, offset: Int) {
+                isExpanded = (offset == 0)
+            }
+        }
+    }
 
     override fun getRootViewLayoutId(): Int {
         return R.layout.vu_main
@@ -123,12 +149,10 @@ class MainVu(inflater: LayoutInflater,
 
     override fun onCreate() {
         super.onCreate()
+        baseActivity.setSupportActionBar(rootView.toolbar)
 
-        (activity as AppCompatActivity).setSupportActionBar(rootView.toolbar)
-
-        tickerAdapter = TickerListAdapter(tickerSelectPublisher)
         listView.adapter = tickerAdapter
-        listView.layoutManager = LinearLayoutManager(activity)
+        listView.layoutManager = listLayoutManager
         val interItemPadding = listView.resources.getDimensionPixelSize(R.dimen.content_padding)
         listView.addItemDecoration(object:RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -143,6 +167,20 @@ class MainVu(inflater: LayoutInflater,
         if (UiUtils.isHorizontal(rootView.resources)) {
             rootView.app_bar.setExpanded(false)
         }
+
+        rootView.app_bar.addOnOffsetChangedListener(barOffsetChangeListener)
+        rootView.pullToRefresh.headerView = View.inflate(activity, R.layout.layout_loading, null)
+        rootView.pullToRefresh.setPtrHandler(object: PtrHandler {
+            override fun onRefreshBegin(frame: PtrFrameLayout?) {
+                // publish pull to refresh event
+                refreshPublisher.onNext(true)
+            }
+
+            override fun checkCanDoRefresh(frame: PtrFrameLayout?, content: View?, header: View?): Boolean {
+                return (listLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) && barOffsetChangeListener.isExpanded
+            }
+        })
+
         UiUtils.setRipple(rootView.clicker_bitcoin_info)
 
         RxView.clicks(rootView.clicker_bitcoin_info)
@@ -173,6 +211,16 @@ class MainVu(inflater: LayoutInflater,
                 }.subscribe(fiatInputPublisher)
     }
 
+    override fun onDestroy() {
+        rootView.pullToRefresh.setPtrHandler(null)
+        rootView.app_bar.removeOnOffsetChangedListener(barOffsetChangeListener)
+        super.onDestroy()
+    }
+
+    override fun hideLoading() {
+        rootView.pullToRefresh.refreshComplete()
+        super.hideLoading()
+    }
 
     private fun updateActivated(convertToFiat: Boolean): Boolean {
         val activatedChange = (bitcoinInfoLayout.isActivated != convertToFiat) || (fiatInfoLayout.isActivated != !convertToFiat)
@@ -189,7 +237,11 @@ class MainVu(inflater: LayoutInflater,
                 UiUtils.getCompoundDrawableForTextDrawable(
                         UiUtils.getCurrencySign(CryptoCurrency.Bitcoin),
                         bitcoinInput,
-                        if (convertToFiat) bitcoinInput.resources.getColor(R.color.secondaryColor) else bitcoinInput.currentTextColor),
+                        if (convertToFiat) {
+                            ResourcesCompat.getColor(bitcoinInput.resources, R.color.secondaryColor, bitcoinInput.context.theme)
+                        } else {
+                            bitcoinInput.currentTextColor
+                        }),
                 null,null, null)
 
         return true
@@ -276,7 +328,11 @@ class MainVu(inflater: LayoutInflater,
                         UiUtils.getCompoundDrawableForTextDrawable(
                                 UiUtils.getCurrencySign(ExchangeUtils.getFiatCurrencyForTicker(calc.ticker.code)),
                                 fiatInput,
-                                if (!calc.convertToFiat) fiatInput.resources.getColor(R.color.secondaryColor) else fiatInput.currentTextColor),
+                                if (!calc.convertToFiat) {
+                                    ResourcesCompat.getColor(fiatInput.resources, R.color.secondaryColor, fiatInput.context.theme)
+                                } else {
+                                    fiatInput.currentTextColor
+                                }),
                         null, null, null)
 
             } else {
@@ -289,5 +345,9 @@ class MainVu(inflater: LayoutInflater,
     fun updateTickers(tickers: List<TickerViewModel>) {
         tickerAdapter.items = tickers
         tickerAdapter.notifyDataSetChanged()
+    }
+
+    interface IsExpandOnOffsetChangedListener: AppBarLayout.OnOffsetChangedListener {
+        val isExpanded: Boolean
     }
 }

@@ -25,7 +25,7 @@ class SettingsActivity: AppCompatActivity() {
                 .commit()
     }
 
-    
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

@@ -47,7 +47,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
         Timber.d("ui init completed")
 
         subscribeServiceListeners()
-        subscribeVuListeners()
+        subscribeVuListeners(vu)
         Timber.d("listeners subscribe completed")
 
         fetchLatestTickers()
@@ -87,8 +87,8 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     }
 
 
-    private fun subscribeVuListeners() {
-        rxSubs.add(vu!!.tickerSelectObservable
+    private fun subscribeVuListeners(vu: MainVu) {
+        rxSubs.add(vu.tickerSelectObservable
                 .observeOn(Schedulers.computation())
                 .subscribe({ tickerCode: String ->
                     Timber.d("tickerSelectObservable success: $tickerCode")
@@ -98,7 +98,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                     Timber.e(t, "tickerSelectObservable failed")
                 }))
 
-        rxSubs.add(vu!!.bitcoinInputObserver
+        rxSubs.add(vu.bitcoinInputObserver
                 .observeOn(Schedulers.computation())
                 .subscribe({bitcoinAmount: String ->
                     Timber.d("bitcoinInputObserver success = $bitcoinAmount")
@@ -109,7 +109,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                     Timber.e(it, "bitcoinInputObserver failed")
                 }))
 
-        rxSubs.add(vu!!.fiatInputObserver
+        rxSubs.add(vu.fiatInputObserver
                 .observeOn(Schedulers.computation())
                 .subscribe({fiatAmount: String ->
                     Timber.d("fiatInputObserver success = $fiatAmount")
@@ -118,6 +118,16 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
                 }, {
 
                     Timber.e(it, "fiatInputObserver failed")
+                }))
+
+        rxSubs.add(vu.refreshObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    fetchLatestTickers(false)
+
+                }, {
+
+                    Timber.e(it, "refreshObservable failed")
                 }))
     }
 

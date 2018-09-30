@@ -43,7 +43,7 @@ abstract class BaseVu(layoutInflater: LayoutInflater, activity: Activity, fragme
         }
     }
 
-    fun hideLoading() {
+    open fun hideLoading() {
         try {
             if (loadingIndicator.isShowing) {
                 loadingIndicator.dismiss()

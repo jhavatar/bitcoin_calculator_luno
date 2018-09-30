@@ -229,14 +229,22 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <in.srain.cube.views.ptr.PtrFrameLayout
+            android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/list_tickers"
-            android:layout_gravity="fill_vertical"
+            app:ptr_pull_to_fresh="true"
+            app:ptr_keep_header_when_refresh="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:fillViewport="true"
-            />
+            android:layout_gravity="fill_vertical"
+            >
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/list_tickers"
+                />
+        </in.srain.cube.views.ptr.PtrFrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 </FrameLayout>
