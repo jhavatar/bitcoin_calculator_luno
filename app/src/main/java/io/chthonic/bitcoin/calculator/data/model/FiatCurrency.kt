@@ -14,4 +14,7 @@ sealed class FiatCurrency(override val code: String): Currency {
     object Myr: FiatCurrency("MYR")
     object Idr: FiatCurrency("IDR")
     object Ngn: FiatCurrency("NGN")
+    object Zmw: FiatCurrency("ZMW")
+    object Eur: FiatCurrency("EUR")
+    object Ugx: FiatCurrency("UGX")
 }

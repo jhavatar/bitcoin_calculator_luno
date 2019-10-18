@@ -34,7 +34,11 @@ object UiUtils {
                 Pair(FiatCurrency.Myr.code, "\u0052\u004d"),
                 Pair(FiatCurrency.Idr.code, "\u0052\u0070"),
                 Pair(FiatCurrency.Ngn.code,
-                        if (UiUtils.canRenderGlyp("\u20a6")) "\u20a6" else "N"))
+                        if (UiUtils.canRenderGlyp("\u20a6")) "\u20a6" else "N"),
+
+                Pair(FiatCurrency.Zmw.code, "\u004B"),
+                Pair(FiatCurrency.Eur.code, "\u20AC"),
+                Pair(FiatCurrency.Ugx.code, "\u0055\u0053\u0068"))
     }
 
     fun dipToPixels(dip: Int, context: Context): Int {
@@ -69,6 +73,9 @@ object UiUtils {
             FiatCurrency.Myr.code -> R.drawable.ic_myr
             FiatCurrency.Idr.code -> R.drawable.ic_idr
             FiatCurrency.Ngn.code -> R.drawable.ic_ngn
+            FiatCurrency.Zmw.code -> R.drawable.ic_zmw
+            FiatCurrency.Eur.code -> R.drawable.ic_eur
+            FiatCurrency.Ugx.code -> R.drawable.ic_ugx
             else -> throw RuntimeException("code $code should not exist")
         }
     }
@@ -79,6 +86,9 @@ object UiUtils {
             FiatCurrency.Myr.code -> R.drawable.ic_myr_320px
             FiatCurrency.Idr.code -> R.drawable.ic_idr_320px
             FiatCurrency.Ngn.code -> R.drawable.ic_ngn_320px
+            FiatCurrency.Zmw.code -> R.drawable.ic_zmw_320px
+            FiatCurrency.Eur.code -> R.drawable.ic_eur_320px
+            FiatCurrency.Ugx.code -> R.drawable.ic_ugx_320px
             else -> throw RuntimeException("code $code should not exist")
         }
     }
