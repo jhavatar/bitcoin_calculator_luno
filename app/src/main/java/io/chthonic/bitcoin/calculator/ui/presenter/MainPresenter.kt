@@ -20,9 +20,10 @@ import io.chthonic.bitcoin.calculator.utils.TextUtils
 import io.chthonic.bitcoin.calculator.utils.UiUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.experimental.ThreadPoolDispatcher
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newSingleThreadContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import timber.log.Timber
 
 
@@ -34,7 +35,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     private val exchangeService: ExchangeService by kodein.lazy.instance<ExchangeService>()
     private val calculatorService: CalculatorService by kodein.lazy.instance<CalculatorService>()
 
-    private val clearDispatcher: ThreadPoolDispatcher by lazy {
+    private val clearDispatcher: CoroutineDispatcher by lazy {
         newSingleThreadContext("clear")
     }
 
@@ -138,7 +139,6 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
         }
 
         rxSubs.add(exchangeService.fetchTickerLot()
-//                .toCompletable()
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({it: List<Ticker> ->
@@ -152,7 +152,7 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     }
 
     fun clearCalculation() {
-        launch(clearDispatcher) {
+        GlobalScope.launch(clearDispatcher) {
 //            Timber.d("clearCalculation: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}")
             calculatorService.clear()
         }

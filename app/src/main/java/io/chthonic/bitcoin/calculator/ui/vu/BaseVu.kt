@@ -1,7 +1,7 @@
 package io.chthonic.bitcoin.calculator.ui.vu
 
 import android.app.Activity
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup

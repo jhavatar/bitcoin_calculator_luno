@@ -1,6 +1,6 @@
 package io.chthonic.bitcoin.calculator.ui.activity
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 
 

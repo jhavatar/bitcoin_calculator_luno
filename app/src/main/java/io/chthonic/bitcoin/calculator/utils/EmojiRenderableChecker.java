@@ -33,8 +33,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.v4.util.Preconditions;
+
+import androidx.core.util.Preconditions;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;

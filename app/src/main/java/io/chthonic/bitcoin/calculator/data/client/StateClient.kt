@@ -2,9 +2,10 @@ package io.chthonic.bitcoin.calculator.data.client
 
 import com.yheriatovych.reductor.Reducer
 import com.yheriatovych.reductor.Store
-import kotlinx.coroutines.experimental.ThreadPoolDispatcher
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newSingleThreadContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -20,7 +21,7 @@ class StateClient<T>(appStateReducer: Reducer<T>) {
     private val _publisherList: MutableList<StateChangePublisher<T>> = Collections.synchronizedList(mutableListOf())
     private val _persistenceList: MutableList<StateChangePersister<T>> = Collections.synchronizedList(mutableListOf())
 
-    private val persistenceDispatcher: ThreadPoolDispatcher by lazy {
+    private val persistenceDispatcher: CoroutineDispatcher by lazy {
         newSingleThreadContext("persistence")
     }
 
@@ -41,7 +42,7 @@ class StateClient<T>(appStateReducer: Reducer<T>) {
 
             persistencerList.forEach { pers: StateChangePersister<T> ->
                 if (pers.shouldPersist(state, lastState)) {
-                    launch(persistenceDispatcher) {
+                    GlobalScope.launch(persistenceDispatcher) {
 //                        Timber.d("do persist of $state, mainThread = ${Looper.myLooper() == Looper.getMainLooper()}, thread = ${java.lang.Thread.currentThread()}")
                         pers.persist(state)
                     }

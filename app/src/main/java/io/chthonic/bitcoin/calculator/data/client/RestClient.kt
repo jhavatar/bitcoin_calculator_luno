@@ -14,10 +14,6 @@ import java.util.concurrent.TimeUnit
  */
 class RestClient(baseUrl: String) {
 
-    companion object {
-        const val BASE_URL = "https://api.mybitx.com/api/1"
-    }
-
     val restAdapter: Retrofit by lazy {
         val logging = HttpLoggingInterceptor()
         logging.setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)

@@ -26,7 +26,18 @@ object ExchangeUtils {
             val json = prefs.getString(PERSIST_KEY_NAME, null)
             Timber.d("getPersistedExchangeState: json = $json")
             if (json != null) {
-                serializer.fromJson(json) ?: fallbackState
+                try {
+                    serializer.fromJson(json)?.let{ state ->
+                        state.copy(tickers = state.tickers.filter {
+                            it.value.isValid
+                        })
+                    } ?: fallbackState
+
+                } catch (t: Throwable) {
+                    Timber.e(t, "getPersistedExchangeState: fromJson failed")
+                    prefs.edit().remove(PERSIST_KEY_NAME)
+                    fallbackState
+                }
 
             } else {
                 fallbackState
@@ -66,6 +77,7 @@ object ExchangeUtils {
     }
 
     fun convertToFiat(bitcoinPrice: BigDecimal, ticker: Ticker): BigDecimal {
+        Timber.d("convertToFiat: ticker = $ticker, bitcoinPrice = $bitcoinPrice")
         return bitcoinPrice.multiply(ticker.bid.toBigDecimal())
     }
 

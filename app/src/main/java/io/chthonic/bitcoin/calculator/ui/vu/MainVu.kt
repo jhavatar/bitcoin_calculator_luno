@@ -4,11 +4,11 @@ import `in`.srain.cube.views.ptr.PtrFrameLayout
 import `in`.srain.cube.views.ptr.PtrHandler
 import android.app.Activity
 import android.graphics.Rect
-import android.support.design.widget.AppBarLayout
-import android.support.v4.app.Fragment
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.fragment.app.Fragment
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
@@ -80,7 +80,7 @@ class MainVu(inflater: LayoutInflater,
         CurrencyInputWatcher(fiatInput, fiatInputPublisher, false, maxFiatInputLength)
     }
 
-    private val listView: RecyclerView by lazy {
+    private val listView: androidx.recyclerview.widget.RecyclerView by lazy {
         rootView.list_tickers
     }
 
@@ -127,8 +127,8 @@ class MainVu(inflater: LayoutInflater,
         TickerListAdapter(tickerSelectPublisher)
     }
 
-    private val listLayoutManager: LinearLayoutManager by lazy {
-        LinearLayoutManager(activity)
+    private val listLayoutManager: androidx.recyclerview.widget.LinearLayoutManager by lazy {
+        androidx.recyclerview.widget.LinearLayoutManager(activity)
     }
 
     private val barOffsetChangeListener: IsExpandOnOffsetChangedListener by lazy {
@@ -153,8 +153,8 @@ class MainVu(inflater: LayoutInflater,
         listView.adapter = tickerAdapter
         listView.layoutManager = listLayoutManager
         val interItemPadding = listView.resources.getDimensionPixelSize(R.dimen.content_padding)
-        listView.addItemDecoration(object:RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        listView.addItemDecoration(object: androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(outRect: Rect, view: View, parent: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
                 outRect.top = interItemPadding
             }
         })

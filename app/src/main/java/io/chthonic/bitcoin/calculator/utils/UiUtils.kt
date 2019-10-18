@@ -8,8 +8,8 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.res.ResourcesCompat
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView

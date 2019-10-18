@@ -1,7 +1,7 @@
 package io.chthonic.bitcoin.calculator.ui.activity
 
 import android.os.Bundle
-import android.support.v4.app.LoaderManager
+import androidx.loader.app.LoaderManager
 import io.chthonic.mythos.mvp.MVPDispatcher
 import io.chthonic.mythos.mvp.Presenter
 import io.chthonic.mythos.mvp.Vu
