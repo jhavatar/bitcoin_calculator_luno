@@ -26,18 +26,11 @@ object ExchangeUtils {
             val json = prefs.getString(PERSIST_KEY_NAME, null)
             Timber.d("getPersistedExchangeState: json = $json")
             if (json != null) {
-                try {
-                    serializer.fromJson(json)?.let{ state ->
-                        state.copy(tickers = state.tickers.filter {
-                            it.value.isValid
-                        })
-                    } ?: fallbackState
-
-                } catch (t: Throwable) {
-                    Timber.e(t, "getPersistedExchangeState: fromJson failed")
-                    prefs.edit().remove(PERSIST_KEY_NAME)
-                    fallbackState
-                }
+                serializer.fromJson(json)?.let{ state ->
+                    state.copy(tickers = state.tickers.filter {
+                        it.value.isValid
+                    })
+                } ?: fallbackState
 
             } else {
                 fallbackState
@@ -45,6 +38,7 @@ object ExchangeUtils {
 
         } catch (t: Throwable) {
             Timber.e(t,"getPersistedExchangeState failed")
+            prefs.edit().remove(PERSIST_KEY_NAME)
             fallbackState
         }
     }

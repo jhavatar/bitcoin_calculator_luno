@@ -21,7 +21,6 @@ import io.chthonic.bitcoin.calculator.utils.UiUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import timber.log.Timber
@@ -152,8 +151,8 @@ class MainPresenter(private val kodein: Kodein = App.kodein): BasePresenter<Main
     }
 
     fun clearCalculation() {
-        GlobalScope.launch(clearDispatcher) {
-//            Timber.d("clearCalculation: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}")
+        coroutineScope.launch(clearDispatcher) {
+            Timber.d("clearCalculation: mainThread = ${Looper.myLooper() == Looper.getMainLooper()}")
             calculatorService.clear()
         }
     }

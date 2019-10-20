@@ -13,6 +13,9 @@ data class Ticker(val timestamp: Long = 0,
     val code: String
         get() = pair.replace(CryptoCurrency.Bitcoin.code, "")
 
+    /**
+     * Make sure required properties have valid data
+     */
     @delegate:Transient
     val isValid: Boolean by lazy {
         (timestamp > 0)

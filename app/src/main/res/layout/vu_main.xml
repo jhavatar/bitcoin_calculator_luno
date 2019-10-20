@@ -57,7 +57,7 @@
                         android:id="@+id/input_container"
                         android:layout_below="@id/toolbar"
                         android:layout_centerVertical="true"
-                        >
+                        android:baselineAligned="false">
 
                         <FrameLayout
                             android:layout_width="0dp"
@@ -165,7 +165,7 @@
                         android:layout_height="match_parent"
                         android:weightSum="1.0"
                         android:orientation="horizontal"
-                        >
+                        android:baselineAligned="false">
 
                         <FrameLayout
                             android:layout_width="0dp"
