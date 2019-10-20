@@ -1,8 +1,5 @@
 package io.chthonic.bitcoin.calculator.ui.viewholder
 
-import android.os.Build
-import androidx.recyclerview.widget.RecyclerView
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,20 +18,13 @@ class TickerHolder(itemView: View): androidx.recyclerview.widget.RecyclerView.Vi
         }
     }
 
-    fun init() {
+    init {
         UiUtils.setRipple(itemView)
     }
 
     fun update(ticker: TickerViewModel) {
         itemView.ticker_name.text = ticker.name
-
-        val price = "<b>${ticker.sign}</b> ${ticker.price}"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            itemView.ticker_price.text = Html.fromHtml(price,  Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            itemView.ticker_price.text = Html.fromHtml(price)
-        }
-
+        itemView.ticker_price.text = "${ticker.sign} ${ticker.price}"
         itemView.ticker_date.text = itemView.resources.getString(R.string.updated) + " ${ticker.dateTime}"
 
         // note, circleImageView does not work with vectors

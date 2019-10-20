@@ -1,6 +1,7 @@
 package io.chthonic.bitcoin.calculator
 
 import com.github.salomonbrys.kodein.Kodein
+import com.mikepenz.iconics.Iconics
 import io.chthonic.bitcoin.calculator.utils.DebugUtils
 import timber.log.Timber
 
@@ -15,6 +16,9 @@ class App : android.app.Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // currency icons/emojis on all devices
+        Iconics.init(applicationContext)
 
         kodein = depInject(this)
 

@@ -6,14 +6,19 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.res.ResourcesCompat
 import com.amulyakhare.textdrawable.TextDrawable
+import com.mikepenz.iconics.IconicsColor
+import com.mikepenz.iconics.IconicsDrawable
+import com.mikepenz.iconics.IconicsSize
+import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import io.chthonic.bitcoin.calculator.R
 import io.chthonic.bitcoin.calculator.data.model.CryptoCurrency
 import io.chthonic.bitcoin.calculator.data.model.Currency
@@ -26,18 +31,14 @@ import io.chthonic.bitcoin.calculator.data.model.FiatCurrency
 object UiUtils {
 
     private val mapCurrencyToSign: Map<String, String> by lazy {
-        mapOf( Pair(CryptoCurrency.Bitcoin.code,
-                        if (UiUtils.canRenderGlyp("\u20BF")) "\u20BF" else "B"),
-                Pair(CryptoCurrency.Ethereum.code,
-                        if (UiUtils.canRenderGlyp("\u039E")) "\u039E" else "E"),
+        mapOf( Pair(CryptoCurrency.Bitcoin.code, "{cmd_currency_btc}"),
+                Pair(CryptoCurrency.Ethereum.code, "{cmd-currency-eth}"),
                 Pair(FiatCurrency.Zar.code, "\u0052"),
                 Pair(FiatCurrency.Myr.code, "\u0052\u004d"),
                 Pair(FiatCurrency.Idr.code, "\u0052\u0070"),
-                Pair(FiatCurrency.Ngn.code,
-                        if (UiUtils.canRenderGlyp("\u20a6")) "\u20a6" else "N"),
-
+                Pair(FiatCurrency.Ngn.code, "{cmd_currency_ngn}"),
                 Pair(FiatCurrency.Zmw.code, "\u004B"),
-                Pair(FiatCurrency.Eur.code, "\u20AC"),
+                Pair(FiatCurrency.Eur.code, "{cmd-currency-eur}"),
                 Pair(FiatCurrency.Ugx.code, "\u0055\u0053\u0068"))
     }
 
@@ -105,20 +106,35 @@ object UiUtils {
     }
 
 
-    fun getCompoundDrawableForTextDrawable(text: String, tv: TextView, color: Int): TextDrawable {
-        val bounds = Rect()
-        val textPaint = tv.getPaint()
-        textPaint.getTextBounds(text, 0, text.length, bounds)
-        val width = bounds.width()
+    fun getCompoundDrawableForTextDrawable(text: String, tv: TextView, color: Int): Drawable {
+        return if (text.startsWith("{")) {
+            IconicsDrawable(tv.context)
+                    // use Icon reference since Iconics' icon(String) is buggy
+                    .icon(when (text) {
+                        mapCurrencyToSign[CryptoCurrency.Ethereum.code] -> CommunityMaterial.Icon.cmd_currency_eth
+                        mapCurrencyToSign[FiatCurrency.Eur.code] -> CommunityMaterial.Icon.cmd_currency_eur
+                        mapCurrencyToSign[FiatCurrency.Ngn.code] -> CommunityMaterial.Icon.cmd_currency_ngn
+                        else -> CommunityMaterial.Icon.cmd_currency_btc
+                    })
+                    .color(IconicsColor.colorInt(color))
+                    .size(IconicsSize.px(tv.textSize.toInt()))
 
-        return TextDrawable.builder()
-                .beginConfig()
-                .textColor(color)
-                .fontSize(tv.textSize.toInt()) // size in px
-                .useFont(tv.typeface)
-                .width(width) // size in px
-                .endConfig()
-                .buildRect(text, Color.TRANSPARENT)
+
+        } else {
+            val bounds = Rect()
+            val textPaint = tv.getPaint()
+            textPaint.getTextBounds(text, 0, text.length, bounds)
+            val width = bounds.width()
+
+            TextDrawable.builder()
+                    .beginConfig()
+                    .textColor(color)
+                    .fontSize(tv.textSize.toInt()) // size in px
+                    .useFont(tv.typeface)
+                    .width(width) // size in px
+                    .endConfig()
+                    .buildRect(text, Color.TRANSPARENT)
+        }
     }
 
 
